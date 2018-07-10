@@ -1,0 +1,17 @@
+/***********************************************************************
+*
+*  FILE        : IRO3.c
+*  DATE        : 2018-07-10
+*  DESCRIPTION : Main Program
+*
+*  NOTE:THIS IS A TYPICAL EXAMPLE.
+*
+***********************************************************************/
+#include "r_smc_entry.h"
+
+void main(void);
+
+void main(void)
+{
+
+}
