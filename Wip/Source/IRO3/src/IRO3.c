@@ -54,7 +54,7 @@ PUBLIC volatile uint8_t g_state = IDLE_STATE;
 ******************************************************************************/
 LOCAL BOOLEAN s_is_unlock = FALSE;
 
-LOCAL BOOLEAN s_is_timeout = FALSE;
+LOCAL BOOLEAN s_is_timeout = TRUE;
 
 /******************************************************************************
 * Local functions
