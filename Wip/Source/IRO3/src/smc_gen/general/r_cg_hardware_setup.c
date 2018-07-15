@@ -22,7 +22,7 @@
 * Version      : 1.0.1
 * Device(s)    : R5F51303AxFM
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2018-07-10
+* Creation Date: 2018-07-15
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -35,6 +35,9 @@ Pragma directive
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
+#include "Config_PORT.h"
+#include "Config_S12AD0.h"
+#include "Config_CMT0.h"
 #include "r_smc_cgc.h"
 #include "r_smc_interrupt.h"
 /* Start user code for include. Do not edit comment generated here */
@@ -78,6 +81,11 @@ void R_Systeminit(void)
     
     /* Initialize clocks settings */
     R_CGC_Create();
+
+    /* Set peripheral settings */
+    R_Config_PORT_Create();
+    R_Config_S12AD0_Create();
+    R_Config_CMT0_Create();
 
     /* Set interrupt settings */
     R_Interrupt_Create();

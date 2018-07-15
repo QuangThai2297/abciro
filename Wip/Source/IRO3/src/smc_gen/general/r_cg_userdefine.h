@@ -22,7 +22,7 @@
 * Version      : 1.0.1
 * Device(s)    : R5F51303AxFM
 * Description  : User header file for code generation.
-* Creation Date: 2018-07-10
+* Creation Date: 2018-07-15
 ***********************************************************************************************************************/
 
 #ifndef CG_USER_DEF_H
@@ -44,6 +44,9 @@ Macro definitions (Register bit)
 Macro definitions
 ***********************************************************************************************************************/
 /* Start user code for macro define. Do not edit comment generated here */
+
+#define LED5 (PORTE.PODR.BIT.B0)
+#define PWM (PORT3.PODR.BIT.B2)
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************

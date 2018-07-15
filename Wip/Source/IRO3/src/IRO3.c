@@ -24,6 +24,8 @@
 
 #include "r_smc_entry.h"
 #include "config.h"
+#include "gpio.h"
+#include "adc.h"
 
 /******************************************************************************
 * External objects
@@ -34,6 +36,9 @@
 * Global variables
 ******************************************************************************/
 PUBLIC volatile uint8_t g_state = IDLE_STATE;
+
+uint16_t g_adc_result;
+
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
@@ -53,8 +58,10 @@ PUBLIC volatile uint8_t g_state = IDLE_STATE;
 * Local variables
 ******************************************************************************/
 LOCAL BOOLEAN s_is_unlock = FALSE;
-
-LOCAL BOOLEAN s_is_timeout = TRUE;
+uint16_t value ;
+uint32_t time_out = 0;
+uint32_t i = 0;
+//LOCAL BOOLEAN s_is_timeout = TRUE;
 
 /******************************************************************************
 * Local functions
@@ -76,20 +83,21 @@ LOCAL BOOLEAN s_is_timeout = TRUE;
  * @return descrition for the function return value
  */
 void main(void);
-
 void main(void)
 {
-	//init module here
+	uint16_t adc_high_result = 0;
+	uint16_t adc_low_result = 0;
+	R_Config_CMT0_Start();
+	g_state = IDLE_STATE;
 
     while (1)
     {
 		switch (g_state)
 		{
 			case IDLE_STATE:
-			 if(s_is_unlock)
-			 {
-				 g_state = SETTING_STATE;
-			 }
+			{
+				ADC_ReadTds(ADCHANNEL1,&adc_high_result,& adc_low_result,500);
+			}
 			break;
 			case SETTING_STATE:
 			// @ quan: handle here
@@ -100,5 +108,5 @@ void main(void)
 			default :
 			break;
 		}
-    }
+   }
 }

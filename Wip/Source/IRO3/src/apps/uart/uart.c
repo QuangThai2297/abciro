@@ -29,6 +29,15 @@
 * External objects
 ******************************************************************************/
 
+///* Global variable for changing CMT0 interval */
+//volatile uint16_t interval_level = 1;
+///* String used to print message at PC terminal */
+//static char print_str[250];
+///* Flag used to detect whether data is received from PC terminal */
+//extern volatile uint8_t g_rx_flag;
+///* Global variable used for storing data received from PC terminal */
+//extern volatile uint8_t g_rx_char;
+///* Sends SCI2 data and waits for transmit end flag. */
 
 
 /******************************************************************************
@@ -74,8 +83,14 @@
  */
 PUBLIC void UART_Init(void)
 {
-	//init UART here
-//	UART_Uart1Init();
+//	//init UART here
+//	/* Set SCI2 receive buffer address and enable receive interrupt */
+//	R_Config_SCI1_Serial_Receive((uint8_t *)&g_rx_char, 1);
+//	/* Enable SCI2 operation */
+//	R_Config_SCI1_Start();
+//
+//	sprintf(print_str, "UART init done\r\n");
+//	R_SCI1_AsyncTransmit((uint8_t *)print_str, (uint16_t)strlen(print_str));
 }
 
 
@@ -90,8 +105,9 @@ PUBLIC void UART_Init(void)
  * @return descrition for the function return value
  */ 
 PUBLIC void UART_UartPuts (uint8_t *s)
-{ 
-	
+{
+//	sprintf(print_str, s);
+//	R_SCI1_AsyncTransmit((uint8_t *)print_str, (uint16_t)strlen(print_str));
 }
 /**
  * @brief One line documentation 

@@ -8,17 +8,20 @@ RM := rm -rf *.sni *.dbg *.lst *.lis *.lpp *.map *.x *.lbp *.bls *.libelf *.rel 
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/smc_gen/Config_CMT0/subdir.mk
+-include src/apps/uart/subdir.mk
+-include src/apps/timer/subdir.mk
+-include src/smc_gen/r_pincfg/subdir.mk
+-include src/smc_gen/r_bsp/mcu/rx130/subdir.mk
+-include src/smc_gen/Config_PORT/subdir.mk
+-include src/smc_gen/Config_S12AD0/subdir.mk
 -include src/apps/gpio/subdir.mk
 -include src/apps/adc/subdir.mk
--include src/apps/uart/subdir.mk
 -include src/smc_gen/r_bsp/mcu/all/subdir.mk
--include src/apps/timer/subdir.mk
 -include src/subdir.mk
 -include src/apps/flash/subdir.mk
--include src/smc_gen/r_pincfg/subdir.mk
 -include src/smc_gen/general/subdir.mk
 -include src/smc_gen/r_bsp/board/generic_rx130/subdir.mk
--include src/smc_gen/r_bsp/mcu/rx130/subdir.mk
 
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(strip $(C_DEPS)),)
@@ -119,17 +122,20 @@ IRO3.x: IRO3.abs
 # Other Targets
 clean:
 	-$(RM) $(LINKER_OUTPUT_OUTPUTS) $(LIBRARY_GENERATOR_OUTPUTTYPE_OUTPUTS)
+	-rm -rf src/smc_gen/Config_CMT0/*.obj src/smc_gen/Config_CMT0/*.d src/smc_gen/Config_CMT0/*.asm src/smc_gen/Config_CMT0/*.p src/smc_gen/Config_CMT0/*.src src/smc_gen/Config_CMT0/*.jmp src/smc_gen/Config_CMT0/*.lst src/smc_gen/Config_CMT0/*.prn 
+	-rm -rf src/apps/uart/*.obj src/apps/uart/*.d src/apps/uart/*.asm src/apps/uart/*.p src/apps/uart/*.src src/apps/uart/*.jmp src/apps/uart/*.lst src/apps/uart/*.prn 
+	-rm -rf src/apps/timer/*.obj src/apps/timer/*.d src/apps/timer/*.asm src/apps/timer/*.p src/apps/timer/*.src src/apps/timer/*.jmp src/apps/timer/*.lst src/apps/timer/*.prn 
+	-rm -rf src/smc_gen/r_pincfg/*.obj src/smc_gen/r_pincfg/*.d src/smc_gen/r_pincfg/*.asm src/smc_gen/r_pincfg/*.p src/smc_gen/r_pincfg/*.src src/smc_gen/r_pincfg/*.jmp src/smc_gen/r_pincfg/*.lst src/smc_gen/r_pincfg/*.prn 
+	-rm -rf src/smc_gen/r_bsp/mcu/rx130/*.obj src/smc_gen/r_bsp/mcu/rx130/*.d src/smc_gen/r_bsp/mcu/rx130/*.asm src/smc_gen/r_bsp/mcu/rx130/*.p src/smc_gen/r_bsp/mcu/rx130/*.src src/smc_gen/r_bsp/mcu/rx130/*.jmp src/smc_gen/r_bsp/mcu/rx130/*.lst src/smc_gen/r_bsp/mcu/rx130/*.prn 
+	-rm -rf src/smc_gen/Config_PORT/*.obj src/smc_gen/Config_PORT/*.d src/smc_gen/Config_PORT/*.asm src/smc_gen/Config_PORT/*.p src/smc_gen/Config_PORT/*.src src/smc_gen/Config_PORT/*.jmp src/smc_gen/Config_PORT/*.lst src/smc_gen/Config_PORT/*.prn 
+	-rm -rf src/smc_gen/Config_S12AD0/*.obj src/smc_gen/Config_S12AD0/*.d src/smc_gen/Config_S12AD0/*.asm src/smc_gen/Config_S12AD0/*.p src/smc_gen/Config_S12AD0/*.src src/smc_gen/Config_S12AD0/*.jmp src/smc_gen/Config_S12AD0/*.lst src/smc_gen/Config_S12AD0/*.prn 
 	-rm -rf src/apps/gpio/*.obj src/apps/gpio/*.d src/apps/gpio/*.asm src/apps/gpio/*.p src/apps/gpio/*.src src/apps/gpio/*.jmp src/apps/gpio/*.lst src/apps/gpio/*.prn 
 	-rm -rf src/apps/adc/*.obj src/apps/adc/*.d src/apps/adc/*.asm src/apps/adc/*.p src/apps/adc/*.src src/apps/adc/*.jmp src/apps/adc/*.lst src/apps/adc/*.prn 
-	-rm -rf src/apps/uart/*.obj src/apps/uart/*.d src/apps/uart/*.asm src/apps/uart/*.p src/apps/uart/*.src src/apps/uart/*.jmp src/apps/uart/*.lst src/apps/uart/*.prn 
 	-rm -rf src/smc_gen/r_bsp/mcu/all/*.obj src/smc_gen/r_bsp/mcu/all/*.d src/smc_gen/r_bsp/mcu/all/*.asm src/smc_gen/r_bsp/mcu/all/*.p src/smc_gen/r_bsp/mcu/all/*.src src/smc_gen/r_bsp/mcu/all/*.jmp src/smc_gen/r_bsp/mcu/all/*.lst src/smc_gen/r_bsp/mcu/all/*.prn 
-	-rm -rf src/apps/timer/*.obj src/apps/timer/*.d src/apps/timer/*.asm src/apps/timer/*.p src/apps/timer/*.src src/apps/timer/*.jmp src/apps/timer/*.lst src/apps/timer/*.prn 
 	-rm -rf src/*.obj src/*.d src/*.asm src/*.p src/*.src src/*.jmp src/*.lst src/*.prn 
 	-rm -rf src/apps/flash/*.obj src/apps/flash/*.d src/apps/flash/*.asm src/apps/flash/*.p src/apps/flash/*.src src/apps/flash/*.jmp src/apps/flash/*.lst src/apps/flash/*.prn 
-	-rm -rf src/smc_gen/r_pincfg/*.obj src/smc_gen/r_pincfg/*.d src/smc_gen/r_pincfg/*.asm src/smc_gen/r_pincfg/*.p src/smc_gen/r_pincfg/*.src src/smc_gen/r_pincfg/*.jmp src/smc_gen/r_pincfg/*.lst src/smc_gen/r_pincfg/*.prn 
 	-rm -rf src/smc_gen/general/*.obj src/smc_gen/general/*.d src/smc_gen/general/*.asm src/smc_gen/general/*.p src/smc_gen/general/*.src src/smc_gen/general/*.jmp src/smc_gen/general/*.lst src/smc_gen/general/*.prn 
 	-rm -rf src/smc_gen/r_bsp/board/generic_rx130/*.obj src/smc_gen/r_bsp/board/generic_rx130/*.d src/smc_gen/r_bsp/board/generic_rx130/*.asm src/smc_gen/r_bsp/board/generic_rx130/*.p src/smc_gen/r_bsp/board/generic_rx130/*.src src/smc_gen/r_bsp/board/generic_rx130/*.jmp src/smc_gen/r_bsp/board/generic_rx130/*.lst src/smc_gen/r_bsp/board/generic_rx130/*.prn 
-	-rm -rf src/smc_gen/r_bsp/mcu/rx130/*.obj src/smc_gen/r_bsp/mcu/rx130/*.d src/smc_gen/r_bsp/mcu/rx130/*.asm src/smc_gen/r_bsp/mcu/rx130/*.p src/smc_gen/r_bsp/mcu/rx130/*.src src/smc_gen/r_bsp/mcu/rx130/*.jmp src/smc_gen/r_bsp/mcu/rx130/*.lst src/smc_gen/r_bsp/mcu/rx130/*.prn 
 	@echo
 	@echo 'Clean complete.'
 

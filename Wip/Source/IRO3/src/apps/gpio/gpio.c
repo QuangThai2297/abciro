@@ -83,7 +83,11 @@
  *
  * @return descrition for the function return value
  */
-
+PUBLIC void GPIO_Init(void)
+{
+	// init timer for PWm
+//	R_Config_CMT0_Start();
+}
 
 /**
  * @brief One line documentation 

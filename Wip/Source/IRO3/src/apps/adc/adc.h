@@ -31,6 +31,7 @@
 
 
 #include <config.h>
+#include "r_cg_s12ad.h"
 
 
 /******************************************************************************
@@ -57,16 +58,11 @@
 	
 typedef enum
 {
-	ADC0,
-	ADC1,
-	ADC2,
-	ADC3,
-	ADC4,
-	ADC5,
-	ADC6,
-	ADC7	
+	TDS_OUT = ADCHANNEL0,
+	TDS_IN = ADCHANNEL1,
+	ADC_MAX
 	
-}ADC_ID_E;
+}TDS_ID_E;
 
 
 /******************************************************************************
@@ -79,8 +75,9 @@ typedef enum
 ******************************************************************************/
 PUBLIC void	ADC_Init(void);
 
-PUBLIC uint16_t ADC_Read(uint8_t ch); 
+PUBLIC ERR_E  ADC_Read(ad_channel_t channel,uint16_t* adc_result);
 
+PUBLIC ERR_E  ADC_ReadTds(ad_channel_t channel,uint16_t* adc_high_result,uint16_t* adc_low_result,uint16_t sample);
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

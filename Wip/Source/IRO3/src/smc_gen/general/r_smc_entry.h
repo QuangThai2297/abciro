@@ -22,7 +22,7 @@
 * Version      : 1.0.1
 * Device(s)    : R5F51303AxFM
 * Description  : SMC platform header file.
-* Creation Date: 2018-07-10
+* Creation Date: 2018-07-15
 ***********************************************************************************************************************/
 
 #ifndef SMC_PLATFORM_H
@@ -32,6 +32,9 @@
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
+#include "Config_PORT.h"
+#include "Config_S12AD0.h"
+#include "Config_CMT0.h"
 
 /***********************************************************************************************************************
 Macro definitions (Register bit)

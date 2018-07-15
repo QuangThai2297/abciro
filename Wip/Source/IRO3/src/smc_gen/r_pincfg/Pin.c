@@ -22,7 +22,7 @@
 * Version      : 1.0.2
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements SMC pin code generation.
-* Creation Date: 2018-07-10
+* Creation Date: 2018-07-15
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -54,6 +54,18 @@ Global variables and functions
 
 void R_Pins_Create(void)
 {
-    /* No pins have been configured in the Pins tab. */
+    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
+
+    /* Set AN000 pin */
+    MPC.P40PFS.BYTE = 0x80U;
+    PORT4.PMR.BYTE &= 0xFEU;
+    PORT4.PDR.BYTE &= 0xFEU;
+
+    /* Set AN001 pin */
+    MPC.P41PFS.BYTE = 0x80U;
+    PORT4.PMR.BYTE &= 0xFDU;
+    PORT4.PDR.BYTE &= 0xFDU;
+
+    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
 }   
 

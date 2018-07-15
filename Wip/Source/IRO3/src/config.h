@@ -77,6 +77,7 @@ typedef enum
 	OK,
 	ERR,
 	ERR_PARAM,
+	ERR_TIMEOUT,
 	ERR_UNKNOWN,
 	NOT_SUPPORT
 

@@ -32,8 +32,9 @@
 
 
 #include "config.h"
-
-
+#include <stdio.h>
+#include <string.h>
+//#include "Config_SCI1.h"
 
 /******************************************************************************
 * Constants
