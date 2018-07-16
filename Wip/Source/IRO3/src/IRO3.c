@@ -26,6 +26,7 @@
 #include "config.h"
 #include "gpio.h"
 #include "adc.h"
+#include "display.h"
 
 /******************************************************************************
 * External objects
@@ -66,7 +67,7 @@ uint32_t i = 0;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
-
+void run1msTask();
 
 /******************************************************************************
 * Global functions
@@ -88,10 +89,19 @@ void main(void)
 	uint16_t adc_high_result = 0;
 	uint16_t adc_low_result = 0;
 	R_Config_CMT0_Start();
+	R_Config_CMT1_Start();
 	g_state = IDLE_STATE;
-
+	//test code
+	Display_SetNumberInLed4(123);
+	Display_SetNumberInLed1(5);
+	//end test code
     while (1)
     {
+    	if(g_run1msFlag == 1)
+    	{
+    		run1msTask();
+    		g_run1msFlag= 0;
+    	}
 		switch (g_state)
 		{
 			case IDLE_STATE:
@@ -109,4 +119,8 @@ void main(void)
 			break;
 		}
    }
+}
+void run1msTask()
+{
+	Display_scanLed();
 }

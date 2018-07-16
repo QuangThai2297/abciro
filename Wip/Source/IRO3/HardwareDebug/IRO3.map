@@ -1,4 +1,4 @@
-Renesas Optimizing Linker (W2.07.00 )             15-Jul-2018 21:44:33
+Renesas Optimizing Linker (W2.07.00 )             16-Jul-2018 19:11:26
 
 *** Options ***
 
@@ -6,12 +6,15 @@ Renesas Optimizing Linker (W2.07.00 )             15-Jul-2018 21:44:33
 -subcommand=LinkerSubCommand.tmp
 -input=".\src\IRO3.obj"
 -input=".\src/apps/adc\adc.obj"
+-input=".\src/apps/display\display.obj"
 -input=".\src/apps/flash\flash.obj"
 -input=".\src/apps/gpio\gpio.obj"
 -input=".\src/apps/timer\timer.obj"
 -input=".\src/apps/uart\uart.obj"
 -input=".\src/smc_gen/Config_CMT0\Config_CMT0.obj"
 -input=".\src/smc_gen/Config_CMT0\Config_CMT0_user.obj"
+-input=".\src/smc_gen/Config_CMT1\Config_CMT1.obj"
+-input=".\src/smc_gen/Config_CMT1\Config_CMT1_user.obj"
 -input=".\src/smc_gen/Config_PORT\Config_PORT.obj"
 -input=".\src/smc_gen/Config_PORT\Config_PORT_user.obj"
 -input=".\src/smc_gen/Config_S12AD0\Config_S12AD0.obj"
@@ -34,6 +37,8 @@ Renesas Optimizing Linker (W2.07.00 )             15-Jul-2018 21:44:33
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_init.obj"
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_interrupts.obj"
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_locks.obj"
+-input=".\src/smc_gen/r_gpio_rx/src\r_gpio_rx.obj"
+-input=".\src/smc_gen/r_gpio_rx/src/targets/rx130\r_gpio_rx130.obj"
 -input=".\src/smc_gen/r_pincfg\Pin.obj"
 -library=".\IRO3.lib"
 -start=SU,SI,B_1,R_1,B_2,R_2,B,R/04,C_1,C_2,C,C$*,D*,W*,L,P*/0FFFF0000,FIXEDVECT/0FFFFFF80
@@ -56,44 +61,44 @@ SU
 SI
                                   00000404  00000503       100   4
 B_1
-                                  00000504  0000052c        29   1
+                                  00000504  0000052d        2a   1
 R_1
-                                  0000052d  0000057d        51   1
+                                  0000052e  00000584        57   1
 B_2
-                                  0000057e  0000058b         e   2
+                                  00000586  00000593         e   2
 R_2
-                                  0000058c  0000058c         0   1
+                                  00000594  00000594         0   1
 B
-                                  0000058c  00000aff       574   4
+                                  00000594  00000b07       574   4
 R
-                                  00000b00  00000bff       100   4
+                                  00000b08  00000c0b       104   4
 C_1
-                                  ffff0000  ffff0000         0   1
+                                  ffff0000  ffff0056        57   1
 C_2
-                                  ffff0000  ffff0007         8   2
+                                  ffff0058  ffff005f         8   2
 C
-                                  ffff0008  ffff007f        78   4
+                                  ffff0060  ffff010b        ac   4
 C$DSEC
-                                  ffff0080  ffff00a3        24   4
+                                  ffff010c  ffff012f        24   4
 C$BSEC
-                                  ffff00a4  ffff00bb        18   4
+                                  ffff0130  ffff0147        18   4
 C$VECT
-                                  ffff00bc  ffff04bb       400   4
+                                  ffff0148  ffff0547       400   4
 D
-                                  ffff04bc  ffff05bb       100   4
+                                  ffff0548  ffff064b       104   4
 D_1
-                                  ffff05bc  ffff060c        51   1
+                                  ffff064c  ffff06a2        57   1
 D_2
-                                  ffff060d  ffff060d         0   1
+                                  ffff06a3  ffff06a3         0   1
 W
-                                  ffff060d  ffff060d         0   1
+                                  ffff06a4  ffff06a4         0   4
 W_1
-                                  ffff060d  ffff060d         0   1
+                                  ffff06a4  ffff06a4         0   1
 W_2
-                                  ffff060d  ffff060d         0   1
+                                  ffff06a4  ffff06b5        12   2
 L
-                                  ffff0610  ffff0655        46   4
+                                  ffff06b8  ffff06fd        46   4
 P
-                                  ffff0656  ffff1cb7      1662   1
+                                  ffff06fe  ffff24b3      1db6   1
 FIXEDVECT
                                   ffffff80  ffffffff        80   4
