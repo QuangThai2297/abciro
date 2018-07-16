@@ -1,4 +1,4 @@
-Renesas Optimizing Linker (W2.07.00 )             16-Jul-2018 19:11:26
+Renesas Optimizing Linker (W2.07.00 )             16-Jul-2018 19:17:06
 
 *** Options ***
 
@@ -99,6 +99,6 @@ W_2
 L
                                   ffff06b8  ffff06fd        46   4
 P
-                                  ffff06fe  ffff24b3      1db6   1
+                                  ffff06fe  ffff24b4      1db7   1
 FIXEDVECT
                                   ffffff80  ffffffff        80   4

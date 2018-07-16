@@ -1,4 +1,4 @@
-19:11:26 **** Incremental Build of configuration HardwareDebug for project IRO3 ****
+19:17:05 **** Build of configuration HardwareDebug for project IRO3 ****
 make -j4 all 
 'Scanning and building file: ../src/IRO3.c'
 'Invoking: Scanner and Compiler'
@@ -25,5 +25,5 @@ Constructing the output ELF image....
 Saving the ELF output file IRO3.x
 'Build complete.'
 
-19:11:26 Build Finished. 0 errors, 2 warnings. (took 772ms)
+19:17:06 Build Finished. 0 errors, 2 warnings. (took 847ms)
 
