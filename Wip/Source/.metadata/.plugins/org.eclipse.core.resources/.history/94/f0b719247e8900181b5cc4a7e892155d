@@ -1,0 +1,372 @@
+/******************************************************************************
+*
+* Embedded software team.
+* (c) Copyright 2018.
+* ALL RIGHTS RESERVED.
+*
+***************************************************************************//*!
+*
+* @file        main.c
+*
+* @author    trongkn
+*
+* @version   1.0
+*
+* @date
+*
+* @brief
+*
+*******************************************************************************
+*
+* Detailed Description of the file. If not used, remove the separator above.
+*
+******************************************************************************/
+
+#include "r_smc_entry.h"
+#include "config.h"
+#include "gpio.h"
+#include "adc.h"
+#include "display.h"
+
+
+#include <string.h>
+#define NDEBUG
+#include <assert.h>
+
+#include "ctsu_pin_info.h"
+#include "r_ctsu_rx_config.h"
+#include "r_ctsu_rx_if.h"
+#include "r_touch_rx_if.h"
+#include "r_touch_button_if.h"
+
+#include "ctsu/r_touch.h"
+
+
+
+/******************************************************************************
+* External objects
+******************************************************************************/
+
+
+/******************************************************************************
+* Global variables
+******************************************************************************/
+PUBLIC volatile uint8_t g_state = IDLE_STATE;
+
+uint16_t g_adc_result;
+
+/******************************************************************************
+* Constants and macros
+******************************************************************************/
+
+/***********************************************************************************************************************
+Macro definitions
+***********************************************************************************************************************/
+#define MAX_CONFIGS	(METHOD_NUM)
+
+
+#define USB_SERIAL_USE	(false)
+#define SCI_SERIAL_USE	(false)
+
+/***********************************************************************************************************************
+Typedef definitions
+***********************************************************************************************************************/
+typedef struct
+{
+	uint32_t touch_id;
+	uint32_t ctsu_id;
+}cap_touch_system_t;
+
+typedef union
+{
+	uint32_t			any;
+	ctsu_err_t 			ctsu;
+	touch_err_t 		touch;
+	touch_button_err_t	button;
+}error_t;
+
+/***********************************************************************************************************************
+Exported global variables (to be accessed by other files)
+***********************************************************************************************************************/
+
+extern ctsu_pin_info_t const g_ctsu_pin_info;
+extern const uint16_t g_slider_config_count;
+extern touch_button_cfg_t const * const g_all_button_configs[];
+extern const uint16_t g_button_config_count;
+extern touch_cfg_t const * const g_all_touch_configs[];
+extern const uint8_t g_num_touch_configs;
+extern ctsu_cfg_t const * const g_all_ctsu_configs[];
+extern const uint8_t g_num_ctsu_configs;
+extern uint32_t touch_handle_id[];
+extern uint32_t ctsu_handle_id[];
+
+
+
+
+/******************************************************************************
+* Local types
+******************************************************************************/
+
+/******************************************************************************
+* Local function prototypes
+******************************************************************************/
+
+
+/******************************************************************************
+* Local variables
+******************************************************************************/
+LOCAL BOOLEAN s_is_unlock = FALSE;
+uint16_t value ;
+uint32_t time_out = 0;
+uint32_t i = 0;
+//LOCAL BOOLEAN s_is_timeout = TRUE;
+
+/***********************************************************************************************************************
+* Function Name: ctsu_pin_setup
+* Description  : Set up the GPIO and MPC for the pins used by all configurations.
+* Arguments    : ts_enable_mask -
+*                    Mask of all pins being used by all configurations.
+* Return Value : None
+***********************************************************************************************************************/
+static void ctsu_pin_setup(uint64_t ts_enable_mask)
+{
+	uint64_t bitmask;
+	mpc_err_t mpc_err;
+	ctsu_err_t ctsu_err;
+	uint32_t ctsu_pin_itr;
+	mpc_config_t ctsu_pin;
+
+    /* Initialize CTSU Pins */
+    ctsu_pin.irq_enable = false;
+    ctsu_pin.pin_function = g_ctsu_pin_info.pin_function;
+    ctsu_pin.analog_enable = false;
+
+    /* Discharge TSCAP used by the CTSU */
+    R_GPIO_PinControl(g_ctsu_pin_info.p_tscap[0], GPIO_CMD_ASSIGN_TO_GPIO);
+    R_GPIO_PinControl(g_ctsu_pin_info.p_tscap[0], GPIO_CMD_IN_PULL_UP_DISABLE);
+    R_GPIO_PinDirectionSet(g_ctsu_pin_info.p_tscap[0], GPIO_DIRECTION_OUTPUT);
+    R_GPIO_PinWrite(g_ctsu_pin_info.p_tscap[0], GPIO_LEVEL_LOW);
+
+    /* Wait for discharge to complete */
+    R_BSP_SoftwareDelay(10, BSP_DELAY_MILLISECS);
+
+    /* Initialize CTSU TSCAP */
+    R_GPIO_PinDirectionSet(g_ctsu_pin_info.p_tscap[0], GPIO_DIRECTION_INPUT);
+    mpc_err = R_MPC_Write(g_ctsu_pin_info.p_tscap[0], &ctsu_pin);
+    R_GPIO_PinControl(g_ctsu_pin_info.p_tscap[0], GPIO_CMD_ASSIGN_TO_PERIPHERAL);
+    assert(MPC_SUCCESS==mpc_err);
+
+    for(ctsu_pin_itr = 0; ctsu_pin_itr < g_ctsu_pin_info.tspin_count; ctsu_pin_itr++)
+    {
+    	/* Initialize CTSU TSn */
+    	bitmask = ((uint64_t)1U<<ctsu_pin_itr);
+    	if((ts_enable_mask & bitmask)==bitmask)
+    	{
+    		/* TS Pin is enabled */
+    		R_GPIO_PinControl(g_ctsu_pin_info.p_tspin[ctsu_pin_itr], GPIO_CMD_ASSIGN_TO_GPIO);
+    	    R_GPIO_PinControl(g_ctsu_pin_info.p_tspin[ctsu_pin_itr], GPIO_CMD_IN_PULL_UP_DISABLE);
+    		R_GPIO_PinDirectionSet(g_ctsu_pin_info.p_tspin[ctsu_pin_itr], GPIO_DIRECTION_INPUT);
+    		mpc_err = R_MPC_Write(g_ctsu_pin_info.p_tspin[ctsu_pin_itr], &ctsu_pin);
+    		R_GPIO_PinControl(g_ctsu_pin_info.p_tspin[ctsu_pin_itr], GPIO_CMD_ASSIGN_TO_PERIPHERAL);
+    		assert(MPC_SUCCESS==mpc_err);
+    	}
+    	else
+    	{
+    		/* Unused CTSU TSn Pins should be set to GND */
+    		R_GPIO_PinControl(g_ctsu_pin_info.p_tspin[ctsu_pin_itr], GPIO_CMD_ASSIGN_TO_GPIO);
+    		R_GPIO_PinDirectionSet(g_ctsu_pin_info.p_tspin[ctsu_pin_itr], GPIO_DIRECTION_OUTPUT);
+    	}
+    }
+    (void)mpc_err;
+    (void)ctsu_err;
+}
+
+static cap_touch_system_t id[MAX_CONFIGS];
+static uint32_t slider_id[(SLIDER_NUMBER > 0) ? SLIDER_NUMBER : 1];
+static uint32_t wheel_id[(WHEEL_NUMBER > 0) ? WHEEL_NUMBER : 1];
+static uint32_t button_id[((((((((SELF_KEY_NUM + \
+		MUTUAL0_KEY_NUM) + \
+		MUTUAL1_KEY_NUM) + \
+		MUTUAL2_KEY_NUM) + \
+		MUTUAL3_KEY_NUM) + \
+		MUTUAL4_KEY_NUM) + \
+		MUTUAL5_KEY_NUM) + \
+		MUTUAL6_KEY_NUM) + \
+		MUTUAL7_KEY_NUM) + 1];
+
+/******************************************************************************
+* Local functions
+******************************************************************************/
+void run1msTask();
+
+/******************************************************************************
+* Global functions
+******************************************************************************/
+
+/**
+ * @brief One line documentation
+ *
+ * A more detailed documentation
+ *
+ * @param arg1 the first function argument
+ * @param arg2 the second function argument
+ *
+ * @return descrition for the function return value
+ */
+void main(void);
+void main(void)
+{
+	uint32_t widget_id;
+	uint8_t itr = 0;
+	uint8_t num_sliders = 0;
+	uint8_t num_wheels = 0;
+	uint64_t ts_mask_all_cfgs = 0;
+	uint8_t num_buttons = 0;
+	error_t err =
+	{
+		.any = 0,
+	};
+
+	memset(slider_id, 0xFF, sizeof(slider_id));
+	memset(wheel_id, 0xFF, sizeof(wheel_id));
+	memset(button_id, 0xFF, sizeof(button_id));
+
+	for(itr = 0; itr < g_num_ctsu_configs; itr++)
+	{
+		ctsu_cfg_t const * const p_cfg = g_all_ctsu_configs[itr];
+		uint64_t ts_mask_this_cfg = p_cfg->p_ctsu_settings->ctsuchac4.byte;
+		ts_mask_this_cfg <<= 8;
+		ts_mask_this_cfg |= p_cfg->p_ctsu_settings->ctsuchac3.byte;
+		ts_mask_this_cfg <<= 8;
+		ts_mask_this_cfg |= p_cfg->p_ctsu_settings->ctsuchac2.byte;
+		ts_mask_this_cfg <<= 8;
+		ts_mask_this_cfg |= p_cfg->p_ctsu_settings->ctsuchac1.byte;
+		ts_mask_this_cfg <<= 8;
+		ts_mask_this_cfg |= p_cfg->p_ctsu_settings->ctsuchac0.byte;
+
+		ts_mask_all_cfgs |= ts_mask_this_cfg;
+	}
+
+	/* Setup CTSU Pins */
+	ctsu_pin_setup(ts_mask_all_cfgs);
+
+	/* Open TOUCH layer */
+	for(itr = 0; (itr < g_num_touch_configs); itr++)
+	{
+		touch_cfg_t const * const p_cfg = g_all_touch_configs[itr];
+		err.touch = R_TOUCH_Open(&id[itr].touch_id, p_cfg);
+		assert(TOUCH_SUCCESS == err.touch);
+	}
+
+	/* Open CTSU layers */
+	for(itr = 0; itr < g_num_ctsu_configs; itr++)
+	{
+		ctsu_cfg_t const * const p_cfg = g_all_ctsu_configs[itr];
+		err.ctsu = R_CTSU_Open(&id[itr].ctsu_id, p_cfg);
+#if (CTSU_CFG_CALIBRATION_ENABLE==true)
+		err.ctsu |= R_CTSU_Calibrate(id[itr].ctsu_id);
+#endif
+		assert(CTSU_SUCCESS == err.ctsu);
+	}
+
+	/* Open Button layer */
+	for(itr = 0; itr < g_button_config_count; itr++)
+	{
+		touch_button_cfg_t const * const p_cfg = g_all_button_configs[itr];
+		widget_id = UINT32_MAX;
+		err.button = R_TOUCH_ButtonOpen(&widget_id, p_cfg);
+		assert(TOUCH_BUTTON_SUCCESS==err.button);
+		button_id[num_buttons] = widget_id;
+		num_buttons += 1;
+	}
+
+	assert(0 == err.any);
+
+	itr = 0;
+	//////////////////////////////////////
+	uint16_t adc_high_result = 0;
+	uint16_t adc_low_result = 0;
+	R_Config_CMT0_Start();
+	R_Config_CMT1_Start();
+	g_state = IDLE_STATE;
+	//test code
+	Display_SetNumberInLed4(123);
+	Display_SetNumberInLed1(5);
+	//end test code
+	/////////////////////////////////////
+	/* Main loop */
+	while(1)
+	{
+		err.touch = R_TOUCH_Update(id[itr].touch_id);
+		if (TOUCH_SUCCESS == err.touch)
+		{
+			if (TOUCH_SUCCESS == err.touch)
+			{
+				itr = ((itr + 1) < MAX_CONFIGS) ? (itr + 1):0;
+			}
+			err.touch = R_TOUCH_StartScan(id[itr].touch_id);
+
+		}
+		//////////////////////
+    	if(g_run1msFlag == 1)
+    	{
+    		run1msTask();
+    		g_run1msFlag= 0;
+    	}
+		switch (g_state)
+		{
+			case IDLE_STATE:
+			{
+				ADC_ReadTds(ADCHANNEL1,&adc_high_result,& adc_low_result,500);
+			}
+			break;
+			case SETTING_STATE:
+			// @ quan: handle here
+			break;
+			case CALIB_TDS_STATE:
+
+			break;
+			default :
+			break;
+		}
+	}
+
+
+    while (1)
+    {
+    	if(g_run1msFlag == 1)
+    	{
+    		run1msTask();
+    		g_run1msFlag= 0;
+    	}
+		switch (g_state)
+		{
+			case IDLE_STATE:
+			{
+				ADC_ReadTds(ADCHANNEL1,&adc_high_result,& adc_low_result,500);
+			}
+			break;
+			case SETTING_STATE:
+			// @ quan: handle here
+			break;
+			case CALIB_TDS_STATE:
+
+			break;
+			default :
+			break;
+		}
+   }
+}
+void run1msTask()
+{
+	Display_scanLed();
+}
+
+
+void abort(void)
+{
+	while(1)
+	{
+		;
+	}
+}

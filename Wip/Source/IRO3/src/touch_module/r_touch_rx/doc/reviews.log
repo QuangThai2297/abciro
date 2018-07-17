@@ -1,0 +1,20 @@
+Internal Notes from Reviews
+==========================
+[2016-OCT-10]
+r_touch_rx_if.h
+---------------
+Don't need access word for every comment -> Clarify "read only" v/s "read/write".
+
+r_touch_rx.c
+------------
+What is LAST_TS? (Add comment)
+Convert tabs to spaces.	(ONR-2016-OCT-17: Done)
+Consider moving first 200 lines to .h file?
+~~Remove #if 0 in GetVersion~~	(ONR-2016-OCT-17: Done)
+Variables declared in middle of function (will not qualify for FIT MISRA).
+~~L408: R_BSP_SoftwareUnlock, but no Lock in function~~	(ONR-2016-OCT-17: Done)
+~~L454: No braces on else~~ (ONR-2016-OCT-17: Done)
+Consider breaking R_TOUCH_Open and R_TOUCH_Update into smaller functions (keeping stack size in mind)
+Add some comments on lines 1192, 1253, 1281-1314
+~~Move continue on a new line 1286, 1292, 1300, 1307, 1314, 1331.~~ (ONR-2016-OCT-17: Simplified _already_open and removed all continue statements)
+No function header or comments 1571, 1652,1663, 1721, 1749.

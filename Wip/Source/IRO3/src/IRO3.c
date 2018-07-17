@@ -27,6 +27,10 @@
 #include "gpio.h"
 #include "adc.h"
 #include "display.h"
+#include "touch_app.h"
+
+
+
 
 /******************************************************************************
 * External objects
@@ -44,7 +48,9 @@ uint16_t g_adc_result;
 * Constants and macros
 ******************************************************************************/
 
-
+/***********************************************************************************************************************
+Macro definitions
+***********************************************************************************************************************/
 
 /******************************************************************************
 * Local types
@@ -63,6 +69,8 @@ uint16_t value ;
 uint32_t time_out = 0;
 uint32_t i = 0;
 //LOCAL BOOLEAN s_is_timeout = TRUE;
+
+
 
 /******************************************************************************
 * Local functions
@@ -86,17 +94,23 @@ void run1msTask();
 void main(void);
 void main(void)
 {
+
 	uint16_t adc_high_result = 0;
 	uint16_t adc_low_result = 0;
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
 	g_state = IDLE_STATE;
+	TOUCH_init();
+
 	//test code
 	Display_SetNumberInLed4(123);
 	Display_SetNumberInLed1(5);
 	//end test code
-    while (1)
-    {
+
+	/* Main loop */
+	while(1)
+	{
+		//////////////////////
     	if(g_run1msFlag == 1)
     	{
     		run1msTask();
@@ -106,7 +120,7 @@ void main(void)
 		{
 			case IDLE_STATE:
 			{
-				ADC_ReadTds(ADCHANNEL1,&adc_high_result,& adc_low_result,500);
+//				ADC_ReadTds(ADCHANNEL1,&adc_high_result,& adc_low_result,500);
 			}
 			break;
 			case SETTING_STATE:
@@ -118,9 +132,19 @@ void main(void)
 			default :
 			break;
 		}
-   }
+	}
 }
 void run1msTask()
 {
 	Display_scanLed();
+	TOUCH_process();
+}
+
+
+void abort(void)
+{
+	while(1)
+	{
+		;
+	}
 }

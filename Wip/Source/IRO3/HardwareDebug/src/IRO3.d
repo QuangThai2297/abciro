@@ -57,3 +57,5 @@ src/IRO3.obj src/IRO3.d: D:\Project\IRO3\Wip\Source\IRO3\src\apps\adc\adc.h
 D:\Project\IRO3\Wip\Source\IRO3\src\apps\adc\adc.h:
 src/IRO3.obj src/IRO3.d: D:\Project\IRO3\Wip\Source\IRO3\src\apps\display\display.h
 D:\Project\IRO3\Wip\Source\IRO3\src\apps\display\display.h:
+src/IRO3.obj src/IRO3.d: D:\Project\IRO3\Wip\Source\IRO3\src\apps\touch_app\touch_app.h
+D:\Project\IRO3\Wip\Source\IRO3\src\apps\touch_app\touch_app.h:
