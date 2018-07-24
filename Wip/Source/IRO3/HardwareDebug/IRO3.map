@@ -1,4 +1,4 @@
-Renesas Optimizing Linker (W2.07.00 )             15-Jul-2018 21:44:33
+Renesas Optimizing Linker (W2.07.00 )             20-Jul-2018 09:37:04
 
 *** Options ***
 
@@ -6,12 +6,17 @@ Renesas Optimizing Linker (W2.07.00 )             15-Jul-2018 21:44:33
 -subcommand=LinkerSubCommand.tmp
 -input=".\src\IRO3.obj"
 -input=".\src/apps/adc\adc.obj"
--input=".\src/apps/flash\flash.obj"
+-input=".\src/apps/display\display.obj"
 -input=".\src/apps/gpio\gpio.obj"
 -input=".\src/apps/timer\timer.obj"
+-input=".\src/apps/touch_app\button_actions.obj"
+-input=".\src/apps/touch_app\touch_app.obj"
 -input=".\src/apps/uart\uart.obj"
+-input=".\src/apps/util\queue.obj"
 -input=".\src/smc_gen/Config_CMT0\Config_CMT0.obj"
 -input=".\src/smc_gen/Config_CMT0\Config_CMT0_user.obj"
+-input=".\src/smc_gen/Config_CMT1\Config_CMT1.obj"
+-input=".\src/smc_gen/Config_CMT1\Config_CMT1_user.obj"
 -input=".\src/smc_gen/Config_PORT\Config_PORT.obj"
 -input=".\src/smc_gen/Config_PORT\Config_PORT_user.obj"
 -input=".\src/smc_gen/Config_S12AD0\Config_S12AD0.obj"
@@ -34,16 +39,28 @@ Renesas Optimizing Linker (W2.07.00 )             15-Jul-2018 21:44:33
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_init.obj"
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_interrupts.obj"
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_locks.obj"
+-input=".\src/smc_gen/r_gpio_rx/src\r_gpio_rx.obj"
+-input=".\src/smc_gen/r_gpio_rx/src/targets/rx130\r_gpio_rx130.obj"
+-input=".\src/smc_gen/r_mpc_rx/src\r_mpc_rx.obj"
 -input=".\src/smc_gen/r_pincfg\Pin.obj"
+-input=".\src/touch_module/ctsu\button_config.obj"
+-input=".\src/touch_module/ctsu\ctsu_config0.obj"
+-input=".\src/touch_module/ctsu\ctsu_configs.obj"
+-input=".\src/touch_module/ctsu\touch_config0.obj"
+-input=".\src/touch_module/ctsu\touch_configs.obj"
+-input=".\src/touch_module\ctsu_pin_info.obj"
+-input=".\src/touch_module/r_ctsu_rx/src\r_ctsu_rx.obj"
+-input=".\src/touch_module/r_touch_button/src\r_touch_button.obj"
+-input=".\src/touch_module/r_touch_rx/src\r_touch_rx.obj"
 -library=".\IRO3.lib"
--start=SU,SI,B_1,R_1,B_2,R_2,B,R/04,C_1,C_2,C,C$*,D*,W*,L,P*/0FFFF0000,FIXEDVECT/0FFFFFF80
+-start=SU,SI,B_1,R_1,R_CTSU_1,R_TOUCH_1,B_2,R_2,R_CTSU_2,R_TOUCH_2,B,R,R_CTSU,R_TOUCH/04,C_1,C_2,C,C$*,D*,W*,L,P*/0FFFF0000,FIXEDVECT/0FFFFFF80
 -output=IRO3.abs
 -form=absolute
 -nomessage
 -vect=_undefined_interrupt_source_isr
 -list=IRO3.map
 -nooptimize
--rom=D=R,D_1=R_1,D_2=R_2
+-rom=D=R,D_1=R_1,D_2=R_2,D_CTSU_1=R_CTSU_1,D_CTSU_2=R_CTSU_2,D_TOUCH=R_TOUCH,D_TOUCH_2=R_TOUCH_2
 -nologo
 
 *** Error information ***
@@ -56,44 +73,68 @@ SU
 SI
                                   00000404  00000503       100   4
 B_1
-                                  00000504  0000052c        29   1
+                                  00000504  000005ae        ab   1
 R_1
-                                  0000052d  0000057d        51   1
+                                  000005af  00000607        59   1
+R_CTSU_1
+                                  00000608  00000616         f   1
+R_TOUCH_1
+                                  00000617  00000617         0   1
 B_2
-                                  0000057e  0000058b         e   2
+                                  00000618  00000739       122   2
 R_2
-                                  0000058c  0000058c         0   1
+                                  0000073a  0000075f        26   2
+R_CTSU_2
+                                  00000760  00000777        18   2
+R_TOUCH_2
+                                  00000778  0000077d         6   2
 B
-                                  0000058c  00000aff       574   4
+                                  00000780  00000e83       704   4
 R
-                                  00000b00  00000bff       100   4
+                                  00000e84  00001157       2d4   4
+R_CTSU
+                                  00001158  00001158         0   1
+R_TOUCH
+                                  00001158  000011a7        50   4
 C_1
-                                  ffff0000  ffff0000         0   1
+                                  ffff0000  ffff0141       142   1
 C_2
-                                  ffff0000  ffff0007         8   2
+                                  ffff0142  ffff034d       20c   2
 C
-                                  ffff0008  ffff007f        78   4
+                                  ffff0350  ffff053f       1f0   4
 C$DSEC
-                                  ffff0080  ffff00a3        24   4
+                                  ffff0540  ffff05c3        84   4
 C$BSEC
-                                  ffff00a4  ffff00bb        18   4
+                                  ffff05c4  ffff05db        18   4
 C$VECT
-                                  ffff00bc  ffff04bb       400   4
+                                  ffff05dc  ffff09db       400   4
 D
-                                  ffff04bc  ffff05bb       100   4
+                                  ffff09dc  ffff0caf       2d4   4
 D_1
-                                  ffff05bc  ffff060c        51   1
+                                  ffff0cb0  ffff0d08        59   1
 D_2
-                                  ffff060d  ffff060d         0   1
+                                  ffff0d0a  ffff0d2f        26   2
+D_CTSU
+                                  ffff0d30  ffff0d30         0   1
+D_CTSU_1
+                                  ffff0d30  ffff0d3e         f   1
+D_CTSU_2
+                                  ffff0d40  ffff0d57        18   2
+D_TOUCH
+                                  ffff0d58  ffff0da7        50   4
+D_TOUCH_1
+                                  ffff0da8  ffff0da8         0   1
+D_TOUCH_2
+                                  ffff0da8  ffff0dad         6   2
 W
-                                  ffff060d  ffff060d         0   1
+                                  ffff0db0  ffff0db0         0   4
 W_1
-                                  ffff060d  ffff060d         0   1
+                                  ffff0db0  ffff0dc2        13   1
 W_2
-                                  ffff060d  ffff060d         0   1
+                                  ffff0dc4  ffff0e01        3e   2
 L
-                                  ffff0610  ffff0655        46   4
+                                  ffff0e04  ffff1000       1fd   4
 P
-                                  ffff0656  ffff1cb7      1662   1
+                                  ffff1001  ffff9271      8271   1
 FIXEDVECT
                                   ffffff80  ffffffff        80   4

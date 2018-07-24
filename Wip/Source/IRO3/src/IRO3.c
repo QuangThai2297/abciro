@@ -26,6 +26,11 @@
 #include "config.h"
 #include "gpio.h"
 #include "adc.h"
+#include "display.h"
+#include "touch_app.h"
+
+
+
 
 /******************************************************************************
 * External objects
@@ -37,13 +42,17 @@
 ******************************************************************************/
 PUBLIC volatile uint8_t g_state = IDLE_STATE;
 
+PUBLIC volatile uint8_t  g_led_number = 0;
+
 uint16_t g_adc_result;
 
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
 
-
+/***********************************************************************************************************************
+Macro definitions
+***********************************************************************************************************************/
 
 /******************************************************************************
 * Local types
@@ -57,16 +66,18 @@ uint16_t g_adc_result;
 /******************************************************************************
 * Local variables
 ******************************************************************************/
-LOCAL BOOLEAN s_is_unlock = FALSE;
+
 uint16_t value ;
 uint32_t time_out = 0;
 uint32_t i = 0;
 //LOCAL BOOLEAN s_is_timeout = TRUE;
 
+
+
 /******************************************************************************
 * Local functions
 ******************************************************************************/
-
+void run1msTask();
 
 /******************************************************************************
 * Global functions
@@ -85,19 +96,47 @@ uint32_t i = 0;
 void main(void);
 void main(void)
 {
-	uint16_t adc_high_result = 0;
-	uint16_t adc_low_result = 0;
-	R_Config_CMT0_Start();
-	g_state = IDLE_STATE;
 
-    while (1)
-    {
+
+	R_Config_CMT0_Start();
+	R_Config_CMT1_Start();
+	g_state = IDLE_STATE;
+	TOUCH_init();
+	ADC_Init();
+	GPIO_Init();
+	ADC_ReadTds(ADCHANNEL0);
+	//test code
+	Display_SetNumberInLed4(ADC_GetTdsValue());
+	Display_SetNumberInLed1(g_led_number);
+	//end test code
+
+	/* Main loop */
+	while(1)
+	{
+		//////////////////////
+    	if(g_run1msFlag == 1)
+    	{
+    		run1msTask();
+    		g_run1msFlag= 0;
+    	}
 		switch (g_state)
 		{
 			case IDLE_STATE:
 			{
-				ADC_ReadTds(ADCHANNEL1,&adc_high_result,& adc_low_result,500);
+
+				ADC_ReadTds(ADCHANNEL0);
 			}
+			if(g_sysTime == 100)
+			{
+				//Display_SetNumberInLed4(ADC_GetAdcTdsValue());
+				Display_SetNumberInLed4(ADC_GetTdsValue());
+
+			}
+
+//			if(g_sysTime == 1500)
+//			{
+//				Display_SetNumberInLed4(ADC_GetAdcLowValue());
+//			}
 			break;
 			case SETTING_STATE:
 			// @ quan: handle here
@@ -108,5 +147,19 @@ void main(void)
 			default :
 			break;
 		}
-   }
+	}
+}
+void run1msTask()
+{
+	Display_scanLed();
+	TOUCH_process();
+}
+
+
+void abort(void)
+{
+	while(1)
+	{
+		;
+	}
 }

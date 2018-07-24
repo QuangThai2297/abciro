@@ -8,20 +8,31 @@ RM := rm -rf *.sni *.dbg *.lst *.lis *.lpp *.map *.x *.lbp *.bls *.libelf *.rel 
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/touch_module/r_ctsu_rx/src/subdir.mk
 -include src/smc_gen/Config_CMT0/subdir.mk
--include src/apps/uart/subdir.mk
+-include src/smc_gen/r_gpio_rx/src/subdir.mk
+-include src/smc_gen/r_gpio_rx/src/targets/rx130/subdir.mk
+-include src/apps/touch_app/subdir.mk
+-include src/touch_module/subdir.mk
 -include src/apps/timer/subdir.mk
+-include src/touch_module/r_touch_button/src/subdir.mk
 -include src/smc_gen/r_pincfg/subdir.mk
 -include src/smc_gen/r_bsp/mcu/rx130/subdir.mk
--include src/smc_gen/Config_PORT/subdir.mk
--include src/smc_gen/Config_S12AD0/subdir.mk
+-include src/apps/display/subdir.mk
+-include src/touch_module/ctsu/subdir.mk
 -include src/apps/gpio/subdir.mk
--include src/apps/adc/subdir.mk
--include src/smc_gen/r_bsp/mcu/all/subdir.mk
 -include src/subdir.mk
--include src/apps/flash/subdir.mk
 -include src/smc_gen/general/subdir.mk
 -include src/smc_gen/r_bsp/board/generic_rx130/subdir.mk
+-include src/smc_gen/r_mpc_rx/src/subdir.mk
+-include src/apps/uart/subdir.mk
+-include src/apps/util/subdir.mk
+-include src/smc_gen/Config_PORT/subdir.mk
+-include src/smc_gen/Config_S12AD0/subdir.mk
+-include src/smc_gen/Config_CMT1/subdir.mk
+-include src/touch_module/r_touch_rx/src/subdir.mk
+-include src/apps/adc/subdir.mk
+-include src/smc_gen/r_bsp/mcu/all/subdir.mk
 
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(strip $(C_DEPS)),)
@@ -105,7 +116,7 @@ all: $(LINKER_OUTPUT_OUTPUTS)
 IRO3.abs: $(OBJS)  $(ALL_ASMS) $(LIBRARY_GENERATOR_OUTPUTTYPE_OUTPUTS) 
 	@echo 'Invoking: Linker'
 	@echo 'Building target:'
-	rlink -noprelink -subcommand="LinkerSubCommand.tmp"  -output="IRO3.abs" -form=absolute -nomessage -vect=_undefined_interrupt_source_isr -list=IRO3.map -nooptimize -rom=D=R,D_1=R_1,D_2=R_2 -nologo
+	rlink -noprelink -subcommand="LinkerSubCommand.tmp"  -output="IRO3.abs" -form=absolute -nomessage -vect=_undefined_interrupt_source_isr -list=IRO3.map -nooptimize -rom=D=R,D_1=R_1,D_2=R_2,D_CTSU_1=R_CTSU_1,D_CTSU_2=R_CTSU_2,D_TOUCH=R_TOUCH,D_TOUCH_2=R_TOUCH_2 -nologo
 	@echo 'Finished building target:'
 	@echo.
 
@@ -122,20 +133,31 @@ IRO3.x: IRO3.abs
 # Other Targets
 clean:
 	-$(RM) $(LINKER_OUTPUT_OUTPUTS) $(LIBRARY_GENERATOR_OUTPUTTYPE_OUTPUTS)
+	-rm -rf src/touch_module/r_ctsu_rx/src/*.obj src/touch_module/r_ctsu_rx/src/*.d src/touch_module/r_ctsu_rx/src/*.asm src/touch_module/r_ctsu_rx/src/*.p src/touch_module/r_ctsu_rx/src/*.src src/touch_module/r_ctsu_rx/src/*.jmp src/touch_module/r_ctsu_rx/src/*.lst src/touch_module/r_ctsu_rx/src/*.prn 
 	-rm -rf src/smc_gen/Config_CMT0/*.obj src/smc_gen/Config_CMT0/*.d src/smc_gen/Config_CMT0/*.asm src/smc_gen/Config_CMT0/*.p src/smc_gen/Config_CMT0/*.src src/smc_gen/Config_CMT0/*.jmp src/smc_gen/Config_CMT0/*.lst src/smc_gen/Config_CMT0/*.prn 
-	-rm -rf src/apps/uart/*.obj src/apps/uart/*.d src/apps/uart/*.asm src/apps/uart/*.p src/apps/uart/*.src src/apps/uart/*.jmp src/apps/uart/*.lst src/apps/uart/*.prn 
+	-rm -rf src/smc_gen/r_gpio_rx/src/*.obj src/smc_gen/r_gpio_rx/src/*.d src/smc_gen/r_gpio_rx/src/*.asm src/smc_gen/r_gpio_rx/src/*.p src/smc_gen/r_gpio_rx/src/*.src src/smc_gen/r_gpio_rx/src/*.jmp src/smc_gen/r_gpio_rx/src/*.lst src/smc_gen/r_gpio_rx/src/*.prn 
+	-rm -rf src/smc_gen/r_gpio_rx/src/targets/rx130/*.obj src/smc_gen/r_gpio_rx/src/targets/rx130/*.d src/smc_gen/r_gpio_rx/src/targets/rx130/*.asm src/smc_gen/r_gpio_rx/src/targets/rx130/*.p src/smc_gen/r_gpio_rx/src/targets/rx130/*.src src/smc_gen/r_gpio_rx/src/targets/rx130/*.jmp src/smc_gen/r_gpio_rx/src/targets/rx130/*.lst src/smc_gen/r_gpio_rx/src/targets/rx130/*.prn 
+	-rm -rf src/apps/touch_app/*.obj src/apps/touch_app/*.d src/apps/touch_app/*.asm src/apps/touch_app/*.p src/apps/touch_app/*.src src/apps/touch_app/*.jmp src/apps/touch_app/*.lst src/apps/touch_app/*.prn 
+	-rm -rf src/touch_module/*.obj src/touch_module/*.d src/touch_module/*.asm src/touch_module/*.p src/touch_module/*.src src/touch_module/*.jmp src/touch_module/*.lst src/touch_module/*.prn 
 	-rm -rf src/apps/timer/*.obj src/apps/timer/*.d src/apps/timer/*.asm src/apps/timer/*.p src/apps/timer/*.src src/apps/timer/*.jmp src/apps/timer/*.lst src/apps/timer/*.prn 
+	-rm -rf src/touch_module/r_touch_button/src/*.obj src/touch_module/r_touch_button/src/*.d src/touch_module/r_touch_button/src/*.asm src/touch_module/r_touch_button/src/*.p src/touch_module/r_touch_button/src/*.src src/touch_module/r_touch_button/src/*.jmp src/touch_module/r_touch_button/src/*.lst src/touch_module/r_touch_button/src/*.prn 
 	-rm -rf src/smc_gen/r_pincfg/*.obj src/smc_gen/r_pincfg/*.d src/smc_gen/r_pincfg/*.asm src/smc_gen/r_pincfg/*.p src/smc_gen/r_pincfg/*.src src/smc_gen/r_pincfg/*.jmp src/smc_gen/r_pincfg/*.lst src/smc_gen/r_pincfg/*.prn 
 	-rm -rf src/smc_gen/r_bsp/mcu/rx130/*.obj src/smc_gen/r_bsp/mcu/rx130/*.d src/smc_gen/r_bsp/mcu/rx130/*.asm src/smc_gen/r_bsp/mcu/rx130/*.p src/smc_gen/r_bsp/mcu/rx130/*.src src/smc_gen/r_bsp/mcu/rx130/*.jmp src/smc_gen/r_bsp/mcu/rx130/*.lst src/smc_gen/r_bsp/mcu/rx130/*.prn 
-	-rm -rf src/smc_gen/Config_PORT/*.obj src/smc_gen/Config_PORT/*.d src/smc_gen/Config_PORT/*.asm src/smc_gen/Config_PORT/*.p src/smc_gen/Config_PORT/*.src src/smc_gen/Config_PORT/*.jmp src/smc_gen/Config_PORT/*.lst src/smc_gen/Config_PORT/*.prn 
-	-rm -rf src/smc_gen/Config_S12AD0/*.obj src/smc_gen/Config_S12AD0/*.d src/smc_gen/Config_S12AD0/*.asm src/smc_gen/Config_S12AD0/*.p src/smc_gen/Config_S12AD0/*.src src/smc_gen/Config_S12AD0/*.jmp src/smc_gen/Config_S12AD0/*.lst src/smc_gen/Config_S12AD0/*.prn 
+	-rm -rf src/apps/display/*.obj src/apps/display/*.d src/apps/display/*.asm src/apps/display/*.p src/apps/display/*.src src/apps/display/*.jmp src/apps/display/*.lst src/apps/display/*.prn 
+	-rm -rf src/touch_module/ctsu/*.obj src/touch_module/ctsu/*.d src/touch_module/ctsu/*.asm src/touch_module/ctsu/*.p src/touch_module/ctsu/*.src src/touch_module/ctsu/*.jmp src/touch_module/ctsu/*.lst src/touch_module/ctsu/*.prn 
 	-rm -rf src/apps/gpio/*.obj src/apps/gpio/*.d src/apps/gpio/*.asm src/apps/gpio/*.p src/apps/gpio/*.src src/apps/gpio/*.jmp src/apps/gpio/*.lst src/apps/gpio/*.prn 
-	-rm -rf src/apps/adc/*.obj src/apps/adc/*.d src/apps/adc/*.asm src/apps/adc/*.p src/apps/adc/*.src src/apps/adc/*.jmp src/apps/adc/*.lst src/apps/adc/*.prn 
-	-rm -rf src/smc_gen/r_bsp/mcu/all/*.obj src/smc_gen/r_bsp/mcu/all/*.d src/smc_gen/r_bsp/mcu/all/*.asm src/smc_gen/r_bsp/mcu/all/*.p src/smc_gen/r_bsp/mcu/all/*.src src/smc_gen/r_bsp/mcu/all/*.jmp src/smc_gen/r_bsp/mcu/all/*.lst src/smc_gen/r_bsp/mcu/all/*.prn 
 	-rm -rf src/*.obj src/*.d src/*.asm src/*.p src/*.src src/*.jmp src/*.lst src/*.prn 
-	-rm -rf src/apps/flash/*.obj src/apps/flash/*.d src/apps/flash/*.asm src/apps/flash/*.p src/apps/flash/*.src src/apps/flash/*.jmp src/apps/flash/*.lst src/apps/flash/*.prn 
 	-rm -rf src/smc_gen/general/*.obj src/smc_gen/general/*.d src/smc_gen/general/*.asm src/smc_gen/general/*.p src/smc_gen/general/*.src src/smc_gen/general/*.jmp src/smc_gen/general/*.lst src/smc_gen/general/*.prn 
 	-rm -rf src/smc_gen/r_bsp/board/generic_rx130/*.obj src/smc_gen/r_bsp/board/generic_rx130/*.d src/smc_gen/r_bsp/board/generic_rx130/*.asm src/smc_gen/r_bsp/board/generic_rx130/*.p src/smc_gen/r_bsp/board/generic_rx130/*.src src/smc_gen/r_bsp/board/generic_rx130/*.jmp src/smc_gen/r_bsp/board/generic_rx130/*.lst src/smc_gen/r_bsp/board/generic_rx130/*.prn 
+	-rm -rf src/smc_gen/r_mpc_rx/src/*.obj src/smc_gen/r_mpc_rx/src/*.d src/smc_gen/r_mpc_rx/src/*.asm src/smc_gen/r_mpc_rx/src/*.p src/smc_gen/r_mpc_rx/src/*.src src/smc_gen/r_mpc_rx/src/*.jmp src/smc_gen/r_mpc_rx/src/*.lst src/smc_gen/r_mpc_rx/src/*.prn 
+	-rm -rf src/apps/uart/*.obj src/apps/uart/*.d src/apps/uart/*.asm src/apps/uart/*.p src/apps/uart/*.src src/apps/uart/*.jmp src/apps/uart/*.lst src/apps/uart/*.prn 
+	-rm -rf src/apps/util/*.obj src/apps/util/*.d src/apps/util/*.asm src/apps/util/*.p src/apps/util/*.src src/apps/util/*.jmp src/apps/util/*.lst src/apps/util/*.prn 
+	-rm -rf src/smc_gen/Config_PORT/*.obj src/smc_gen/Config_PORT/*.d src/smc_gen/Config_PORT/*.asm src/smc_gen/Config_PORT/*.p src/smc_gen/Config_PORT/*.src src/smc_gen/Config_PORT/*.jmp src/smc_gen/Config_PORT/*.lst src/smc_gen/Config_PORT/*.prn 
+	-rm -rf src/smc_gen/Config_S12AD0/*.obj src/smc_gen/Config_S12AD0/*.d src/smc_gen/Config_S12AD0/*.asm src/smc_gen/Config_S12AD0/*.p src/smc_gen/Config_S12AD0/*.src src/smc_gen/Config_S12AD0/*.jmp src/smc_gen/Config_S12AD0/*.lst src/smc_gen/Config_S12AD0/*.prn 
+	-rm -rf src/smc_gen/Config_CMT1/*.obj src/smc_gen/Config_CMT1/*.d src/smc_gen/Config_CMT1/*.asm src/smc_gen/Config_CMT1/*.p src/smc_gen/Config_CMT1/*.src src/smc_gen/Config_CMT1/*.jmp src/smc_gen/Config_CMT1/*.lst src/smc_gen/Config_CMT1/*.prn 
+	-rm -rf src/touch_module/r_touch_rx/src/*.obj src/touch_module/r_touch_rx/src/*.d src/touch_module/r_touch_rx/src/*.asm src/touch_module/r_touch_rx/src/*.p src/touch_module/r_touch_rx/src/*.src src/touch_module/r_touch_rx/src/*.jmp src/touch_module/r_touch_rx/src/*.lst src/touch_module/r_touch_rx/src/*.prn 
+	-rm -rf src/apps/adc/*.obj src/apps/adc/*.d src/apps/adc/*.asm src/apps/adc/*.p src/apps/adc/*.src src/apps/adc/*.jmp src/apps/adc/*.lst src/apps/adc/*.prn 
+	-rm -rf src/smc_gen/r_bsp/mcu/all/*.obj src/smc_gen/r_bsp/mcu/all/*.d src/smc_gen/r_bsp/mcu/all/*.asm src/smc_gen/r_bsp/mcu/all/*.p src/smc_gen/r_bsp/mcu/all/*.src src/smc_gen/r_bsp/mcu/all/*.jmp src/smc_gen/r_bsp/mcu/all/*.lst src/smc_gen/r_bsp/mcu/all/*.prn 
 	@echo
 	@echo 'Clean complete.'
 

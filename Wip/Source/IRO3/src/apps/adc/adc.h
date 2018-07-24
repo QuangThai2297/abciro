@@ -32,6 +32,7 @@
 
 #include <config.h>
 #include "r_cg_s12ad.h"
+#include <queue.h>
 
 
 /******************************************************************************
@@ -44,7 +45,7 @@
 * Macros 
 ******************************************************************************/
 
-
+#define  ADC_SAMPLE_QUEUE_SIZE			(50)
 
 /******************************************************************************
 * Types
@@ -77,7 +78,14 @@ PUBLIC void	ADC_Init(void);
 
 PUBLIC ERR_E  ADC_Read(ad_channel_t channel,uint16_t* adc_result);
 
-PUBLIC ERR_E  ADC_ReadTds(ad_channel_t channel,uint16_t* adc_high_result,uint16_t* adc_low_result,uint16_t sample);
+PUBLIC ERR_E  ADC_ReadTds(ad_channel_t channel);
+
+PUBLIC uint16_t  ADC_GetAdcLowValue();
+
+PUBLIC uint16_t  ADC_GetAdcTdsValue();
+
+//PUBLIC uint16_t  ADC_GetTdsValue(uint16_t adc0_value);
+PUBLIC uint16_t  ADC_GetTdsValue();
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

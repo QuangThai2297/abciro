@@ -45,9 +45,17 @@ extern const struct {
     uint8_t *rom_e;       /* End address of the initialized data section in ROM   */
     uint8_t *ram_s;       /* Start address of the initialized data section in RAM */
 }   _DTBL[] = {
-    { __sectop("D"), __secend("D"), __sectop("R") },
-    { __sectop("D_2"), __secend("D_2"), __sectop("R_2") },
-    { __sectop("D_1"), __secend("D_1"), __sectop("R_1") }
+	    { __sectop("D"), __secend("D"), __sectop("R") },
+		{ __sectop("D_2"), __secend("D_2"), __sectop("R_2") },
+		{ __sectop("D_1"), __secend("D_1"), __sectop("R_1") },
+		{ __sectop("D_CTSU"), __secend("D_CTSU"), __sectop("R_CTSU") },
+		{ __sectop("D_TOUCH"), __secend("D_TOUCH"), __sectop("R_TOUCH") },
+		{ __sectop("D_2"), __secend("D_2"), __sectop("R_2") },
+		{ __sectop("D_CTSU_2"), __secend("D_CTSU_2"), __sectop("R_CTSU_2") },
+		{ __sectop("D_TOUCH_2"), __secend("D_TOUCH_2"), __sectop("R_TOUCH_2") },
+		{ __sectop("D_1"), __secend("D_1"), __sectop("R_1") },
+		{ __sectop("D_CTSU_1"), __secend("D_CTSU_1"), __sectop("R_CTSU_1") },
+		{ __sectop("D_TOUCH_1"), __secend("D_TOUCH_1"), __sectop("R_TOUCH_1") },
 };
 
 /* Section start */
