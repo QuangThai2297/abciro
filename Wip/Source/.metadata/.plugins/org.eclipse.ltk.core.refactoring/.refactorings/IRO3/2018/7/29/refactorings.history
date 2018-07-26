@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;IRO3/src/apps/app&apos; to &apos;touch_app&apos;" description="Rename resource &apos;app&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/apps/app" name="touch_app" stamp="1531802027294" updateReferences="true"/>
-</session>
