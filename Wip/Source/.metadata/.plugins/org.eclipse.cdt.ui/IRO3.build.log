@@ -1,6 +1,0 @@
-11:46:47 **** Incremental Build of configuration HardwareDebug for project IRO3 ****
-make -j4 all 
-'Build complete.'
-
-11:46:47 Build Finished. 0 errors, 0 warnings. (took 447ms)
-
