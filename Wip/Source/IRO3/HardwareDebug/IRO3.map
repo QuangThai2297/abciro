@@ -1,4 +1,4 @@
-Renesas Optimizing Linker (W2.07.00 )             20-Jul-2018 09:37:04
+Renesas Optimizing Linker (W2.07.00 )             26-Jul-2018 17:14:24
 
 *** Options ***
 
@@ -39,6 +39,17 @@ Renesas Optimizing Linker (W2.07.00 )             20-Jul-2018 09:37:04
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_init.obj"
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_interrupts.obj"
 -input=".\src/smc_gen/r_bsp/mcu/rx130\mcu_locks.obj"
+-input=".\src/smc_gen/r_flash_rx/src/flash_type_1\r_codeflash.obj"
+-input=".\src/smc_gen/r_flash_rx/src/flash_type_1\r_codeflash_extra.obj"
+-input=".\src/smc_gen/r_flash_rx/src/flash_type_1\r_dataflash.obj"
+-input=".\src/smc_gen/r_flash_rx/src/flash_type_1\r_flash_type1.obj"
+-input=".\src/smc_gen/r_flash_rx/src/flash_type_1\r_flash_utils.obj"
+-input=".\src/smc_gen/r_flash_rx/src/flash_type_2\r_flash_type2.obj"
+-input=".\src/smc_gen/r_flash_rx/src/flash_type_3\r_flash_type3.obj"
+-input=".\src/smc_gen/r_flash_rx/src/flash_type_4\r_flash_type4.obj"
+-input=".\src/smc_gen/r_flash_rx/src\r_flash_fcu.obj"
+-input=".\src/smc_gen/r_flash_rx/src\r_flash_group.obj"
+-input=".\src/smc_gen/r_flash_rx/src\r_flash_rx.obj"
 -input=".\src/smc_gen/r_gpio_rx/src\r_gpio_rx.obj"
 -input=".\src/smc_gen/r_gpio_rx/src/targets/rx130\r_gpio_rx130.obj"
 -input=".\src/smc_gen/r_mpc_rx/src\r_mpc_rx.obj"
@@ -73,29 +84,29 @@ SU
 SI
                                   00000404  00000503       100   4
 B_1
-                                  00000504  000005ae        ab   1
+                                  00000504  000005af        ac   1
 R_1
-                                  000005af  00000607        59   1
+                                  000005b0  0000060b        5c   1
 R_CTSU_1
-                                  00000608  00000616         f   1
+                                  0000060c  0000061a         f   1
 R_TOUCH_1
-                                  00000617  00000617         0   1
+                                  0000061b  0000061b         0   1
 B_2
-                                  00000618  00000739       122   2
+                                  0000061c  0000073d       122   2
 R_2
-                                  0000073a  0000075f        26   2
+                                  0000073e  00000763        26   2
 R_CTSU_2
-                                  00000760  00000777        18   2
+                                  00000764  0000077b        18   2
 R_TOUCH_2
-                                  00000778  0000077d         6   2
+                                  0000077c  00000781         6   2
 B
-                                  00000780  00000e83       704   4
+                                  00000784  00000ea7       724   4
 R
-                                  00000e84  00001157       2d4   4
+                                  00000ea8  000011a3       2fc   4
 R_CTSU
-                                  00001158  00001158         0   1
+                                  000011a4  000011a4         0   1
 R_TOUCH
-                                  00001158  000011a7        50   4
+                                  000011a4  000011f3        50   4
 C_1
                                   ffff0000  ffff0141       142   1
 C_2
@@ -109,32 +120,32 @@ C$BSEC
 C$VECT
                                   ffff05dc  ffff09db       400   4
 D
-                                  ffff09dc  ffff0caf       2d4   4
+                                  ffff09dc  ffff0cd7       2fc   4
 D_1
-                                  ffff0cb0  ffff0d08        59   1
+                                  ffff0cd8  ffff0d33        5c   1
 D_2
-                                  ffff0d0a  ffff0d2f        26   2
+                                  ffff0d34  ffff0d59        26   2
 D_CTSU
-                                  ffff0d30  ffff0d30         0   1
+                                  ffff0d5a  ffff0d5a         0   1
 D_CTSU_1
-                                  ffff0d30  ffff0d3e         f   1
+                                  ffff0d5a  ffff0d68         f   1
 D_CTSU_2
-                                  ffff0d40  ffff0d57        18   2
+                                  ffff0d6a  ffff0d81        18   2
 D_TOUCH
-                                  ffff0d58  ffff0da7        50   4
+                                  ffff0d84  ffff0dd3        50   4
 D_TOUCH_1
-                                  ffff0da8  ffff0da8         0   1
+                                  ffff0dd4  ffff0dd4         0   1
 D_TOUCH_2
-                                  ffff0da8  ffff0dad         6   2
+                                  ffff0dd4  ffff0dd9         6   2
 W
-                                  ffff0db0  ffff0db0         0   4
+                                  ffff0ddc  ffff0ddc         0   4
 W_1
-                                  ffff0db0  ffff0dc2        13   1
+                                  ffff0ddc  ffff0dee        13   1
 W_2
-                                  ffff0dc4  ffff0e01        3e   2
+                                  ffff0df0  ffff0e2d        3e   2
 L
-                                  ffff0e04  ffff1000       1fd   4
+                                  ffff0e30  ffff102c       1fd   4
 P
-                                  ffff1001  ffff9271      8271   1
+                                  ffff102d  ffff9f22      8ef6   1
 FIXEDVECT
                                   ffffff80  ffffffff        80   4

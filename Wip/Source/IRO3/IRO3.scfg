@@ -41,7 +41,7 @@
 <Item current="false" id="pll.isSelected"/>
 <Item current="" id="pll.InputValue"/>
 <Item current="" id="pll.OutputValue"/>
-<Item current="mul4-1" error="false" id="pll.multiplyBox"/>
+<Item current="mul4-1" error="true" id="pll.multiplyBox"/>
 <Item current="div1-1" error="false" id="pll.dividerBox"/>
 <Item current="" error="false" id="pll.MiddleValue"/>
 <Item current="false" id="lptselector.isSelected"/>
@@ -2480,7 +2480,7 @@
 <item id="Devide512" input="" vlaue="0"/>
 </option>
 <option enabled="true" id="IntervalValue" selection="IntervalValue">
-<item id="IntervalValue" input="300" vlaue="65535"/>
+<item id="IntervalValue" input="200" vlaue="65535"/>
 </option>
 <option enabled="true" id="IntervalUnit" selection="us">
 <item id="ms" input="" vlaue="0"/>
@@ -2489,7 +2489,7 @@
 <item id="Count" input="" vlaue="0"/>
 </option>
 <option enabled="true" id="CNTRegValue" selection="CNTRegValue">
-<item id="CNTRegValue" input="1199" vlaue="1199"/>
+<item id="CNTRegValue" input="799" vlaue="799"/>
 </option>
 <option enabled="true" id="IntCMWIEnable" selection="Enable">
 <item id="Enable" input="" vlaue="0"/>
@@ -3067,6 +3067,11 @@
 <context/>
 </allocator>
 <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
+</configuration>
+<configuration inuse="true" name="r_flash_rx">
+<component description="Dependency : r_bsp version(s) 3.60&#10;This module allows the user to program, erase, write and blankcheck the Code and/or Data flash." detailDescription="Flash API for RX100, RX200, RX600. and RX700." display="r_flash_rx" id="r_flash_rx3.30" version="3.30"/>
+<source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
 </tool>
 </smc>

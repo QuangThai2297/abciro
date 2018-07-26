@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_CMT1.
-* Creation Date: 2018-07-20
+* Creation Date: 2018-07-26
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -48,6 +48,8 @@ Global variables and functions
 /* Start user code for global. Do not edit comment generated here */
 uint32_t g_sysTime = 0;
 uint8_t g_run1msFlag = 0;
+uint8_t g_run200usFlag = 0;
+uint8_t s_200usTick = 0;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -78,9 +80,13 @@ void R_Config_CMT1_Create_UserInit(void)
 static void r_Config_CMT1_cmi1_interrupt(void)
 {
     /* Start user code for r_Config_CMT1_cmi1_interrupt. Do not edit comment generated here */
-//	g_sysTime ++;
-	g_sysTime = (g_sysTime +1) % 1000;
-	g_run1msFlag = 1;
+	if(++s_200usTick == 5)
+	{
+		s_200usTick = 0;
+		g_sysTime ++;
+		g_run1msFlag = 1;
+	}
+	g_run200usFlag = 1;
     /* End user code. Do not edit comment generated here */
 }
 

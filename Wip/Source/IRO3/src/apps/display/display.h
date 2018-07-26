@@ -61,6 +61,8 @@
 void Display_SetNumberInLed4(uint16_t number); // set number for 4 digit led
 void Display_SetNumberInLed1(uint8_t number); // set number for 1 digit led
 void Display_scanLed(void);
+void Display_showDigitAtIndex(uint8_t digit,uint8_t index);
+
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

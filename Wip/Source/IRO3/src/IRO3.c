@@ -35,6 +35,8 @@
 /******************************************************************************
 * External objects
 ******************************************************************************/
+extern uint8_t g_run200usFlag;
+extern uint8_t g_run1msFlag;
 
 
 /******************************************************************************
@@ -45,6 +47,8 @@ PUBLIC volatile uint8_t g_state = IDLE_STATE;
 PUBLIC volatile uint8_t  g_led_number = 0;
 
 uint16_t g_adc_result;
+
+uint8_t s_timeOut100ms;
 
 /******************************************************************************
 * Constants and macros
@@ -77,7 +81,9 @@ uint32_t i = 0;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
+void run200usTask();
 void run1msTask();
+void run100msTask();
 
 /******************************************************************************
 * Global functions
@@ -104,20 +110,26 @@ void main(void)
 	TOUCH_init();
 	ADC_Init();
 	GPIO_Init();
-	ADC_ReadTds(ADCHANNEL0);
-	//test code
-	Display_SetNumberInLed4(ADC_GetTdsValue());
-	Display_SetNumberInLed1(g_led_number);
-	//end test code
+
 
 	/* Main loop */
 	while(1)
 	{
 		//////////////////////
+    	if(g_run200usFlag == 1)
+    	{
+    		run200usTask();
+    		g_run200usFlag= 0;
+    	}
     	if(g_run1msFlag == 1)
     	{
     		run1msTask();
     		g_run1msFlag= 0;
+    	}
+    	if(s_timeOut100ms >= 100)
+    	{
+    		run100msTask();
+    		s_timeOut100ms= 0;
     	}
 		switch (g_state)
 		{
@@ -126,17 +138,6 @@ void main(void)
 
 				ADC_ReadTds(ADCHANNEL0);
 			}
-			if(g_sysTime == 100)
-			{
-				//Display_SetNumberInLed4(ADC_GetAdcTdsValue());
-				Display_SetNumberInLed4(ADC_GetTdsValue());
-
-			}
-
-//			if(g_sysTime == 1500)
-//			{
-//				Display_SetNumberInLed4(ADC_GetAdcLowValue());
-//			}
 			break;
 			case SETTING_STATE:
 			// @ quan: handle here
@@ -149,10 +150,23 @@ void main(void)
 		}
 	}
 }
-void run1msTask()
+void run200usTask()
 {
 	Display_scanLed();
+
+}
+void run1msTask()
+{
 	TOUCH_process();
+	if(s_timeOut100ms < 100)
+	{
+		s_timeOut100ms++;
+	}
+
+}
+void run100msTask()
+{
+	Display_SetNumberInLed4(ADC_GetTdsValue());
 }
 
 
