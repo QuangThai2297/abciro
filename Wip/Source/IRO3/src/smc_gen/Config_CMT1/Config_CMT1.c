@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_CMT1.
-* Creation Date: 2018-07-17
+* Creation Date: 2018-07-26
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -65,7 +65,7 @@ void R_Config_CMT1_Create(void)
     CMT1.CMCR.WORD = _0000_CMT_CMCR_CLOCK_PCLK8 | _0040_CMT_CMCR_CMIE_ENABLE | _0080_CMT_CMCR_DEFAULT;
     
     /* Set compare match register */
-    CMT1.CMCOR = _0F9F_CMT1_CMCOR_VALUE;
+    CMT1.CMCOR = _031F_CMT1_CMCOR_VALUE;
     
     /* Set CMI1 priority level */
     IPR(CMT1,CMI1) = _0F_CMT_PRIORITY_LEVEL15;

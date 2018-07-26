@@ -51,6 +51,7 @@
 #define uint32 uint32_t
 #define TRUE   1
 #define FALSE  0
+#define PNULL  0
 #define DEBUG_ENABLE
 #define MAX_TRACE_LEN				(100)
 #define  ARR_SIZE( _a )  ( sizeof( (_a) ) / sizeof( (_a[0]) ) )
@@ -96,7 +97,6 @@ typedef enum
 * Global variables
 ******************************************************************************/
 extern uint32_t g_sysTime;
-extern uint8_t g_run1msFlag;
    
 
 /******************************************************************************

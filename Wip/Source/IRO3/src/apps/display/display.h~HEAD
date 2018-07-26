@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Embedded software team.
@@ -8,30 +7,29 @@
 ***************************************************************************/
 /**
  *
- * @file         flash.h
+ * @file         display.h
  *
- * @author    	trongkn
- * 
+ * @author    	quanvu
+ *
  * @version   1.0
- * 
- * @date      
- * 
+ *
+ * @date
+ *
  * @brief     Brief description of the file
  *
  * Detailed Description of the file. If not used, remove the separator above.
  *
  */
 
-#ifndef FLASH_H_
-#define FLASH_H_
+#ifndef APPS_DISPLAY_DISPLAY_H_
+#define APPS_DISPLAY_DISPLAY_H_
+
 
 /******************************************************************************
 * Includes
 ******************************************************************************/
 
-
 #include <config.h>
-
 
 /******************************************************************************
 * Constants
@@ -40,8 +38,9 @@
 
 
 /******************************************************************************
-* Macros 
+* Macros
 ******************************************************************************/
+
 
 
 
@@ -50,29 +49,24 @@
 ******************************************************************************/
 
 
-
-
-
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-  
+
 
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-PUBLIC void FLASH_Init(void);
-
-PUBLIC ERR_E FLASH_ReadAdrr(uint16_t addr,uint8_t *value);
-
-PUBLIC ERR_E FLASH_WriteAdrr(uint16_t addr,uint8_t *value,uint16_t len); 
+void Display_scanLed(); // call in loop
+void Display_SetNumberInLed4(uint16_t number); // set number for 4 digit led
+void Display_SetNumberInLed1(uint8_t number); // set number for 1 digit led
 
 /******************************************************************************
 * Inline functions
 ******************************************************************************/
 
 
+#endif /* APPS_DISPLAY_DISPLAY_H_ */
 
-#endif 
 
 

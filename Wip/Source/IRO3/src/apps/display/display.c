@@ -39,7 +39,7 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
-const uint8_t LED7_CODE[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0x8f,0x80,0x90,0xff};
+const uint8_t LED7_CODE[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff};
 const gpio_port_pin_t LED7_PIN[] = {GPIO_PORT_A_PIN_3,GPIO_PORT_A_PIN_0,GPIO_PORT_B_PIN_3,GPIO_PORT_A_PIN_6,GPIO_PORT_A_PIN_4,GPIO_PORT_A_PIN_1,GPIO_PORT_B_PIN_5,GPIO_PORT_B_PIN_1};
 const gpio_port_pin_t LED7_DIGITS[] = {GPIO_PORT_B_PIN_7,GPIO_PORT_4_PIN_4,GPIO_PORT_4_PIN_3,GPIO_PORT_4_PIN_2,GPIO_PORT_E_PIN_2};
 /******************************************************************************
@@ -110,7 +110,7 @@ void Display_showDigitAtIndex(uint8_t digit,uint8_t index)
  *
  * @return descrition for the function return value
  */
-void Display_scanLed()
+void Display_scanLed(void)
 {
 	uint8_t digit = 0;
 	if(ledIndex < 4)

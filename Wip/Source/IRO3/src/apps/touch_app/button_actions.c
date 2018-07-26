@@ -39,7 +39,7 @@ Macro definitions
 /***********************************************************************************************************************
 Typedef definitions
 ***********************************************************************************************************************/
-
+extern volatile uint8_t  g_led_number;
 /***********************************************************************************************************************
 Exported global variables (to be accessed by other files)
 ***********************************************************************************************************************/
@@ -74,30 +74,32 @@ void App_TOUCH_Button_Notification(void * p_args)
    {
 	   switch (button_id)
 	   {
-	   case 0:
-	   {
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_6,GPIO_LEVEL_HIGH);
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_7,GPIO_LEVEL_LOW);
-		   break;
-	   }
-	   case 1:
-	   {
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_3,GPIO_LEVEL_HIGH);
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_5,GPIO_LEVEL_LOW);
-		   break;
-	   }
-	   case 2:
-	   {
-		   R_GPIO_PinWrite(GPIO_PORT_5_PIN_4,GPIO_LEVEL_HIGH);
-		   R_GPIO_PinWrite(GPIO_PORT_5_PIN_5,GPIO_LEVEL_LOW);
-		   break;
-	   }
-	   case 3:
-	   {
-		   R_GPIO_PinWrite(GPIO_PORT_B_PIN_6,GPIO_LEVEL_HIGH);
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_2,GPIO_LEVEL_LOW);
-		   break;
-	   }
+		   case 0:
+		   {
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_6,GPIO_LEVEL_HIGH);
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_7,GPIO_LEVEL_LOW);
+			   break;
+		   }
+		   case 1:
+		   {
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_3,GPIO_LEVEL_HIGH);
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_5,GPIO_LEVEL_LOW);
+			   break;
+		   }
+		   case 2:
+		   {
+			   R_GPIO_PinWrite(GPIO_PORT_5_PIN_4,GPIO_LEVEL_HIGH);
+			   R_GPIO_PinWrite(GPIO_PORT_5_PIN_5,GPIO_LEVEL_LOW);
+			   break;
+		   }
+		   case 3:
+		   {
+			   R_GPIO_PinWrite(GPIO_PORT_B_PIN_6,GPIO_LEVEL_HIGH);
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_2,GPIO_LEVEL_LOW);
+			   break;
+		   }
+		   default:
+			   break;
 	   }
 
    }
@@ -105,30 +107,40 @@ void App_TOUCH_Button_Notification(void * p_args)
    {
 	   switch (button_id)
 	   {
-	   case 0:
-	   {
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_6,GPIO_LEVEL_LOW);
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_7,GPIO_LEVEL_HIGH);
-		   break;
-	   }
-	   case 1:
-	   {
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_3,GPIO_LEVEL_LOW);
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_5,GPIO_LEVEL_HIGH);
-		   break;
-	   }
-	   case 2:
-	   {
-		   R_GPIO_PinWrite(GPIO_PORT_5_PIN_4,GPIO_LEVEL_LOW);
-		   R_GPIO_PinWrite(GPIO_PORT_5_PIN_5,GPIO_LEVEL_HIGH);
-		   break;
-	   }
-	   case 3:
-	   {
-		   R_GPIO_PinWrite(GPIO_PORT_B_PIN_6,GPIO_LEVEL_LOW);
-		   R_GPIO_PinWrite(GPIO_PORT_C_PIN_2,GPIO_LEVEL_HIGH);
-		   break;
-	   }
+		   case 0:
+		   {
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_6,GPIO_LEVEL_LOW);
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_7,GPIO_LEVEL_HIGH);
+			   g_led_number = (g_led_number + 1) %10;
+			   Display_SetNumberInLed1(g_led_number);
+			   break;
+		   }
+		   case 1:
+		   {
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_3,GPIO_LEVEL_LOW);
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_5,GPIO_LEVEL_HIGH);
+			   g_led_number = (g_led_number + 1) %10;
+			   Display_SetNumberInLed1(g_led_number);
+			   break;
+		   }
+		   case 2:
+		   {
+			   R_GPIO_PinWrite(GPIO_PORT_5_PIN_4,GPIO_LEVEL_LOW);
+			   R_GPIO_PinWrite(GPIO_PORT_5_PIN_5,GPIO_LEVEL_HIGH);
+			   g_led_number = (g_led_number + 1) %10;
+			   Display_SetNumberInLed1(g_led_number);
+			   break;
+		   }
+		   case 3:
+		   {
+			   R_GPIO_PinWrite(GPIO_PORT_B_PIN_6,GPIO_LEVEL_LOW);
+			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_2,GPIO_LEVEL_HIGH);
+			   g_led_number = (g_led_number + 1) %10;
+			   Display_SetNumberInLed1(g_led_number);
+			   break;
+		   }
+		   default:
+			   break;
 	   }
 
    }

@@ -35,6 +35,8 @@
 /******************************************************************************
 * External objects
 ******************************************************************************/
+extern uint8_t g_run200usFlag;
+extern uint8_t g_run1msFlag;
 
 
 /******************************************************************************
@@ -42,7 +44,11 @@
 ******************************************************************************/
 PUBLIC volatile uint8_t g_state = IDLE_STATE;
 
+PUBLIC volatile uint8_t  g_led_number = 0;
+
 uint16_t g_adc_result;
+
+uint8_t s_timeOut100ms;
 
 /******************************************************************************
 * Constants and macros
@@ -64,7 +70,7 @@ Macro definitions
 /******************************************************************************
 * Local variables
 ******************************************************************************/
-LOCAL BOOLEAN s_is_unlock = FALSE;
+
 uint16_t value ;
 uint32_t time_out = 0;
 uint32_t i = 0;
@@ -75,7 +81,9 @@ uint32_t i = 0;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
+void run200usTask();
 void run1msTask();
+void run100msTask();
 
 /******************************************************************************
 * Global functions
@@ -95,32 +103,40 @@ void main(void);
 void main(void)
 {
 
-	uint16_t adc_high_result = 0;
-	uint16_t adc_low_result = 0;
+
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
 	g_state = IDLE_STATE;
 	TOUCH_init();
+	ADC_Init();
+	GPIO_Init();
 
-	//test code
-	Display_SetNumberInLed4(123);
-	Display_SetNumberInLed1(5);
-	//end test code
 
 	/* Main loop */
 	while(1)
 	{
 		//////////////////////
+    	if(g_run200usFlag == 1)
+    	{
+    		run200usTask();
+    		g_run200usFlag= 0;
+    	}
     	if(g_run1msFlag == 1)
     	{
     		run1msTask();
     		g_run1msFlag= 0;
     	}
+    	if(s_timeOut100ms >= 100)
+    	{
+    		run100msTask();
+    		s_timeOut100ms= 0;
+    	}
 		switch (g_state)
 		{
 			case IDLE_STATE:
 			{
-//				ADC_ReadTds(ADCHANNEL1,&adc_high_result,& adc_low_result,500);
+
+				ADC_ReadTds(ADCHANNEL0);
 			}
 			break;
 			case SETTING_STATE:
@@ -134,10 +150,23 @@ void main(void)
 		}
 	}
 }
-void run1msTask()
+void run200usTask()
 {
 	Display_scanLed();
+
+}
+void run1msTask()
+{
 	TOUCH_process();
+	if(s_timeOut100ms < 100)
+	{
+		s_timeOut100ms++;
+	}
+
+}
+void run100msTask()
+{
+	Display_SetNumberInLed4(ADC_GetTdsValue());
 }
 
 
