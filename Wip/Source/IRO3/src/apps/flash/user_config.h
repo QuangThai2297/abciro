@@ -1,5 +1,6 @@
-#ifndef APPS_FLASH_FILTER_TIME_H_
-#define APPS_FLASH_FILTER_TIME_H_
+#ifndef APPS_FLASH_USER_CONFIG_H_
+#define APPS_FLASH_USER_CONFIG_H_
+
 
 /******************************************************************************
 *
@@ -10,7 +11,7 @@
 ***************************************************************************/
 /**
  *
- * @file         filter_time.h
+ * @file         user_config.h
  *
  * @author    	quanvu
  *
@@ -30,7 +31,8 @@
 ******************************************************************************/
 
 #include <config.h>
-
+#include "r_flash_rx_if.h"
+#include "r_flash_rx_config.h"
 /******************************************************************************
 * Constants
 ******************************************************************************/
@@ -40,27 +42,30 @@
 /******************************************************************************
 * Macros
 ******************************************************************************/
-
+#define FILTER_NUM 9
 
 
 
 /******************************************************************************
 * Types
 ******************************************************************************/
-
+typedef struct UserConfigs {
+	uint32_t filterLifeTime[9];	// tuổi thọ lõi lọc tính theo giây
+	uint16_t tdsLimitIn;		// giới hạn tds đầu vào
+	uint16_t tdsLimitOut;		// giới hạn tds đầu ra
+	bool tdsToTimeMode;		// chế độ thời gian lõi lọc theo tds
+} UserConfig_t;
 
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-
+extern UserConfig_t g_userConfig;
 
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-void filter_time_init();
-void filter_time_minusTime(uint32_t second);
-uint16_t filter_time_getFilterHour(uint8_t filIndex);
-void filter_time_resetTimeAtIndex(uint8_t filIndex);
+void user_config_init();
+
 
 /******************************************************************************
 * Inline functions
@@ -68,6 +73,4 @@ void filter_time_resetTimeAtIndex(uint8_t filIndex);
 
 
 
-
-
-#endif /* APPS_FLASH_FILTER_TIME_H_ */
+#endif /* APPS_FLASH_USER_CONFIG_H_ */

@@ -1,5 +1,12 @@
-#ifndef APPS_FLASH_FILTER_TIME_H_
-#define APPS_FLASH_FILTER_TIME_H_
+/*
+ * flash_app.h
+ *
+ *  Created on: Jul 27, 2018
+ *      Author: Admin
+ */
+
+#ifndef APPS_FLASH_FLASH_APP_H_
+#define APPS_FLASH_FLASH_APP_H_
 
 /******************************************************************************
 *
@@ -10,7 +17,7 @@
 ***************************************************************************/
 /**
  *
- * @file         filter_time.h
+ * @file         flash_app.h
  *
  * @author    	quanvu
  *
@@ -30,7 +37,8 @@
 ******************************************************************************/
 
 #include <config.h>
-
+#include "r_flash_rx_if.h"
+#include "r_flash_rx_config.h"
 /******************************************************************************
 * Constants
 ******************************************************************************/
@@ -40,6 +48,8 @@
 /******************************************************************************
 * Macros
 ******************************************************************************/
+#define FILLTER_TIME_BLOCK 	FLASH_DF_BLOCK_0
+#define USER_CONFIG_BLOCK 	FLASH_DF_BLOCK_1
 
 
 
@@ -57,10 +67,10 @@
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-void filter_time_init();
-void filter_time_minusTime(uint32_t second);
-uint16_t filter_time_getFilterHour(uint8_t filIndex);
-void filter_time_resetTimeAtIndex(uint8_t filIndex);
+void flash_app_init();
+void flash_app_eraseBlock(flash_block_address_t blockAdress);
+void flash_app_writeBlock(uint8_t * data, flash_block_address_t blockAdress,uint16_t dataSize);
+bool flash_app_readData(uint8* dataRead, flash_block_address_t blockAdress,uint16_t dataSize);
 
 /******************************************************************************
 * Inline functions
@@ -70,4 +80,5 @@ void filter_time_resetTimeAtIndex(uint8_t filIndex);
 
 
 
-#endif /* APPS_FLASH_FILTER_TIME_H_ */
+
+#endif /* APPS_FLASH_FLASH_APP_H_ */
