@@ -1,5 +1,5 @@
-#ifndef APPS_FLASH_FLASH_APP_H_
-#define APPS_FLASH_FLASH_APP_H_
+#ifndef APPS_FLASH_FILTER_TIME_H_
+#define APPS_FLASH_FILTER_TIME_H_
 
 /******************************************************************************
 *
@@ -10,7 +10,7 @@
 ***************************************************************************/
 /**
  *
- * @file         flash_app.h
+ * @file         filter_time.h
  *
  * @author    	quanvu
  *
@@ -58,7 +58,9 @@
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-void flash_app_init();
+void filter_time_init();
+void filter_time_minusTime(uint32_t second);
+uint16_t filter_time_getFilterHour(uint8_t filIndex);
 
 /******************************************************************************
 * Inline functions
@@ -68,4 +70,4 @@ void flash_app_init();
 
 
 
-#endif /* APPS_FLASH_FLASH_APP_H_ */
+#endif /* APPS_FLASH_FILTER_TIME_H_ */

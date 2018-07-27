@@ -28,7 +28,7 @@
 #include "adc.h"
 #include "display.h"
 #include "touch_app.h"
-#include "flash_app.h"
+#include "filter_time.h"
 
 
 
@@ -103,8 +103,6 @@ void run100msTask();
 void main(void);
 void main(void)
 {
-
-
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
 	g_state = IDLE_STATE;
@@ -112,7 +110,10 @@ void main(void)
 	ADC_Init();
 	GPIO_Init();
 
-	flash_app_init();
+	filter_time_init();
+
+	Display_SetNumberInLed4(filter_time_getFilterHour(4));
+
 	/* Main loop */
 	while(1)
 	{
