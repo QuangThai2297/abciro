@@ -6,9 +6,9 @@
 *
 ***************************************************************************//*!
 *
-* @file        main.c
+* @file        flash_app.c
 *
-* @author    trongkn
+* @author    quanvu
 *
 * @version   1.0
 *
@@ -22,42 +22,22 @@
 *
 ******************************************************************************/
 
-#include "r_smc_entry.h"
-#include "config.h"
-#include "gpio.h"
-#include "adc.h"
-#include "display.h"
-#include "touch_app.h"
+
 #include "flash_app.h"
-
-
 
 
 /******************************************************************************
 * External objects
 ******************************************************************************/
-extern uint8_t g_run200usFlag;
-extern uint8_t g_run1msFlag;
 
 
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-PUBLIC volatile uint8_t g_state = IDLE_STATE;
-
-PUBLIC volatile uint8_t  g_led_number = 0;
-
-uint16_t g_adc_result;
-
-uint8_t s_timeOut100ms;
 
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
-
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
 
 /******************************************************************************
 * Local types
@@ -67,25 +47,63 @@ Macro definitions
 * Local function prototypes
 ******************************************************************************/
 
-
 /******************************************************************************
 * Local variables
 ******************************************************************************/
-
-uint16_t value ;
-uint32_t time_out = 0;
-uint32_t i = 0;
-//LOCAL BOOLEAN s_is_timeout = TRUE;
 
 
 
 /******************************************************************************
 * Local functions
 ******************************************************************************/
-void run200usTask();
-void run1msTask();
-void run100msTask();
+/**
+ * @brief One line documentation
+ *
+ * A more detailed documentation
+ *
+ * @param arg1 the first function argument
+ * @param arg2 the second function argument
+ *
+ * @return descrition for the function return value
+ */
+void flash_app_eraseBlock(flash_block_address_t blockAdress)
+{
+	flash_err_t err;
+	flash_res_t result;
+    err = R_FLASH_Erase(blockAdress, 1);
+    if (err != FLASH_SUCCESS)
+    {
+        while(1) ;
+    }
 
+    /* Verify erased */
+    err = R_FLASH_BlankCheck(blockAdress, FLASH_DF_BLOCK_SIZE, &result);
+    if ((err != FLASH_SUCCESS) || (result != FLASH_RES_BLANK))
+    {
+        while(1) ;
+    }
+}
+
+void flash_app_writeBlock(uint8_t * data, flash_block_address_t blockAdress,uint16_t dataSize)
+{
+    uint32_t    addr, i;
+    flash_err_t err;
+
+	flash_app_eraseBlock(blockAdress);
+    addr = blockAdress;
+    err = R_FLASH_Write((uint32_t)data, addr, FLASH_DF_BLOCK_SIZE);
+    if(err != FLASH_SUCCESS)
+    {
+        while(1) ;
+    }
+
+    /* Verify data write */
+    for (i=0; i < dataSize; i++)
+    {
+        if (*(data +i) != *((uint8_t *)(addr + i)))
+            while(1);
+    }
+}
 /******************************************************************************
 * Global functions
 ******************************************************************************/
@@ -100,81 +118,39 @@ void run100msTask();
  *
  * @return descrition for the function return value
  */
-void main(void);
-void main(void)
+void flash_app_init()
 {
+    uint32_t    addr;
+    flash_err_t err;
+    uint8_t data;
+
+    /* Open driver */
+    err = R_FLASH_Open();
+    if (err != FLASH_SUCCESS)
+        while(1);
 
 
-	R_Config_CMT0_Start();
-	R_Config_CMT1_Start();
-	g_state = IDLE_STATE;
-	TOUCH_init();
-	ADC_Init();
-	GPIO_Init();
+    /* DATA FLASH */
+    /* Erase highest data block */
 
-	flash_app_init();
-	/* Main loop */
-	while(1)
-	{
-		//////////////////////
-    	if(g_run200usFlag == 1)
-    	{
-    		run200usTask();
-    		g_run200usFlag= 0;
-    	}
-    	if(g_run1msFlag == 1)
-    	{
-    		run1msTask();
-    		g_run1msFlag= 0;
-    	}
-    	if(s_timeOut100ms >= 100)
-    	{
-    		run100msTask();
-    		s_timeOut100ms= 0;
-    	}
-		switch (g_state)
-		{
-			case IDLE_STATE:
-			{
 
-				ADC_ReadTds(ADCHANNEL0);
-			}
-			break;
-			case SETTING_STATE:
-			// @ quan: handle here
-			break;
-			case CALIB_TDS_STATE:
+    /* Write to all of block 0 */
+    addr = FLASH_DF_BLOCK_0;
+    data = *((uint8_t *)(addr + 0));
+    data++;
+    flash_app_writeBlock(&data, FLASH_DF_BLOCK_0, 1);
 
-			break;
-			default :
-			break;
-		}
-	}
-}
-void run200usTask()
-{
-	Display_scanLed();
+
 
 }
-void run1msTask()
-{
-	TOUCH_process();
-	if(s_timeOut100ms < 100)
-	{
-		s_timeOut100ms++;
-	}
 
-}
-void run100msTask()
-{
-//	Display_SetNumberInLed4(ADC_GetTdsValue());
-}
-
-
-void abort(void)
-{
-	while(1)
-	{
-		;
-	}
-}
+/**
+ * @brief One line documentation
+ *
+ * A more detailed documentation
+ *
+ * @param arg1 the first function argument
+ * @param arg2 the second function argument
+ *
+ * @return descrition for the function return value
+ */
