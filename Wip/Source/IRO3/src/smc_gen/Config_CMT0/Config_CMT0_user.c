@@ -74,8 +74,7 @@ void R_Config_CMT0_Create_UserInit(void)
 static void r_Config_CMT0_cmi0_interrupt(void)
 {
     /* Start user code for r_Config_CMT0_cmi0_interrupt. Do not edit comment generated here */
-	LED5 ^= 1u;
-	PWM ^= 1u;
+
     /* End user code. Do not edit comment generated here */
 }
 

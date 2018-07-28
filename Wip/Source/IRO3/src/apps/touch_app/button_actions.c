@@ -31,15 +31,18 @@ Includes   <System Includes> , "Project Includes"
 ***********************************************************************************************************************/
 #include "r_touch_button_if.h"
 #include "r_gpio_rx_if.h"
+#include "display.h"
+#include "UIControl.h"
 
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
 
+
 /***********************************************************************************************************************
 Typedef definitions
 ***********************************************************************************************************************/
-extern volatile uint8_t  g_led_number;
+
 /***********************************************************************************************************************
 Exported global variables (to be accessed by other files)
 ***********************************************************************************************************************/
@@ -70,80 +73,86 @@ void App_TOUCH_Button_Notification(void * p_args)
 	   R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
    }
 
-   if(TOUCH_BUTTON_EVENT_RELEASED==button_event)
-   {
-	   switch (button_id)
-	   {
-		   case 0:
-		   {
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_6,GPIO_LEVEL_HIGH);
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_7,GPIO_LEVEL_LOW);
-			   break;
-		   }
-		   case 1:
-		   {
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_3,GPIO_LEVEL_HIGH);
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_5,GPIO_LEVEL_LOW);
-			   break;
-		   }
-		   case 2:
-		   {
-			   R_GPIO_PinWrite(GPIO_PORT_5_PIN_4,GPIO_LEVEL_HIGH);
-			   R_GPIO_PinWrite(GPIO_PORT_5_PIN_5,GPIO_LEVEL_LOW);
-			   break;
-		   }
-		   case 3:
-		   {
-			   R_GPIO_PinWrite(GPIO_PORT_B_PIN_6,GPIO_LEVEL_HIGH);
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_2,GPIO_LEVEL_LOW);
-			   break;
-		   }
-		   default:
-			   break;
-	   }
-
-   }
    if(TOUCH_BUTTON_EVENT_PRESSED ==button_event)
    {
-	   switch (button_id)
+	   TouchBtnPressed_cb(button_id);
+	   if(button_id == BUTTON_ID_SET)
 	   {
-		   case 0:
-		   {
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_6,GPIO_LEVEL_LOW);
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_7,GPIO_LEVEL_HIGH);
-			   g_led_number = (g_led_number + 1) %10;
-			   Display_SetNumberInLed1(g_led_number);
-			   break;
-		   }
-		   case 1:
-		   {
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_3,GPIO_LEVEL_LOW);
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_5,GPIO_LEVEL_HIGH);
-			   g_led_number = (g_led_number + 1) %10;
-			   Display_SetNumberInLed1(g_led_number);
-			   break;
-		   }
-		   case 2:
-		   {
-			   R_GPIO_PinWrite(GPIO_PORT_5_PIN_4,GPIO_LEVEL_LOW);
-			   R_GPIO_PinWrite(GPIO_PORT_5_PIN_5,GPIO_LEVEL_HIGH);
-			   g_led_number = (g_led_number + 1) %10;
-			   Display_SetNumberInLed1(g_led_number);
-			   break;
-		   }
-		   case 3:
-		   {
-			   R_GPIO_PinWrite(GPIO_PORT_B_PIN_6,GPIO_LEVEL_LOW);
-			   R_GPIO_PinWrite(GPIO_PORT_C_PIN_2,GPIO_LEVEL_HIGH);
-			   g_led_number = (g_led_number + 1) %10;
-			   Display_SetNumberInLed1(g_led_number);
-			   break;
-		   }
-		   default:
-			   break;
+		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_ON);
 	   }
-
+	   if(UIControl_stateIsLock())
+		   return;
+	   switch(button_id)
+	   {
+	   case BUTTON_ID_SET:
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
+		   break;
+	   }
+	   case BUTTON_ID_PLUS:
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Display_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
+		   break;
+	   }
+	   case BUTTON_ID_MINUS:
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Display_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
+		   break;
+	   }
+	   case BUTTON_ID_SELECT:
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Display_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
+		   break;
+	   }
+	   default:
+		   break;
+	   }
    }
+
+   if(TOUCH_BUTTON_EVENT_RELEASED==button_event)
+   {
+	   TouchBtnHoldRelease_cb(button_id);
+	   if(button_id == BUTTON_ID_SET)
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+	   }
+	   if(UIControl_stateIsLock())
+		   return;
+	   switch(button_id)
+	   {
+	   case BUTTON_ID_SET:
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
+		   break;
+	   }
+	   case BUTTON_ID_PLUS:
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Display_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
+		   break;
+	   }
+	   case BUTTON_ID_MINUS:
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Display_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
+		   break;
+	   }
+	   case BUTTON_ID_SELECT:
+	   {
+		   Display_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Display_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
+		   break;
+	   }
+	   default:
+		   break;
+	   }
+   }
+
 }
 /***********************************************************************************************************************
 End of function App_TOUCH_Button_Notification

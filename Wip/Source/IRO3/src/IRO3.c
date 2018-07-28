@@ -30,6 +30,7 @@
 #include "touch_app.h"
 #include "flash_app.h"
 #include "filter_time.h"
+#include "UIControl.h"
 
 
 
@@ -37,16 +38,14 @@
 /******************************************************************************
 * External objects
 ******************************************************************************/
-extern uint8_t g_run200usFlag;
-extern uint8_t g_run1msFlag;
+extern volatile uint8_t g_run200usFlag;
+extern volatile uint8_t g_run1msFlag;
 
 
 /******************************************************************************
 * Global variables
 ******************************************************************************/
 PUBLIC volatile uint8_t g_state = IDLE_STATE;
-
-PUBLIC volatile uint8_t  g_led_number = 0;
 
 uint16_t g_adc_result;
 
@@ -109,7 +108,7 @@ void main(void)
 	g_state = IDLE_STATE;
 	TOUCH_init();
 	ADC_Init();
-	GPIO_Init();
+//	GPIO_Init();
 
 	flash_app_init();
 	Display_SetNumberInLed4(filter_time_getFilterHour(5));
@@ -133,23 +132,6 @@ void main(void)
     		run100msTask();
     		s_timeOut100ms= 0;
     	}
-		switch (g_state)
-		{
-			case IDLE_STATE:
-			{
-
-				ADC_ReadTds(ADCHANNEL0);
-			}
-			break;
-			case SETTING_STATE:
-			// @ quan: handle here
-			break;
-			case CALIB_TDS_STATE:
-
-			break;
-			default :
-			break;
-		}
 	}
 }
 void run200usTask()
@@ -168,7 +150,7 @@ void run1msTask()
 }
 void run100msTask()
 {
-//	Display_SetNumberInLed4(ADC_GetTdsValue());
+	UIControl_process();
 }
 
 

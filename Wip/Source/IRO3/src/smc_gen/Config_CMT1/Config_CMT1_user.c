@@ -46,10 +46,10 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
-uint32_t g_sysTime = 0;
-uint8_t g_run1msFlag = 0;
-uint8_t g_run200usFlag = 0;
-uint8_t s_200usTick = 0;
+volatile uint32_t g_sysTime = 0;
+volatile uint8_t g_run1msFlag = 0;
+volatile uint8_t g_run200usFlag = 0;
+volatile uint8_t s_200usTick = 0;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************

@@ -39,9 +39,13 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
+#define PIN_KEY_NUM 4
 const uint8_t LED7_CODE[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff};
 const gpio_port_pin_t LED7_PIN[] = {GPIO_PORT_A_PIN_3,GPIO_PORT_A_PIN_0,GPIO_PORT_B_PIN_3,GPIO_PORT_A_PIN_6,GPIO_PORT_A_PIN_4,GPIO_PORT_A_PIN_1,GPIO_PORT_B_PIN_5,GPIO_PORT_B_PIN_1};
 const gpio_port_pin_t LED7_DIGITS[] = {GPIO_PORT_B_PIN_7,GPIO_PORT_4_PIN_4,GPIO_PORT_4_PIN_3,GPIO_PORT_4_PIN_2,GPIO_PORT_E_PIN_2};
+const gpio_port_pin_t LED_KEY_RED_PIN[] = {GPIO_PORT_B_PIN_6,GPIO_PORT_C_PIN_3,GPIO_PORT_C_PIN_6,GPIO_PORT_5_PIN_4};
+const gpio_port_pin_t LED_KEY_GREEN_PIN[] = {GPIO_PORT_C_PIN_2,GPIO_PORT_C_PIN_5,GPIO_PORT_C_PIN_7,GPIO_PORT_5_PIN_5};
+
 /******************************************************************************
 * Local types
 ******************************************************************************/
@@ -49,7 +53,7 @@ const gpio_port_pin_t LED7_DIGITS[] = {GPIO_PORT_B_PIN_7,GPIO_PORT_4_PIN_4,GPIO_
 /******************************************************************************
 * Local function prototypes
 ******************************************************************************/
-uint8_t getDigitFromNumber(uint8_t index,uint16_t number);
+void Display_showDigitAtIndex(uint8_t digit,uint8_t index);
 
 
 /******************************************************************************
@@ -58,6 +62,7 @@ uint8_t getDigitFromNumber(uint8_t index,uint16_t number);
 uint8_t led4Digits[4] = {0xff,0xff,0xff,0xff};
 uint8_t led1Number = 0;
 uint8_t ledIndex;
+
 
 /******************************************************************************
 * Local functions
@@ -173,3 +178,28 @@ void Display_SetNumberInLed4(uint16_t number)
 	}
 }
 
+void Display_SetLedKeyState(LedKeyName_t ledName,LedKeyColor_t color, LedState_t state)
+{
+	if(color == LED_KEY_COLLOR_GREEN)
+	{
+		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[ledName],state == LED_STATE_ON? GPIO_LEVEL_LOW:GPIO_LEVEL_HIGH);
+	}else
+	{
+		R_GPIO_PinWrite(LED_KEY_RED_PIN[ledName],state == LED_STATE_ON? GPIO_LEVEL_LOW:GPIO_LEVEL_HIGH);
+	}
+}
+
+void Display_turnOnLedKey()
+{
+	for(uint8_t i = 0; i< PIN_KEY_NUM; i++)
+	{
+		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[i],GPIO_LEVEL_LOW);
+	}
+}
+void Display_turnOffLedKey()
+{
+	for(uint8_t i = 0; i< PIN_KEY_NUM; i++)
+	{
+		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[i],GPIO_LEVEL_HIGH);
+	}
+}

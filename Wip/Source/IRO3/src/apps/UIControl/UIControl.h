@@ -1,35 +1,40 @@
+/*
+ * UIControl.h
+ *
+ *  Created on: Jul 28, 2018
+ *      Author: Admin
+ */
 /******************************************************************************
 *
-* M1 Communication Inc.
-* (c) Copyright 2016 M1 Communication, Inc.
+* Embedded software team.
+* (c) Copyright 2018.
 * ALL RIGHTS RESERVED.
 *
 ***************************************************************************/
 /**
  *
- * @file         Config.h
+ * @file         UIControl.h
  *
- * @author    	trongkn
- * 
+ * @author    	quanvu
+ *
  * @version   1.0
- * 
- * @date      
- * 
+ *
+ * @date
+ *
  * @brief     Brief description of the file
  *
  * Detailed Description of the file. If not used, remove the separator above.
  *
  */
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef APPS_UICONTROL_UICONTROL_H_
+#define APPS_UICONTROL_UICONTROL_H_
 
 /******************************************************************************
 * Includes
 ******************************************************************************/
 
-#include "platform.h"
-
+#include <config.h>
 
 
 /******************************************************************************
@@ -39,70 +44,38 @@
 
 
 /******************************************************************************
-* Macros 
+* Macros
 ******************************************************************************/
 
-#define PUBLIC 
-#define LOCAL static
 
-
-#define uint8  uint8_t
-#define uint16 uint16_t
-#define uint32 uint32_t
-#define TRUE   1
-#define FALSE  0
-#define PNULL  0
-#define DEBUG_ENABLE
-#define MAX_TRACE_LEN				(100)
-#define  ARR_SIZE( _a )  ( sizeof( (_a) ) / sizeof( (_a[0]) ) )
-
-#define VERSION_SOFTWARE ("V1.0")
-
-#define IDLE_STATE (0)
-
-#define SETTING_STATE (1)
-
-#define CALIB_TDS_STATE (2)
 
 
 /******************************************************************************
 * Types
 ******************************************************************************/
-
-typedef uint8_t		BOOLEAN;
-
-typedef void*		DPARAM;				/*!< param data pointer type */
-
-typedef enum
+typedef enum BUTTON_ID
 {
-	OK,
-	ERR,
-	ERR_PARAM,
-	ERR_TIMEOUT,
-	ERR_UNKNOWN,
-	NOT_SUPPORT
-
-}ERR_E;
-
-/**
- * @brief Use brief, otherwise the index won't have a brief explanation.
- *    PE43712ds_attenuation 
- * Detailed explanation.
- */
-
-
-
+	BUTTON_ID_SELECT = 3,
+	BUTTON_ID_PLUS = 1,
+	BUTTON_ID_MINUS = 0,
+	BUTTON_ID_SET = 2,
+	BUTTON_NUM = 4,
+}ButtonId_t;
 
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-extern volatile uint32_t g_sysTime;
-   
+
 
 /******************************************************************************
 * Global functions
 ******************************************************************************/
+bool UIControl_stateIsLock();
+void UIControl_process();
 
+// callback
+void TouchBtnPressed_cb(ButtonId_t btn);
+void TouchBtnHoldRelease_cb(ButtonId_t btn);
 
 /******************************************************************************
 * Inline functions
@@ -110,6 +83,5 @@ extern volatile uint32_t g_sysTime;
 
 
 
-#endif
 
-
+#endif /* APPS_UICONTROL_UICONTROL_H_ */
