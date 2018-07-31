@@ -42,6 +42,8 @@
 #define HOLD_TIME1 2000
 #define HOLD_TIME2 3000
 #define HOLD_TIME3 7000
+
+#define MAX_TIME_WAIT 30000
 /******************************************************************************
 * Local types
 ******************************************************************************/
@@ -95,15 +97,21 @@ void UIControl_updateUI();
 UI_State_t s_UIState = UI_STATE_LOCK;
 BtnControl_t btnControls[BUTTON_NUM];
 UIMode_t s_uiMode = UI_MODE_NOMAL;
-
+uint32_t s_lastPressTime;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
 void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 {
-	if((s_UIState == UI_STATE_LOCK) && (btn == BUTTON_ID_SET) && (holdingTime == HOLD_TIME2))
+	if((btn == BUTTON_ID_SET) && (holdingTime == HOLD_TIME2))
 	{
-		UIControl_switchUiStateTo(UI_STATE_TDS_OUT);
+		if(s_UIState == UI_STATE_LOCK)
+		{
+			UIControl_switchUiStateTo(UI_STATE_TDS_OUT);
+		}else if(s_UIState == UI_STATE_TDS_OUT)
+		{
+			UIControl_switchUiStateTo(UI_STATE_LOCK);
+		}
 	}
 }
 void UIControl_updateUI()
@@ -161,6 +169,11 @@ void UIControl_switchUiStateTo(UI_State_t newState)
 	if(s_UIState == UI_STATE_LOCK)
 	{
 		Display_turnOnLedKey();
+		Display_onBuzzerInMs(300);
+	}
+	if(newState == UI_STATE_LOCK)
+	{
+		Display_turnOffLedKey();
 		Display_onBuzzerInMs(300);
 	}
 	s_UIState = newState;
@@ -247,6 +260,10 @@ void UIControl_process()
 {
 	UIControl_btnProcess();
 	UIControl_updateUI();
+	if((s_UIState != UI_STATE_LOCK) && ((g_sysTime - s_lastPressTime) > MAX_TIME_WAIT))
+	{
+		UIControl_switchUiStateTo(UI_STATE_LOCK);
+	}
 }
 
 /**
@@ -293,6 +310,7 @@ void TouchBtnHoldRelease_cb(ButtonId_t btn)
 		default:
 			break;
 	}
+	s_lastPressTime = g_sysTime;
 }
 
 
