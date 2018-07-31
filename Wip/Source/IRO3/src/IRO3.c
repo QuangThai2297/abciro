@@ -111,7 +111,7 @@ void main(void)
 //	GPIO_Init();
 
 	flash_app_init();
-	Display_SetNumberInLed4(filter_time_getFilterHour(5));
+	Display_turnOnAllIn1s();
 	/* Main loop */
 	while(1)
 	{

@@ -106,6 +106,8 @@ void Display_switchMachineStateLed(MachineStateLed_t machineState);
 
 void Display_showFilterTime(uint8_t filter);
 
+void Display_turnOnAllIn1s();
+
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

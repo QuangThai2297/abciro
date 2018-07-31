@@ -244,3 +244,26 @@ void Display_showFilterTime(uint8_t filter)
 	Display_SetNumberInLed4(filter_time_getFilterHour(filter));
 	Display_SetNumberInLed1(filter +1);
 }
+extern volatile uint8_t g_run200usFlag;
+
+void Display_turnOnAllIn1s()
+{
+	Display_turnOnLedKey();
+	for (uint8_t i = 0;  i < LED_MACHINE_STATE_NUM; ++ i) {
+		R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[i], GPIO_LEVEL_LOW);
+	}
+	Display_SetNumberInLed1(8);
+	Display_SetNumberInLed4(8888);
+	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
+	uint32_t timeStart = g_sysTime;
+	while((g_sysTime - timeStart) < 2000)
+	{
+    	if(g_run200usFlag == 1)
+    	{
+    		Display_scanLed();
+    		g_run200usFlag= 0;
+    	}
+	}
+	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
+
+}
