@@ -112,7 +112,6 @@ void main(void)
 
 	flash_app_init();
 	Display_SetNumberInLed4(filter_time_getFilterHour(5));
-
 	/* Main loop */
 	while(1)
 	{
@@ -136,7 +135,7 @@ void main(void)
 }
 void run200usTask()
 {
-	Display_scanLed();
+	Display_process();
 
 }
 void run1msTask()

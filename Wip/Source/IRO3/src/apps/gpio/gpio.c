@@ -85,7 +85,6 @@
  */
 PUBLIC void GPIO_Init(void)
 {
-	R_GPIO_PinWrite(GPIO_PORT_4_PIN_7,GPIO_LEVEL_HIGH);
 }
 
 /**

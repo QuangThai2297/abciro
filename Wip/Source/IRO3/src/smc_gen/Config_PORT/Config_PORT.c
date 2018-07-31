@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_PORT.
-* Creation Date: 2018-07-26
+* Creation Date: 2018-07-31
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -55,6 +55,12 @@ Global variables and functions
 
 void R_Config_PORT_Create(void)
 {
+    /* Set PORT1 registers */
+    PORT1.PODR.BYTE = _00_Pm7_OUTPUT_0;
+    PORT1.DSCR.BYTE = _00_Pm7_HIDRV_OFF;
+    PORT1.PMR.BYTE = _00_Pm7_PIN_GPIO;
+    PORT1.PDR.BYTE = _80_Pm7_MODE_OUTPUT | _0F_PDR1_DEFAULT;
+
     /* Set PORT3 registers */
     PORT3.PODR.BYTE = _02_Pm1_OUTPUT_1 | _04_Pm2_OUTPUT_1;
     PORT3.ODR0.BYTE = _00_Pm1_CMOS_OUTPUT | _00_Pm2_CMOS_OUTPUT;

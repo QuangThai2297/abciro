@@ -40,7 +40,7 @@
 /******************************************************************************
 * Macros
 ******************************************************************************/
-
+#define LED_7SEG_OFF 10
 
 
 
@@ -76,6 +76,13 @@ typedef enum LED_STATE
 	LED_STATE_OFF = 0,
 	LED_STATE_ON
 }LedState_t;
+
+typedef enum
+{
+	MACHINE_STATE_LED_TDS_OUT = 0,
+	MACHINE_STATE_LED_TDS_IN,
+	MACHINE_STATE_LED_FILTER,
+}MachineStateLed_t;
 /******************************************************************************
 * Global variables
 ******************************************************************************/
@@ -86,12 +93,19 @@ typedef enum LED_STATE
 ******************************************************************************/
 //void Display_scanLed(void);
 void Display_SetNumberInLed4(uint16_t number); // set number for 4 digit led
-void Display_SetNumberInLed1(uint8_t number); // set number for 1 digit led
+void Display_SetNumberInLed1(int8_t number); // set number for 1 digit led
 void Display_scanLed(void);
+void Display_process();
+void Display_onBuzzerInMs(uint16_t msTime);
 
 void Display_SetLedKeyState(LedKeyName_t ledName,LedKeyColor_t color, LedState_t state);
 void Display_turnOnLedKey();
 void Display_turnOffLedKey();
+
+void Display_switchMachineStateLed(MachineStateLed_t machineState);
+
+void Display_showFilterTime(uint8_t filter);
+
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

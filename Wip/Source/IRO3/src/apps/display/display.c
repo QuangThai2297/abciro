@@ -40,11 +40,18 @@
 * Constants and macros
 ******************************************************************************/
 #define PIN_KEY_NUM 4
+#define LED_MACHINE_STATE_TDS_OUT GPIO_PORT_E_PIN_0
+#define LED_MACHINE_STATE_TDS_IN  GPIO_PORT_4_PIN_7
+#define LED_MACHINE_STATE_FILTER GPIO_PORT_E_PIN_1
+#define LED_MACHINE_STATE_NUM 3
+
 const uint8_t LED7_CODE[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff};
 const gpio_port_pin_t LED7_PIN[] = {GPIO_PORT_A_PIN_3,GPIO_PORT_A_PIN_0,GPIO_PORT_B_PIN_3,GPIO_PORT_A_PIN_6,GPIO_PORT_A_PIN_4,GPIO_PORT_A_PIN_1,GPIO_PORT_B_PIN_5,GPIO_PORT_B_PIN_1};
 const gpio_port_pin_t LED7_DIGITS[] = {GPIO_PORT_B_PIN_7,GPIO_PORT_4_PIN_4,GPIO_PORT_4_PIN_3,GPIO_PORT_4_PIN_2,GPIO_PORT_E_PIN_2};
 const gpio_port_pin_t LED_KEY_RED_PIN[] = {GPIO_PORT_B_PIN_6,GPIO_PORT_C_PIN_3,GPIO_PORT_C_PIN_6,GPIO_PORT_5_PIN_4};
 const gpio_port_pin_t LED_KEY_GREEN_PIN[] = {GPIO_PORT_C_PIN_2,GPIO_PORT_C_PIN_5,GPIO_PORT_C_PIN_7,GPIO_PORT_5_PIN_5};
+const gpio_port_pin_t LED_MACHINE_STATE_PIN[LED_MACHINE_STATE_NUM] = {LED_MACHINE_STATE_TDS_OUT,LED_MACHINE_STATE_TDS_IN,LED_MACHINE_STATE_FILTER};
+#define BUZZER_PIN GPIO_PORT_1_PIN_7
 
 /******************************************************************************
 * Local types
@@ -54,6 +61,7 @@ const gpio_port_pin_t LED_KEY_GREEN_PIN[] = {GPIO_PORT_C_PIN_2,GPIO_PORT_C_PIN_5
 * Local function prototypes
 ******************************************************************************/
 void Display_showDigitAtIndex(uint8_t digit,uint8_t index);
+void processBuzzer();
 
 
 /******************************************************************************
@@ -62,7 +70,8 @@ void Display_showDigitAtIndex(uint8_t digit,uint8_t index);
 uint8_t led4Digits[4] = {0xff,0xff,0xff,0xff};
 uint8_t led1Number = 0;
 uint8_t ledIndex;
-
+uint32_t timeOffBuzzer;
+bool buzzerIsOn = false;
 
 /******************************************************************************
 * Local functions
@@ -77,11 +86,28 @@ uint8_t ledIndex;
  *
  * @return descrition for the function return value
  */
-
+void processBuzzer()
+{
+	if(buzzerIsOn && ((g_sysTime - timeOffBuzzer) < 5000) )
+	{
+		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
+		buzzerIsOn = false;
+	}
+}
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-
+void Display_process()
+{
+	processBuzzer();
+	Display_scanLed();
+}
+void Display_onBuzzerInMs(uint16_t msTime)
+{
+	timeOffBuzzer = g_sysTime + msTime;
+	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
+	buzzerIsOn = true;
+}
 /**
  * @brief One line documentation
  *
@@ -142,7 +168,7 @@ void Display_scanLed(void)
  *
  * @return descrition for the function return value
  */
-void Display_SetNumberInLed1(uint8_t number)
+void Display_SetNumberInLed1(int8_t number)
 {
 	led1Number = LED7_CODE[number];
 }
@@ -166,13 +192,13 @@ void Display_SetNumberInLed4(uint16_t number)
 	}
 	if(led4Digits[3] == LED7_CODE[0])
 	{
-		led4Digits[3] = LED7_CODE[10];
+		led4Digits[3] = LED7_CODE[LED_7SEG_OFF];
 		if(led4Digits[2] == LED7_CODE[0])
 		{
-			led4Digits[2] = LED7_CODE[10];
+			led4Digits[2] = LED7_CODE[LED_7SEG_OFF];
 			if(led4Digits[1] == LED7_CODE[0])
 			{
-				led4Digits[1] = LED7_CODE[10];
+				led4Digits[1] = LED7_CODE[LED_7SEG_OFF];
 			}
 		}
 	}
@@ -202,4 +228,19 @@ void Display_turnOffLedKey()
 	{
 		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[i],GPIO_LEVEL_HIGH);
 	}
+}
+
+void Display_switchMachineStateLed(MachineStateLed_t machineState)
+{
+	uint8_t i;
+	for ( i = 0;  i < LED_MACHINE_STATE_NUM; ++ i) {
+		R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[i], GPIO_LEVEL_HIGH);
+	}
+	R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[machineState], GPIO_LEVEL_LOW);
+}
+void Display_showFilterTime(uint8_t filter)
+{
+	Display_switchMachineStateLed(MACHINE_STATE_LED_FILTER);
+	Display_SetNumberInLed4(filter_time_getFilterHour(filter));
+	Display_SetNumberInLed1(filter +1);
 }
