@@ -39,18 +39,17 @@
 ******************************************************************************/
 extern uint8_t g_run200usFlag;
 extern uint8_t g_run1msFlag;
-
-
+extern uint8_t g_adc_flag;
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-PUBLIC volatile uint8_t g_state = IDLE_STATE;
+
 
 PUBLIC volatile uint8_t  g_led_number = 0;
 
 uint16_t g_adc_result;
 
-uint8_t s_timeOut100ms;
+uint16_t s_timeout_display_tds;
 
 /******************************************************************************
 * Constants and macros
@@ -59,7 +58,7 @@ uint8_t s_timeOut100ms;
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-
+#define TIME_TO_DISPLAY_TDS  (2000) //2 secs
 /******************************************************************************
 * Local types
 ******************************************************************************/
@@ -76,6 +75,8 @@ Macro definitions
 uint16_t value ;
 uint32_t time_out = 0;
 uint32_t i = 0;
+
+LOCAL uint8_t s_pwm_cnt = 0;
 //LOCAL BOOLEAN s_is_timeout = TRUE;
 
 
@@ -85,7 +86,7 @@ uint32_t i = 0;
 ******************************************************************************/
 void run200usTask();
 void run1msTask();
-void run100msTask();
+void run_DisplayTds();
 
 /******************************************************************************
 * Global functions
@@ -106,12 +107,12 @@ void main(void)
 {
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
-	g_state = IDLE_STATE;
-	TOUCH_init();
-	ADC_Init();
-	GPIO_Init();
 
+	TOUCH_init();
+	GPIO_Init();
+	UART_Init();
 	flash_app_init();
+	ADC_Init();
 	Display_SetNumberInLed4(filter_time_getFilterHour(5));
 
 	/* Main loop */
@@ -128,30 +129,20 @@ void main(void)
     		run1msTask();
     		g_run1msFlag= 0;
     	}
-    	if(s_timeOut100ms >= 100)
+    	if(s_timeout_display_tds >= TIME_TO_DISPLAY_TDS)
     	{
-    		run100msTask();
-    		s_timeOut100ms= 0;
+    		run_DisplayTds();
+    		s_timeout_display_tds= 0;
     	}
-		switch (g_state)
-		{
-			case IDLE_STATE:
-			{
+    	if(g_adc_flag)
+    	{
+    		ADC_UpdateTds (s_pwm_cnt);
+    	}
 
-				ADC_ReadTds(ADCHANNEL0);
-			}
-			break;
-			case SETTING_STATE:
-			// @ quan: handle here
-			break;
-			case CALIB_TDS_STATE:
 
-			break;
-			default :
-			break;
-		}
 	}
 }
+
 void run200usTask()
 {
 	Display_scanLed();
@@ -160,15 +151,15 @@ void run200usTask()
 void run1msTask()
 {
 	TOUCH_process();
-	if(s_timeOut100ms < 100)
+	if(s_timeout_display_tds < TIME_TO_DISPLAY_TDS)
 	{
-		s_timeOut100ms++;
+		s_timeout_display_tds++;
 	}
 
 }
-void run100msTask()
+void run_DisplayTds()
 {
-//	Display_SetNumberInLed4(ADC_GetTdsValue());
+	Display_SetNumberInLed4(ADC_GetTdsValue(TDS_IN_VALUE));
 }
 
 

@@ -22,7 +22,7 @@
 * Version      : 1.0.1
 * Device(s)    : R5F51303AxFM
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2018-07-26
+* Creation Date: 2018-08-01
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -37,6 +37,7 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "Config_PORT.h"
 #include "Config_S12AD0.h"
+#include "Config_SCI1.h"
 #include "Config_CMT0.h"
 #include "Config_CMT1.h"
 #include "r_smc_cgc.h"
@@ -88,6 +89,7 @@ void R_Systeminit(void)
     R_Config_S12AD0_Create();
     R_Config_CMT0_Create();
     R_Config_CMT1_Create();
+    R_Config_SCI1_Create();
 
     /* Set interrupt settings */
     R_Interrupt_Create();

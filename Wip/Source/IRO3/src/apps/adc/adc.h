@@ -33,8 +33,9 @@
 #include <config.h>
 #include "r_cg_s12ad.h"
 #include <queue.h>
-
-
+#include "r_cg_userdefine.h"
+#include "flash_app.h"
+#include "uart.h"
 /******************************************************************************
 * Constants
 ******************************************************************************/
@@ -45,8 +46,16 @@
 * Macros 
 ******************************************************************************/
 
-#define  ADC_SAMPLE_QUEUE_SIZE			(50)
+#define  ADC_SAMPLE_QUEUE_SIZE			(8)
+#define  TDS_OUT_CHANNEL    ADCHANNEL0
+#define  TDS_IN_CHANNEL     ADCHANNEL1
+#define  ADC_SAMPLE_CAL_MAX             (500)
 
+#define UPDATE_TDS_IN (0)
+#define UPDATE_TDS_OUT (1)
+#define UPDATE_VALUE   (2)
+
+#define CALIB_POINT_MAX (12)
 /******************************************************************************
 * Types
 ******************************************************************************/
@@ -57,19 +66,43 @@
  * Detailed explanation.
  */
 	
+typedef struct
+{
+	uint16_t high_cnt;
+	uint16_t low_cnt;
+	int32_t  sum_adc_high;
+	int32_t  sum_adc_low;
+	int16_t  sma_tds_adc;
+	int32_t  sum_tds_adc;
+//	uint8_t  sign;
+	QUEUE_NODE_T* adc_sample;
+
+}TDS_T;
+
+
+
+typedef struct  {
+	int16_t adc_value[CALIB_POINT_MAX];	//
+	uint16_t tds_value[CALIB_POINT_MAX];		//
+} TDS_CALIB_PARAM_T;
+
+
+typedef struct
+{
+	TDS_CALIB_PARAM_T tds_in;	//
+	TDS_CALIB_PARAM_T tds_out;		//
+} TDS_CONFIG_T;
+
 typedef enum
 {
-	TDS_OUT = ADCHANNEL0,
-	TDS_IN = ADCHANNEL1,
-	ADC_MAX
-	
-}TDS_ID_E;
-
-
+	TDS_IN_VALUE = 0,	//
+	TDS_OUT_VALUE =1,		//
+	TDS_VALUE_MAX
+} TDS_E;
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-  
+
 
 /******************************************************************************
 * Global functions
@@ -84,8 +117,13 @@ PUBLIC uint16_t  ADC_GetAdcLowValue();
 
 PUBLIC uint16_t  ADC_GetAdcTdsValue();
 
-//PUBLIC uint16_t  ADC_GetTdsValue(uint16_t adc0_value);
-PUBLIC uint16_t  ADC_GetTdsValue();
+PUBLIC int16_t  ADC_GetAdcTdsOutValue();
+
+PUBLIC int16_t  ADC_GetAdcTdsInValue();
+
+PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel);
+
+PUBLIC void   ADC_UpdateTds (uint8_t state);
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

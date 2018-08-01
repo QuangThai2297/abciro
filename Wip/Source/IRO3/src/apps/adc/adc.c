@@ -30,6 +30,7 @@
 * External objects
 ******************************************************************************/
 extern uint8_t g_adc_flag;
+extern volatile uint8_t g_pwm_value;
 
 /******************************************************************************
 * Global variables
@@ -61,15 +62,33 @@ extern uint8_t g_adc_flag;
 * Local variables
 ******************************************************************************/
 
-LOCAL uint16_t s_adc_tds_value = 0;
+LOCAL const TDS_CALIB_PARAM_T TDS_IN_CONFIG_DEFAULD =
+{
+		.adc_value = {2270,2210,2100,1870,1367,1180,777,146,(-200),(-350),(-805),(-940)},
+		.tds_value = {0,4,10,20,31,50,118,260,400,600,1210,4000}
 
-LOCAL uint16_t s_adc_low_value = 0;
+};
 
-LOCAL uint32_t s_sum_adc = 0;
+
+LOCAL const TDS_CALIB_PARAM_T TDS_OUT_CONFIG_DEFAULD =
+{
+		.adc_value = {2270,2210,2100,1870,1367,1180,777,146,(-200),(-350),(-805),(-940)},
+		.tds_value = {0,4,10,20,31,50,118,260,400,600,1210,4000}
+
+};
+
 
 LOCAL uint16_t s_sma_adc = 0;
 
-LOCAL QUEUE_NODE_T* s_adc_sample_queue = NULL;
+LOCAL TDS_CONFIG_T s_tds_calib_param;
+
+LOCAL TDS_T  s_tds_in;
+
+LOCAL TDS_T  s_tds_out;
+
+LOCAL uint8_t s_pwm_value = 0;
+
+LOCAL uint16_t s_200ms_cnt ;
 
 //LOCAL uint16_t s_adc_low_value = 0;
 
@@ -77,26 +96,40 @@ LOCAL QUEUE_NODE_T* s_adc_sample_queue = NULL;
 * Local functions
 ******************************************************************************/
 
-LOCAL void ADC_PushDataToQueue (uint16_t data )
+LOCAL void ADC_PushDataToQueue (int16_t data ,TDS_T* tds)
 {
-	uint16_t sample = 0;
-		if(!QUEUE_QueueIsFull(s_adc_sample_queue))
+	     int16_t sample = 0;
+		if(!QUEUE_QueueIsFull(tds->adc_sample))
 		{
-			s_sum_adc = s_sum_adc + data;
-			QUEUE_EnQueue(s_adc_sample_queue,&data);
-			s_sma_adc  = data;
+			tds->sum_tds_adc +=  data;
+			QUEUE_EnQueue(tds->adc_sample,&data);
+			tds->sma_tds_adc  = data;
 		}
 		else
 		{
 
-			QUEUE_DeQueue(s_adc_sample_queue,&sample);
-			s_sum_adc = s_sum_adc + data - sample;
-			s_sma_adc = s_sum_adc/s_adc_sample_queue->max_count;
-			QUEUE_EnQueue(s_adc_sample_queue,&data);
+			QUEUE_DeQueue(tds->adc_sample,&sample);
+			tds->sum_tds_adc = (tds->sum_tds_adc) + data - sample;
+		//	tds->sign   = (tds->sum_tds_adc >=0 )?0:1;
+			tds->sma_tds_adc = (int16_t) tds->sum_tds_adc/((tds->adc_sample)->max_count);
+			QUEUE_EnQueue(tds->adc_sample,&data);
 
 		}
 }
 
+
+LOCAL void ADC_InitConfigFlash()
+{
+    bool readOk = flash_app_readData((uint8_t*)&s_tds_calib_param,TDS_PARAM_BLOCK,sizeof(s_tds_calib_param));
+
+    if(!readOk)
+    {
+    	memcpy(&(s_tds_calib_param.tds_in),&TDS_IN_CONFIG_DEFAULD,sizeof(s_tds_calib_param.tds_in));
+    	memcpy(&(s_tds_calib_param.tds_out),&TDS_OUT_CONFIG_DEFAULD,sizeof(s_tds_calib_param.tds_out));
+    	flash_app_writeBlock((uint8_t *)&s_tds_calib_param, TDS_PARAM_BLOCK, sizeof(s_tds_calib_param));
+    }
+
+}
 /******************************************************************************
 * Global functions
 ******************************************************************************/
@@ -113,238 +146,72 @@ LOCAL void ADC_PushDataToQueue (uint16_t data )
  */
 PUBLIC void ADC_Init()
 {   
-//	R_Config_S12AD0_Start();
-	s_adc_sample_queue = QUEUE_InitQueue(ADC_SAMPLE_QUEUE_SIZE,sizeof(uint16_t));
-}
 
-
-
-/**
- * @brief One line documentation
- *
- * A more detailed documentation
- *
- * @param arg1 the first function argument
- * @param arg2 the second function argument
- *
- * @return descrition for the function return value
- */
-PUBLIC ERR_E  ADC_Read(ad_channel_t channel,uint16_t* adc_result)
-{
-	ERR_E ret = OK;
-	uint16_t time_out = 0;
-	if(channel >= ADC_MAX ) return ERR;
+	s_tds_in.adc_sample = QUEUE_InitQueue(ADC_SAMPLE_QUEUE_SIZE,sizeof(int16_t));
+	s_tds_out.adc_sample = QUEUE_InitQueue(ADC_SAMPLE_QUEUE_SIZE,sizeof(int16_t));
+	ADC_InitConfigFlash();
+	//
+	s_200ms_cnt = 0;
+	PWM = s_pwm_value;
 	g_adc_flag = 0U;
 	R_Config_S12AD0_Start();
-	for (time_out = 0;time_out <= TIME_OUT_MAX;time_out ++ )
-	{
-		 if (1U == g_adc_flag)
-		 {
-			 break;
-		 }
-		 else if(time_out == TIME_OUT_MAX)
-		 {
-			 return ERR_TIMEOUT;
-		 }
-	}
-
-	/* Read the A/D conversion result and store in variable */
-	R_Config_S12AD0_Get_ValueResult(channel, adc_result);
-	g_adc_flag = 0U;
-
-	 return ret;
-
-}
-/**
- * @brief One line documentation
- *
- * A more detailed documentation
- *
- * @param arg1 the first function argument
- * @param arg2 the second function argument
- *
- * @return descrition for the function return value
- */
-PUBLIC ERR_E  ADC_ReadTds(ad_channel_t channel)
-{
-	ERR_E ret = OK;
-	uint16_t sample_cnt = 0;
-	uint16_t low_value_cnt = 0;
-	uint16_t high_value_cnt = 0;
-	uint16_t adc_temp = 0;
-	uint32_t high_value_sum = 0;
-	uint32_t low_value_sum = 0;
-	uint16_t adc_low_result = 0;
-	uint16_t adc_high_result = 0;
-	uint16_t adc_sma_value = 0;
-	if(channel >= ADC_MAX ) return ERR;
-	g_adc_flag = 0U;
-  // cal SMA
-	for (sample_cnt = 0;sample_cnt <= ADC_MAX_SAMPLE;sample_cnt ++ )
-	{
-		if(ADC_Read(channel,&adc_temp) != OK)
-		{
-			return ERR;
-		}
-		else
-		{
-			if(adc_temp > ADC_HIGH_VALUE)
-			{
-				high_value_cnt ++;
-				high_value_sum += adc_temp;
-			}
-
-		}
-	}
-
-
-	if(high_value_cnt == 0) return ERR;
-	adc_high_result = (high_value_cnt == 0)?0:(high_value_sum/high_value_cnt);
-	adc_sma_value = (high_value_sum/(2*high_value_cnt));
-
-//	adc_sma_value = (high_value_sum/high_value_cnt);
-
-	high_value_cnt = 0;
-	low_value_cnt  = 0;
-	high_value_sum = 0;
-	low_value_sum  = 0;
-
-
-	for (sample_cnt = 0;sample_cnt <= ADC_MAX_SAMPLE;sample_cnt ++ )
-	{
-		if(ADC_Read(channel,&adc_temp) != OK)
-		{
-			return ERR;
-		}
-		else
-		{
-			if(adc_temp < adc_sma_value)
-			{
-
-					low_value_cnt ++;
-					low_value_sum += adc_temp;
-
-			}
-			else if(adc_temp > adc_sma_value)
-			{
-				high_value_cnt ++;
-				high_value_sum += adc_temp;
-			}
-
-		}
-	}
-
-	 adc_low_result = (low_value_cnt == 0)?0:(low_value_sum/low_value_cnt);
-	 adc_high_result = (high_value_cnt == 0)?0:(high_value_sum/high_value_cnt);
-	s_adc_tds_value  = adc_high_result - adc_low_result;
-	s_adc_low_value = adc_sma_value;
-	ADC_PushDataToQueue(s_adc_tds_value);
-	 return ret;
-
 }
 
-/**
- * @brief One line documentation
- *
- * A more detailed documentation
- *
- * @param arg1 the first function argument
- * @param arg2 the second function argument
- *
- * @return descrition for the function return value
- */
-//PUBLIC ERR_E  ADC_ReadTds(ad_channel_t channel)
-//{
-//	ERR_E ret = OK;
-//	uint16_t sample_cnt = 0;
-//	uint16_t low_value_cnt = 0;
-//	uint16_t high_value_cnt = 0;
-//	uint16_t adc_temp = 0;
-//	uint32_t high_value_sum = 0;
-//	uint32_t low_value_sum = 0;
-//	uint16_t adc_low_result = 0;
-//	uint16_t adc_high_result = 0;
-//	if(channel >= ADC_MAX ) return ERR;
-//	g_adc_flag = 0U;
-//
-//	for (sample_cnt = 0;sample_cnt <= ADC_MAX_SAMPLE;sample_cnt ++ )
-//	{
-//		if(ADC_Read(channel,&adc_temp) != OK)
-//		{
-//			return ERR;
-//		}
-//		else
-//		{
-//			if(adc_temp < ADC_LOW_VALUE)
-//			{
-//				low_value_cnt ++;
-//				low_value_sum += adc_temp;
-//			}
-//			else if(adc_temp > ADC_HIGH_VALUE)
-//			{
-//				high_value_cnt ++;
-//				high_value_sum += adc_temp;
-//			}
-//
-//
-//		}
-//	}
-//	 adc_low_result = (low_value_cnt == 0)?0:(low_value_sum/low_value_cnt);
-//	 adc_high_result = (high_value_cnt == 0)?0:(high_value_sum/high_value_cnt);
-//	s_adc_tds_value  = (adc_high_result + s_adc_tds_value)/2;
-//	s_adc_low_value = (high_value_cnt + s_adc_low_value)/2;
-//	ADC_PushDataToQueue(s_adc_tds_value);
-//	 return ret;
-//
-//}
-PUBLIC uint16_t  ADC_GetAdcTdsValue()
-{
 
-	return s_sma_adc;
+
+
+PUBLIC int16_t  ADC_GetAdcTdsInValue()
+{
+	uint8_t dbg[UART_SEND_MAX_LEN];
+	sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",s_tds_in.sma_tds_adc);
+	UART_Debug (dbg);
+	return (s_tds_in.sma_tds_adc);
 //return s_adc_tds_value;
 
 
 }
 
-PUBLIC uint16_t  ADC_GetAdcLowValue()
+PUBLIC int16_t  ADC_GetAdcTdsOutValue()
 {
 
-	return s_adc_low_value;
+	return s_tds_out.sma_tds_adc;
 //return s_adc_tds_value;
 
 
 }
 
-PUBLIC uint16_t  ADC_GetTdsValue()
+PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 {
 
-	uint32		calib_value[7] =  {2100,1985,1730,1675,1610,1111,1018};
-	uint32				fix_value[7]   = {0,4,17,19,22,25,28};
+
 	float				calculate_value = 0;
 	float				slope;
 	uint16_t            tds_return = 0;
-	uint32				index_level = 0;
-	uint16_t adc0_value = s_sma_adc;
-
-	if(adc0_value > calib_value[0] | (adc0_value == 0))
+	uint32_t				index_level = 0;
+	TDS_CALIB_PARAM_T   *calib_param = (channel  == TDS_IN_VALUE)?&(s_tds_calib_param.tds_in): &(s_tds_calib_param.tds_out);
+	int16_t adc0_value = s_tds_in.sma_tds_adc;
+	uint8_t dbg[UART_SEND_MAX_LEN];
+	sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",adc0_value);
+	UART_Debug (dbg);
+	if(adc0_value > calib_param->adc_value[0] )
 	{
 		tds_return = 0;
 		return tds_return;
 	}
 
-	if(adc0_value < calib_value[6])
+	if(adc0_value < calib_param->adc_value[CALIB_POINT_MAX-1])
 	{
-		tds_return = fix_value[6];
+		tds_return = calib_param->tds_value[CALIB_POINT_MAX-1];
 		return tds_return;
 	}
 
-	for(index_level = 0; index_level < 6 ; index_level++)
+	for(index_level = 0; index_level < (CALIB_POINT_MAX -1) ; index_level++)
 	{
 
-		if((adc0_value <= calib_value[index_level]) && (adc0_value >= calib_value[index_level+1]) )
+		if((adc0_value <= calib_param->adc_value[index_level]) && (adc0_value >= calib_param->adc_value[index_level+1]) )
 		{
-			slope = ((float)(fix_value[index_level+1] - fix_value[index_level]))/((float)(calib_value[index_level] - calib_value[index_level+1]));
-			calculate_value = fix_value[index_level] + slope * ( calib_value[index_level] - adc0_value);
+			slope = ((float)(calib_param->tds_value[index_level+1] - calib_param->tds_value[index_level]))/((float)(calib_param->adc_value[index_level] - calib_param->adc_value[index_level+1]));
+			calculate_value = calib_param->tds_value[index_level] + slope * ( calib_param->adc_value[index_level] - adc0_value);
 			tds_return= (calculate_value <= 0)?0:(uint16_t) (calculate_value+0.5);
 			break;
 		}
@@ -356,3 +223,64 @@ PUBLIC uint16_t  ADC_GetTdsValue()
 }
 
 
+PUBLIC void   ADC_UpdateTds (uint8_t state)
+{
+	uint16_t adc_result_tds_in = 0;
+	uint16_t adc_result_tds_out = 0;
+	int16_t  adc_tds_in = 0;
+	int16_t  adc_tds_out = 0;
+
+	s_200ms_cnt = s_200ms_cnt +1;
+	if(s_200ms_cnt >= ADC_SAMPLE_CAL_MAX)
+	{
+		s_200ms_cnt = 0;
+		//update tds in
+		adc_tds_in = ((s_tds_in.high_cnt == 0)| (s_tds_in.low_cnt==0))?0: \
+				((s_tds_in.sum_adc_high/s_tds_in.high_cnt) - (s_tds_in.sum_adc_low/s_tds_in.low_cnt));
+		ADC_PushDataToQueue(adc_tds_in,&s_tds_in);
+
+	//	update tds out
+		adc_tds_out = ((s_tds_out.high_cnt == 0)| (s_tds_out.low_cnt==0))?0: \
+				((s_tds_out.sum_adc_high/s_tds_out.high_cnt) - (s_tds_out.sum_adc_low/s_tds_out.low_cnt));
+		ADC_PushDataToQueue(adc_tds_out,&s_tds_out);
+
+		s_tds_in.high_cnt = 0;
+		s_tds_in.low_cnt  = 0;
+		s_tds_in.sum_adc_high = 0;
+		s_tds_in.sum_adc_low  = 0;
+		s_tds_out.high_cnt = 0;
+		s_tds_out.low_cnt  = 0;
+		s_tds_out.sum_adc_high = 0;
+		s_tds_out.sum_adc_low  = 0;
+
+		goto end_function;
+	}
+	R_Config_S12AD0_Get_ValueResult(TDS_IN_CHANNEL, &adc_result_tds_in);
+	R_Config_S12AD0_Get_ValueResult(TDS_OUT_CHANNEL,&adc_result_tds_out);
+	if(g_pwm_value ==  0)
+	{
+
+		s_tds_in.low_cnt ++;
+		s_tds_in.sum_adc_low  += adc_result_tds_in;
+
+		s_tds_out.low_cnt ++;
+		s_tds_out.sum_adc_low  += adc_result_tds_out;
+
+	}
+	else
+	{
+
+		s_tds_in.high_cnt ++;
+		s_tds_in.sum_adc_high  += adc_result_tds_in;
+
+		s_tds_out.high_cnt ++;
+		s_tds_out.sum_adc_high  += adc_result_tds_out;
+
+	}
+
+
+    end_function:
+
+
+	g_adc_flag = 0U;
+}
