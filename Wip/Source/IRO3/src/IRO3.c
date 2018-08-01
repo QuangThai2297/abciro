@@ -105,13 +105,11 @@ void main(void)
 {
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
-
 	TOUCH_init();
-	ADC_Init();
-//	GPIO_Init();
-
 	UART_Init();
 	flash_app_init();
+	ADC_Init();
+
 	Display_turnOnAllIn1s();
 	/* Main loop */
 	while(1)

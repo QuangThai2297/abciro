@@ -26,6 +26,7 @@
 #include <config.h>
 #include "UIControl.h"
 #include "display.h"
+#include "adc.h"
 
 /******************************************************************************
 * External objects
@@ -136,18 +137,18 @@ void UIControl_updateUI()
 	switch (s_UIState) {
 		case UI_STATE_LOCK:
 			Display_turnOffLedKey();
-			Display_SetNumberInLed4(0);
+			Display_SetNumberInLed4(ADC_GetTdsValue(TDS_OUT_VALUE));
 			Display_SetNumberInLed1(LED_7SEG_OFF);
 			Display_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
 			break;
 		case UI_STATE_TDS_OUT:
 			Display_SetNumberInLed4(0);
-			Display_SetNumberInLed1(LED_7SEG_OFF);
+			Display_SetNumberInLed4(ADC_GetTdsValue(TDS_OUT_VALUE));
 			Display_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
 			break;
 		case UI_STATE_TDS_IN:
 			Display_SetNumberInLed4(0);
-			Display_SetNumberInLed1(LED_7SEG_OFF);
+			Display_SetNumberInLed4(ADC_GetTdsValue(TDS_IN_VALUE));
 			Display_switchMachineStateLed(MACHINE_STATE_LED_TDS_IN);
 			break;
 		case UI_STATE_FILTER_1:
@@ -304,9 +305,10 @@ void TouchBtnPressed_cb(ButtonId_t btn)
 
 void TouchBtnHoldRelease_cb(ButtonId_t btn)
 {
+	btnControls[btn].state = BTN_STATE_RELEASE;
+	s_lastPressTime = g_sysTime;
 	if(UIControl_stateIsLock())
 		return;
-	btnControls[btn].state = BTN_STATE_RELEASE;
 	switch (btn) {
 		case BUTTON_ID_SELECT:
 			break;
@@ -327,7 +329,6 @@ void TouchBtnHoldRelease_cb(ButtonId_t btn)
 		default:
 			break;
 	}
-	s_lastPressTime = g_sysTime;
 }
 
 
