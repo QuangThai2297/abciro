@@ -189,7 +189,16 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 	uint16_t            tds_return = 0;
 	uint32_t				index_level = 0;
 	TDS_CALIB_PARAM_T   *calib_param = (channel  == TDS_IN_VALUE)?&(s_tds_calib_param.tds_in): &(s_tds_calib_param.tds_out);
-	int16_t adc0_value = s_tds_in.sma_tds_adc;
+	int16_t adc0_value;
+	if(channel == TDS_IN_VALUE)
+	{
+		adc0_value = s_tds_in.sma_tds_adc;
+	}
+	else if(channel == TDS_OUT_VALUE)
+	{
+		adc0_value = s_tds_out.sma_tds_adc;
+	}
+
 	uint8_t dbg[UART_SEND_MAX_LEN];
 	sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",adc0_value);
 	UART_Debug (dbg);
