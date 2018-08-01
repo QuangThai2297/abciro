@@ -93,6 +93,10 @@ typedef enum
 ******************************************************************************/
 //void Display_scanLed(void);
 void Display_SetNumberInLed4(uint16_t number); // set number for 4 digit led
+uint16_t Display_getNumberInLed4();
+void Display_reduceNumberInLed4(uint16_t reduce);
+void Display_increaseNumberInLed4(uint16_t reduce);
+
 void Display_SetNumberInLed1(int8_t number); // set number for 1 digit led
 void Display_scanLed(void);
 void Display_process();

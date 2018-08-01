@@ -26,7 +26,8 @@
 #include <config.h>
 #include "UIControl.h"
 #include "display.h"
-
+#include "user_config.h"
+#include "filter_time.h"
 /******************************************************************************
 * External objects
 ******************************************************************************/
@@ -102,6 +103,49 @@ uint32_t s_lastPressTime;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
+void saveFilterLifeTime(uint8_t index)
+{
+	UserConfig_setFilterLifeTime(Display_getNumberInLed4()*3600,index);
+	filter_time_resetTimeAtIndex(index);
+}
+void saveCurentSetingNumer()
+{
+	switch (s_UIState) {
+		case UI_STATE_TDS_OUT:
+			break;
+		case UI_STATE_TDS_IN:
+			break;
+		case UI_STATE_FILTER_1:
+			saveFilterLifeTime(0);
+			break;
+		case UI_STATE_FILTER_2:
+			saveFilterLifeTime(1);
+			break;
+		case UI_STATE_FILTER_3:
+			saveFilterLifeTime(2);
+			break;
+		case UI_STATE_FILTER_4:
+			saveFilterLifeTime(3);
+			break;
+		case UI_STATE_FILTER_5:
+			saveFilterLifeTime(4);
+			break;
+		case UI_STATE_FILTER_6:
+			saveFilterLifeTime(5);
+			break;
+		case UI_STATE_FILTER_7:
+			saveFilterLifeTime(6);
+			break;
+		case UI_STATE_FILTER_8:
+			saveFilterLifeTime(7);
+			break;
+		case UI_STATE_FILTER_9:
+			saveFilterLifeTime(8);
+			break;
+		default:
+			break;
+	}
+}
 void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 {
 	s_lastPressTime = g_sysTime;
@@ -111,6 +155,7 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 		{
 			s_uiMode = UI_MODE_NOMAL;
 			Display_onBuzzerInMs(TIME_BUZZER_ON);
+			saveCurentSetingNumer();
 		}
 		else
 		{
@@ -271,10 +316,15 @@ bool UIControl_stateIsLock()
 void UIControl_process()
 {
 	UIControl_btnProcess();
-	UIControl_updateUI();
+	if(s_uiMode == UI_MODE_NOMAL)
+	{
+		UIControl_updateUI();
+	}
 	if((s_UIState != UI_STATE_LOCK) && ((g_sysTime - s_lastPressTime) > MAX_TIME_WAIT))
 	{
 		UIControl_switchUiStateTo(UI_STATE_LOCK);
+		s_uiMode = UI_MODE_NOMAL;
+
 	}
 }
 
@@ -299,30 +349,44 @@ void TouchBtnPressed_cb(ButtonId_t btn)
 
 void TouchBtnHoldRelease_cb(ButtonId_t btn)
 {
+	if(!UIControl_stateIsLock() && btnControls[btn].state == BTN_STATE_PRESS)
+	{
+		switch (btn) {
+			case BUTTON_ID_SELECT:
+				break;
+			case BUTTON_ID_PLUS:
+				if(s_uiMode == UI_MODE_NOMAL)
+				{
+					UIControl_goNextState();
+				}
+				else if(s_uiMode == UI_MODE_SETTING)
+				{
+					Display_increaseNumberInLed4(1);
+				}
+				break;
+			case BUTTON_ID_MINUS:
+				if(s_uiMode == UI_MODE_NOMAL)
+				{
+					UIControl_goPrevState();
+				}
+				else if(s_uiMode == UI_MODE_SETTING)
+				{
+					Display_reduceNumberInLed4(1);
+				}
+				break;
+			case BUTTON_ID_SET:
+				if(s_uiMode == UI_MODE_SETTING)
+				{
+					UIControl_updateUI();
+				}
+				break;
+			default:
+				break;
+		}
+
+	}
 	btnControls[btn].state = BTN_STATE_RELEASE;
 	s_lastPressTime = g_sysTime;
-	if(UIControl_stateIsLock())
-		return;
-	switch (btn) {
-		case BUTTON_ID_SELECT:
-			break;
-		case BUTTON_ID_PLUS:
-			if(s_uiMode == UI_MODE_NOMAL)
-			{
-				UIControl_goNextState();
-			}
-			break;
-		case BUTTON_ID_MINUS:
-			if(s_uiMode == UI_MODE_NOMAL)
-			{
-				UIControl_goPrevState();
-			}
-			break;
-		case BUTTON_ID_SET:
-			break;
-		default:
-			break;
-	}
 }
 
 
