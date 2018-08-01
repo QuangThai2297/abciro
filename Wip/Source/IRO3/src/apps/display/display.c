@@ -256,7 +256,7 @@ void Display_turnOnAllIn1s()
 	Display_SetNumberInLed4(8888);
 	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
 	uint32_t timeStart = g_sysTime;
-	while((g_sysTime - timeStart) < 2000)
+	while((g_sysTime - timeStart) < 1500)
 	{
     	if(g_run200usFlag == 1)
     	{
