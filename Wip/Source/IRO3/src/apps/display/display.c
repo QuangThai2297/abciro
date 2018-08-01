@@ -26,6 +26,7 @@
 #include <config.h>
 #include <display.h>
 #include "r_gpio_rx_if.h"
+#include "adc.h"
 
 /******************************************************************************
 * External objects
@@ -266,4 +267,17 @@ void Display_turnOnAllIn1s()
 	}
 	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
 
+}
+
+void Display_showTdsOut()
+{
+	Display_SetNumberInLed1(LED_7SEG_OFF);
+	Display_SetNumberInLed4(ADC_GetTdsValue(TDS_OUT_VALUE));
+	Display_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
+}
+void Display_showTdsIn()
+{
+	Display_SetNumberInLed1(LED_7SEG_OFF);
+	Display_SetNumberInLed4(ADC_GetTdsValue(TDS_IN_VALUE));
+	Display_switchMachineStateLed(MACHINE_STATE_LED_TDS_IN);
 }

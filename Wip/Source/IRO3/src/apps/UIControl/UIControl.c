@@ -26,7 +26,6 @@
 #include <config.h>
 #include "UIControl.h"
 #include "display.h"
-#include "adc.h"
 
 /******************************************************************************
 * External objects
@@ -105,6 +104,7 @@ uint32_t s_lastPressTime;
 ******************************************************************************/
 void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 {
+	s_lastPressTime = g_sysTime;
 	if((btn == BUTTON_ID_SET) && (holdingTime == HOLD_TIME2))
 	{
 		if(s_uiMode == UI_MODE_SETTING)
@@ -137,19 +137,13 @@ void UIControl_updateUI()
 	switch (s_UIState) {
 		case UI_STATE_LOCK:
 			Display_turnOffLedKey();
-			Display_SetNumberInLed4(ADC_GetTdsValue(TDS_OUT_VALUE));
-			Display_SetNumberInLed1(LED_7SEG_OFF);
-			Display_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
+			Display_showTdsOut();
 			break;
 		case UI_STATE_TDS_OUT:
-			Display_SetNumberInLed4(0);
-			Display_SetNumberInLed4(ADC_GetTdsValue(TDS_OUT_VALUE));
-			Display_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
+			Display_showTdsOut();
 			break;
 		case UI_STATE_TDS_IN:
-			Display_SetNumberInLed4(0);
-			Display_SetNumberInLed4(ADC_GetTdsValue(TDS_IN_VALUE));
-			Display_switchMachineStateLed(MACHINE_STATE_LED_TDS_IN);
+			Display_showTdsIn();
 			break;
 		case UI_STATE_FILTER_1:
 			Display_showFilterTime(0);
