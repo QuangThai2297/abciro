@@ -40,16 +40,13 @@
 ******************************************************************************/
 extern volatile uint8_t g_run200usFlag;
 extern volatile uint8_t g_run1msFlag;
-
-
+extern uint8_t g_adc_flag;
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-PUBLIC volatile uint8_t g_state = IDLE_STATE;
+
 
 uint16_t g_adc_result;
-
-uint8_t s_timeOut100ms;
 
 /******************************************************************************
 * Constants and macros
@@ -58,7 +55,7 @@ uint8_t s_timeOut100ms;
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-
+#define TIME_TO_DISPLAY_TDS  (2000) //2 secs
 /******************************************************************************
 * Local types
 ******************************************************************************/
@@ -75,6 +72,8 @@ Macro definitions
 uint16_t value ;
 uint32_t time_out = 0;
 uint32_t i = 0;
+
+LOCAL uint8_t s_pwm_cnt = 0;
 //LOCAL BOOLEAN s_is_timeout = TRUE;
 
 
@@ -84,7 +83,7 @@ uint32_t i = 0;
 ******************************************************************************/
 void run200usTask();
 void run1msTask();
-void run100msTask();
+void run_DisplayTds();
 
 /******************************************************************************
 * Global functions
@@ -105,11 +104,12 @@ void main(void)
 {
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
-	g_state = IDLE_STATE;
+
 	TOUCH_init();
 	ADC_Init();
 //	GPIO_Init();
 
+	UART_Init();
 	flash_app_init();
 	Display_turnOnAllIn1s();
 	/* Main loop */
@@ -126,13 +126,13 @@ void main(void)
     		run1msTask();
     		g_run1msFlag= 0;
     	}
-    	if(s_timeOut100ms >= 100)
+    	if(g_adc_flag)
     	{
-    		run100msTask();
-    		s_timeOut100ms= 0;
+    		ADC_UpdateTds (s_pwm_cnt);
     	}
 	}
 }
+
 void run200usTask()
 {
 	Display_process();
@@ -141,15 +141,7 @@ void run200usTask()
 void run1msTask()
 {
 	TOUCH_process();
-	if(s_timeOut100ms < 100)
-	{
-		s_timeOut100ms++;
-	}
 
-}
-void run100msTask()
-{
-	UIControl_process();
 }
 
 

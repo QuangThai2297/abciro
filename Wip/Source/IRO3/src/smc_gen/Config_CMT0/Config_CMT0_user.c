@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_CMT0.
-* Creation Date: 2018-07-31
+* Creation Date: 2018-08-01
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -37,6 +37,7 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "Config_CMT0.h"
 /* Start user code for include. Do not edit comment generated here */
+#include "Config_S12AD0.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -44,6 +45,9 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
+volatile uint8_t g_pwm_timer;
+extern volatile uint8_t g_adc_flag;
+volatile uint8_t g_pwm_value = 0;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -74,7 +78,17 @@ void R_Config_CMT0_Create_UserInit(void)
 static void r_Config_CMT0_cmi0_interrupt(void)
 {
     /* Start user code for r_Config_CMT0_cmi0_interrupt. Do not edit comment generated here */
-
+//	LED5 ^= 1u;
+//	PWM ^= 1u;
+//	g_pwm_timer = 1;
+    // start adc for tds out
+//	g_adc_flag = 0;
+	if(0U == g_adc_flag)
+	{
+		g_pwm_value ^= 1;
+		PWM = g_pwm_value;
+		R_Config_S12AD0_Start();
+	}
     /* End user code. Do not edit comment generated here */
 }
 

@@ -50,7 +50,7 @@
 ******************************************************************************/
 #define FILLTER_TIME_BLOCK 	FLASH_DF_BLOCK_0
 #define USER_CONFIG_BLOCK 	FLASH_DF_BLOCK_1
-
+#define TDS_PARAM_BLOCK     FLASH_DF_BLOCK_2
 
 
 
