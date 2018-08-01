@@ -72,7 +72,7 @@ Macro definitions
 uint16_t value ;
 uint32_t time_out = 0;
 uint32_t i = 0;
-
+uint8_t s_timeOut100ms;
 LOCAL uint8_t s_pwm_cnt = 0;
 //LOCAL BOOLEAN s_is_timeout = TRUE;
 
@@ -83,6 +83,7 @@ LOCAL uint8_t s_pwm_cnt = 0;
 ******************************************************************************/
 void run200usTask();
 void run1msTask();
+void run100msTask();
 void run_DisplayTds();
 
 /******************************************************************************
@@ -126,6 +127,11 @@ void main(void)
     		run1msTask();
     		g_run1msFlag= 0;
     	}
+    	if(s_timeOut100ms >= 100)
+    	{
+    		run100msTask();
+    		s_timeOut100ms = 0;
+    	}
     	if(g_adc_flag)
     	{
     		ADC_UpdateTds (s_pwm_cnt);
@@ -141,9 +147,16 @@ void run200usTask()
 void run1msTask()
 {
 	TOUCH_process();
+	if(s_timeOut100ms <100)
+	{
+		s_timeOut100ms++;
+	}
 
 }
-
+void run100msTask()
+{
+	UIControl_process();
+}
 
 void abort(void)
 {
