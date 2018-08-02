@@ -137,7 +137,8 @@ void UIControl_updateUI()
 	switch (s_UIState) {
 		case UI_STATE_LOCK:
 			Display_turnOffLedKey();
-			Display_showTdsOut();
+		//	Display_showTdsOut();
+			Display_showTdsIn();
 			break;
 		case UI_STATE_TDS_OUT:
 			Display_showTdsOut();
