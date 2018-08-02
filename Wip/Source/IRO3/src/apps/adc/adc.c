@@ -78,15 +78,13 @@ LOCAL const TDS_CALIB_PARAM_T TDS_OUT_CONFIG_DEFAULD =
 };
 
 
-LOCAL uint16_t s_sma_adc = 0;
-
 LOCAL TDS_CONFIG_T s_tds_calib_param;
 
 LOCAL TDS_T  s_tds_in;
 
 LOCAL TDS_T  s_tds_out;
 
-LOCAL uint8_t s_pwm_value = 0;
+LOCAL uint16_t s_interval_get_tds = 0;
 
 LOCAL uint16_t s_200ms_cnt ;
 
@@ -152,7 +150,7 @@ PUBLIC void ADC_Init()
 	ADC_InitConfigFlash();
 	//
 	s_200ms_cnt = 0;
-	PWM = s_pwm_value;
+	PWM = 0;
 	g_adc_flag = 0U;
 	R_Config_S12AD0_Start();
 }
@@ -162,7 +160,7 @@ PUBLIC void ADC_Init()
 
 PUBLIC int16_t  ADC_GetAdcTdsInValue()
 {
-	uint8_t dbg[UART_SEND_MAX_LEN];
+	char dbg[UART_SEND_MAX_LEN];
 	sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",s_tds_in.sma_tds_adc);
 	UART_Debug (dbg);
 	return (s_tds_in.sma_tds_adc);
@@ -199,7 +197,7 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 		adc0_value = s_tds_out.sma_tds_adc;
 	}
 
-	uint8_t dbg[UART_SEND_MAX_LEN];
+	char dbg[UART_SEND_MAX_LEN];
 	sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",adc0_value);
 	UART_Debug (dbg);
 	if(adc0_value > calib_param->adc_value[0] )
@@ -229,6 +227,16 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 
 	return tds_return;
 
+}
+
+PUBLIC uint16_t  ADC_GetTdsValueDisplay(TDS_E channel)
+{
+	uint16_t            tds_return = 0;
+	if(s_interval_get_tds == 0)
+	{
+		tds_return = ADC_GetTdsValue(channel);
+	}
+	return tds_return;
 }
 
 
@@ -292,4 +300,31 @@ PUBLIC void   ADC_UpdateTds (uint8_t state)
 
 
 	g_adc_flag = 0U;
+}
+
+
+PUBLIC ERR_E ADC_SetTdsOutMax(uint16_t value)
+{
+	if((value > TDS_OUT_VALUE_MIN)&&(value < TDS_OUT_VALUE_MAX))
+	{
+		s_tds_calib_param.tds_out_max =  value;
+		flash_app_writeBlock((uint8_t *)&s_tds_calib_param, TDS_PARAM_BLOCK, sizeof(s_tds_calib_param));
+	   return OK;
+	}
+	else
+	{
+		return ERR_PARAM;
+	}
+
+}
+
+PUBLIC uint16_t ADC_GetTdsOutMax()
+{
+	return s_tds_calib_param.tds_out_max;
+}
+
+
+PUBLIC ERR_E ADC_CalibTdsValue(uint16_t tdsvalue,TDS_E channel)
+{
+   return OK;
 }

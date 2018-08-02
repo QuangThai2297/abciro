@@ -54,7 +54,8 @@
 #define UPDATE_TDS_IN (0)
 #define UPDATE_TDS_OUT (1)
 #define UPDATE_VALUE   (2)
-
+#define TDS_OUT_VALUE_MIN  (0)
+#define TDS_OUT_VALUE_MAX  (1000)
 #define CALIB_POINT_MAX (12)
 /******************************************************************************
 * Types
@@ -74,7 +75,6 @@ typedef struct
 	int32_t  sum_adc_low;
 	int16_t  sma_tds_adc;
 	int32_t  sum_tds_adc;
-//	uint8_t  sign;
 	QUEUE_NODE_T* adc_sample;
 
 }TDS_T;
@@ -91,6 +91,7 @@ typedef struct
 {
 	TDS_CALIB_PARAM_T tds_in;	//
 	TDS_CALIB_PARAM_T tds_out;		//
+	uint16_t  tds_out_max;
 } TDS_CONFIG_T;
 
 typedef enum
@@ -124,6 +125,10 @@ PUBLIC int16_t  ADC_GetAdcTdsInValue();
 PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel);
 
 PUBLIC void   ADC_UpdateTds (uint8_t state);
+
+PUBLIC ERR_E ADC_SetTdsOutMax(uint16_t value);
+
+PUBLIC uint16_t ADC_GetTdsOutMax();
 /******************************************************************************
 * Inline functions
 ******************************************************************************/
