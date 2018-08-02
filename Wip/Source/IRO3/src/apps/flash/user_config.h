@@ -65,6 +65,7 @@ extern UserConfig_t g_userConfig;
 * Global functions
 ******************************************************************************/
 void user_config_init();
+void UserConfig_setFilterLifeTime(uint32_t lifeTime,uint8_t filterIndex);
 
 
 /******************************************************************************

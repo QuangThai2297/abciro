@@ -27,6 +27,7 @@
 #include <display.h>
 #include "r_gpio_rx_if.h"
 #include "adc.h"
+#include "filter_time.h"
 
 /******************************************************************************
 * External objects
@@ -63,13 +64,15 @@ const gpio_port_pin_t LED_MACHINE_STATE_PIN[LED_MACHINE_STATE_NUM] = {LED_MACHIN
 ******************************************************************************/
 void Display_showDigitAtIndex(uint8_t digit,uint8_t index);
 void processBuzzer();
+void encodeLed4();
 
 
 /******************************************************************************
 * Local variables
 ******************************************************************************/
 uint8_t led4Digits[4] = {0xff,0xff,0xff,0xff};
-uint8_t led1Number = 0;
+uint16_t s_led4Number;
+uint8_t led1Code = 0;
 uint8_t ledIndex;
 uint32_t timeOffBuzzer;
 bool buzzerIsOn = false;
@@ -93,6 +96,27 @@ void processBuzzer()
 	{
 		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
 		buzzerIsOn = false;
+	}
+}
+void encodeLed4()
+{
+	uint16_t number = s_led4Number;
+	for(int i = 0; i<4; i++)
+	{
+		led4Digits[i] = LED7_CODE[number%10];
+		number /= 10;
+	}
+	if(led4Digits[3] == LED7_CODE[0])
+	{
+		led4Digits[3] = LED7_CODE[LED_7SEG_OFF];
+		if(led4Digits[2] == LED7_CODE[0])
+		{
+			led4Digits[2] = LED7_CODE[LED_7SEG_OFF];
+			if(led4Digits[1] == LED7_CODE[0])
+			{
+				led4Digits[1] = LED7_CODE[LED_7SEG_OFF];
+			}
+		}
 	}
 }
 /******************************************************************************
@@ -149,7 +173,7 @@ void Display_scanLed(void)
 	{
 		Display_showDigitAtIndex(led4Digits[ledIndex],ledIndex);
 	}else{
-		digit = led1Number;
+		digit = led1Code;
 		Display_showDigitAtIndex(digit,ledIndex);
 	}
 
@@ -171,7 +195,7 @@ void Display_scanLed(void)
  */
 void Display_SetNumberInLed1(int8_t number)
 {
-	led1Number = LED7_CODE[number];
+	led1Code = LED7_CODE[number];
 }
 
 /**
@@ -186,23 +210,25 @@ void Display_SetNumberInLed1(int8_t number)
  */
 void Display_SetNumberInLed4(uint16_t number)
 {
-	for(int i = 0; i<4; i++)
-	{
-		led4Digits[i] = LED7_CODE[number%10];
-		number /= 10;
-	}
-	if(led4Digits[3] == LED7_CODE[0])
-	{
-		led4Digits[3] = LED7_CODE[LED_7SEG_OFF];
-		if(led4Digits[2] == LED7_CODE[0])
-		{
-			led4Digits[2] = LED7_CODE[LED_7SEG_OFF];
-			if(led4Digits[1] == LED7_CODE[0])
-			{
-				led4Digits[1] = LED7_CODE[LED_7SEG_OFF];
-			}
-		}
-	}
+	s_led4Number = number;
+	encodeLed4();
+}
+
+uint16_t Display_getNumberInLed4()
+{
+	return s_led4Number;
+}
+
+void Display_reduceNumberInLed4(uint16_t reduce)
+{
+	s_led4Number -= reduce;
+	encodeLed4();
+}
+
+void Display_increaseNumberInLed4(uint16_t reduce)
+{
+	s_led4Number += reduce;
+	encodeLed4();
 }
 
 void Display_SetLedKeyState(LedKeyName_t ledName,LedKeyColor_t color, LedState_t state)

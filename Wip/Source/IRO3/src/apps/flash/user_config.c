@@ -107,7 +107,11 @@ void user_config_init()
 
 }
 
-
+void UserConfig_setFilterLifeTime(uint32_t lifeTime,uint8_t filterIndex)
+{
+	g_userConfig.filterLifeTime[filterIndex] = lifeTime;
+	user_config_updateToFlash();
+}
 /**
  * @brief One line documentation
  *

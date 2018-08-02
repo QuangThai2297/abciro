@@ -140,7 +140,6 @@ void main(void)
 void run200usTask()
 {
 	Display_process();
-
 }
 void run1msTask()
 {
