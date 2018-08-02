@@ -129,6 +129,8 @@ PUBLIC void   ADC_UpdateTds (uint8_t state);
 PUBLIC ERR_E ADC_SetTdsOutMax(uint16_t value);
 
 PUBLIC uint16_t ADC_GetTdsOutMax();
+
+PUBLIC ERR_E ADC_CalibTdsValue(uint16_t tdsvalue,TDS_E channel);
 /******************************************************************************
 * Inline functions
 ******************************************************************************/
