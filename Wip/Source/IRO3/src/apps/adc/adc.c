@@ -124,6 +124,7 @@ LOCAL void ADC_InitConfigFlash()
     {
     	memcpy(&(s_tds_calib_param.tds_in),&TDS_IN_CONFIG_DEFAULD,sizeof(s_tds_calib_param.tds_in));
     	memcpy(&(s_tds_calib_param.tds_out),&TDS_OUT_CONFIG_DEFAULD,sizeof(s_tds_calib_param.tds_out));
+    	s_tds_calib_param.tds_out_max   = TDS_OUT_MAX_DEFAULT;
     	flash_app_writeBlock((uint8_t *)&s_tds_calib_param, TDS_PARAM_BLOCK, sizeof(s_tds_calib_param));
     }
 

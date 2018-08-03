@@ -55,6 +55,7 @@
 #define UPDATE_TDS_OUT (1)
 #define UPDATE_VALUE   (2)
 #define TDS_OUT_VALUE_MIN  (0)
+#define TDS_OUT_MAX_DEFAULT (100)
 #define TDS_OUT_VALUE_MAX  (1000)
 #define CALIB_POINT_MAX (12)
 /******************************************************************************
