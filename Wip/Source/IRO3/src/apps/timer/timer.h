@@ -70,7 +70,11 @@
 ******************************************************************************/
 PUBLIC void delay_clk (uint16_t delay);
 
+PUBLIC void TIMER_SystemTickEvent(void);
 
+PUBLIC void TIMER_CheckTimerEvent();
+
+PUBLIC void TIMER_Init();
 /******************************************************************************
 * Inline functions
 ******************************************************************************/
