@@ -28,6 +28,8 @@
 #include "display.h"
 #include "user_config.h"
 #include "filter_time.h"
+#include "timer.h"
+
 /******************************************************************************
 * External objects
 ******************************************************************************/
@@ -182,8 +184,7 @@ void UIControl_updateUI()
 	switch (s_UIState) {
 		case UI_STATE_LOCK:
 			Display_turnOffLedKey();
-		//	Display_showTdsOut();
-			Display_showTdsIn();
+			Display_showTdsOut();
 			break;
 		case UI_STATE_TDS_OUT:
 			Display_showTdsOut();
@@ -267,21 +268,21 @@ void UIControl_btnProcess()
 	{
 		if(btnControls[btnId].state != BTN_STATE_RELEASE)
 		{
-			if((g_sysTime - btnControls[btnId].timePress) > HOLD_TIME1)
+			if(elapsedTime(g_sysTime , btnControls[btnId].timePress) > HOLD_TIME1)
 			{
 				if(btnControls[btnId].state == BTN_STATE_PRESS)
 				{
 					btnControls[btnId].state = BTN_STATE_HOLD1;
 					UIControl_btnHold_cb(btnId,HOLD_TIME1);
 				}
-				if((g_sysTime - btnControls[btnId].timePress) > HOLD_TIME2)
+				if(elapsedTime(g_sysTime , btnControls[btnId].timePress) > HOLD_TIME2)
 				{
 					if(btnControls[btnId].state == BTN_STATE_HOLD1)
 					{
 						btnControls[btnId].state = BTN_STATE_HOLD2;
 						UIControl_btnHold_cb(btnId,HOLD_TIME2);
 					}
-					if((g_sysTime - btnControls[btnId].timePress) > HOLD_TIME3)
+					if(elapsedTime(g_sysTime , btnControls[btnId].timePress) > HOLD_TIME3)
 					{
 						if(btnControls[btnId].state == BTN_STATE_HOLD2)
 						{
@@ -321,7 +322,7 @@ void UIControl_process()
 	{
 		UIControl_updateUI();
 	}
-	if((s_UIState != UI_STATE_LOCK) && ((g_sysTime - s_lastPressTime) > MAX_TIME_WAIT))
+	if((s_UIState != UI_STATE_LOCK) && (elapsedTime(g_sysTime,s_lastPressTime) > MAX_TIME_WAIT))
 	{
 		UIControl_switchUiStateTo(UI_STATE_LOCK);
 		s_uiMode = UI_MODE_NOMAL;

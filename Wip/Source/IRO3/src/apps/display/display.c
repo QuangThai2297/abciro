@@ -28,6 +28,7 @@
 #include "r_gpio_rx_if.h"
 #include "adc.h"
 #include "filter_time.h"
+#include "timer.h"
 
 /******************************************************************************
 * External objects
@@ -92,7 +93,7 @@ bool buzzerIsOn = false;
  */
 void processBuzzer()
 {
-	if(buzzerIsOn && ((g_sysTime - timeOffBuzzer) < 5000) )
+	if(buzzerIsOn && (elapsedTime(g_sysTime , timeOffBuzzer) < 10000) )
 	{
 		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
 		buzzerIsOn = false;

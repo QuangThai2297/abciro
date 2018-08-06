@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Embedded software team.
@@ -10,20 +9,21 @@
  *
  * @file         gpio.h
  *
- * @author    	trongkn
- * 
+ * @author    	quanvu
+ *
  * @version   1.0
- * 
- * @date      
- * 
+ *
+ * @date
+ *
  * @brief     Brief description of the file
  *
  * Detailed Description of the file. If not used, remove the separator above.
  *
  */
 
-#ifndef GPIO_H_
-#define GPIO_H_
+#ifndef APPS_GPIO_PUMPCONTROL_H_
+#define APPS_GPIO_PUMPCONTROL_H_
+
 
 
 /******************************************************************************
@@ -31,7 +31,6 @@
 ******************************************************************************/
 
 #include <config.h>
-#include "r_touch_button_if.h"
 #include "r_gpio_rx_if.h"
 
 /******************************************************************************
@@ -41,14 +40,8 @@
 
 
 /******************************************************************************
-* Macros 
+* Macros
 ******************************************************************************/
-// Pin define
-#define PIN_AP_THAP 	GPIO_PORT_0_PIN_3
-#define PIN_AP_CAO 		GPIO_PORT_3_PIN_6
-
-#define PIN_DK_BOM 		GPIO_PORT_3_PIN_1
-#define PIN_VAN_XA 		GPIO_PORT_H_PIN_0   // phần cứng chân khác, câu test tạm.
 
 
 
@@ -61,12 +54,12 @@
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-   
+
 
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-PUBLIC void GPIO_Init(void);
+void pumpControl_process();
 
 /******************************************************************************
 * Inline functions
@@ -74,6 +67,6 @@ PUBLIC void GPIO_Init(void);
 
 
 
-#endif 
 
 
+#endif /* APPS_GPIO_PUMPCONTROL_H_ */

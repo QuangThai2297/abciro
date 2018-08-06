@@ -84,6 +84,17 @@ PUBLIC void delay_clk (uint16_t delay)
 		
 	}
 }
+
+uint32_t elapsedTime(uint32_t newTime,uint32_t oldTime)
+{
+	if(newTime >= oldTime)
+	{
+		return (newTime - oldTime);
+	}else
+	{
+		return (newTime + (0xffffffff - oldTime));
+	}
+}
 /**
  * @brief One line documentation 
  * interrup every 1 ms

@@ -6,9 +6,9 @@
 *
 ***************************************************************************//*!
 *
-* @file        main.c
+* @file        pumpControl.c
 *
-* @author    trongkn
+* @author    quanvu
 *
 * @version   1.0
 *
@@ -22,41 +22,26 @@
 *
 ******************************************************************************/
 
-#include "r_smc_entry.h"
-#include "config.h"
+#include <pumpControl.h>
 #include "gpio.h"
-#include "adc.h"
-#include "display.h"
-#include "touch_app.h"
-#include "flash_app.h"
-#include "filter_time.h"
-#include "UIControl.h"
-#include "pumpControl.h"
-
-
-
 
 /******************************************************************************
 * External objects
 ******************************************************************************/
-extern volatile uint8_t g_run200usFlag;
-extern volatile uint8_t g_run1msFlag;
-extern uint8_t g_adc_flag;
+
+
 /******************************************************************************
 * Global variables
 ******************************************************************************/
 
-
-uint16_t g_adc_result;
-
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
+#define CHECK_CO_AP_THAP 	(R_GPIO_PinRead(PIN_AP_THAP)== GPIO_LEVEL_HIGH)
+#define CHECK_CO_AP_CAO 	(R_GPIO_PinRead(PIN_AP_CAO)== GPIO_LEVEL_HIGH)
+#define TURN_ON_PUMP 		R_GPIO_PinWrite(PIN_DK_BOM,GPIO_LEVEL_HIGH)
+#define TURN_OFF_PUMP 		R_GPIO_PinWrite(PIN_DK_BOM,GPIO_LEVEL_LOW)
 
-/***********************************************************************************************************************
-Macro definitions
-***********************************************************************************************************************/
-#define TIME_TO_DISPLAY_TDS  (2000) //2 secs
 /******************************************************************************
 * Local types
 ******************************************************************************/
@@ -69,23 +54,22 @@ Macro definitions
 /******************************************************************************
 * Local variables
 ******************************************************************************/
-
-uint16_t value ;
-uint32_t time_out = 0;
-uint32_t i = 0;
-uint8_t s_timeOut100ms;
-LOCAL uint8_t s_pwm_cnt = 0;
-//LOCAL BOOLEAN s_is_timeout = TRUE;
-
+bool s_pumpIsOn = false;
 
 
 /******************************************************************************
 * Local functions
 ******************************************************************************/
-void run200usTask();
-void run1msTask();
-void run100msTask();
-void run_DisplayTds();
+/**
+ * @brief One line documentation
+ *
+ * A more detailed documentation
+ *
+ * @param arg1 the first function argument
+ * @param arg2 the second function argument
+ *
+ * @return descrition for the function return value
+ */
 
 /******************************************************************************
 * Global functions
@@ -101,66 +85,33 @@ void run_DisplayTds();
  *
  * @return descrition for the function return value
  */
-void main(void);
-void main(void)
+void pumpControl_process()
 {
-	R_Config_CMT0_Start();
-	R_Config_CMT1_Start();
-	TOUCH_init();
-	UART_Init();
-	flash_app_init();
-	ADC_Init();
-
-	Display_turnOnAllIn1s();
-	/* Main loop */
-	while(1)
+	if(CHECK_CO_AP_THAP && CHECK_CO_AP_CAO )
 	{
-		//////////////////////
-    	if(g_run200usFlag == 1)
-    	{
-    		run200usTask();
-    		g_run200usFlag= 0;
-    	}
-    	if(g_run1msFlag == 1)
-    	{
-    		run1msTask();
-    		g_run1msFlag= 0;
-    	}
-    	if(s_timeOut100ms >= 100)
-    	{
-    		run100msTask();
-    		s_timeOut100ms = 0;
-    	}
-    	if(g_adc_flag)
-    	{
-    		ADC_UpdateTds (s_pwm_cnt);
-    	}
+		if(!s_pumpIsOn)
+		{
+			TURN_ON_PUMP;
+		}
+	}
+	else
+	{
+		if(s_pumpIsOn)
+		{
+			TURN_OFF_PUMP;
+		}
 	}
 }
 
-void run200usTask()
-{
-	Display_process();
-}
-void run1msTask()
-{
-	TOUCH_process();
-	if(s_timeOut100ms <100)
-	{
-		s_timeOut100ms++;
-	}
+/**
+ * @brief One line documentation
+ *
+ * A more detailed documentation
+ *
+ * @param arg1 the first function argument
+ * @param arg2 the second function argument
+ *
+ * @return descrition for the function return value
+ */
 
-}
-void run100msTask()
-{
-	UIControl_process();
-	pumpControl_process();
-}
 
-void abort(void)
-{
-	while(1)
-	{
-		;
-	}
-}
