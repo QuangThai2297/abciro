@@ -70,6 +70,7 @@
 ******************************************************************************/
 PUBLIC void delay_clk (uint16_t delay);
 uint32_t elapsedTime(uint32_t newTime,uint32_t oldTime);
+bool timeIsAfter(uint32_t newTime,uint32_t oldTime);
 
 
 /******************************************************************************

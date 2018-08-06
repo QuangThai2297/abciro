@@ -95,6 +95,11 @@ uint32_t elapsedTime(uint32_t newTime,uint32_t oldTime)
 		return (newTime + (0xffffffff - oldTime));
 	}
 }
+
+bool timeIsAfter(uint32_t newTime,uint32_t oldTime)
+{
+	return (elapsedTime(newTime , oldTime) < 100000)? true:false;
+}
 /**
  * @brief One line documentation 
  * interrup every 1 ms

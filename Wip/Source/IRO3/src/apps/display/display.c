@@ -93,7 +93,7 @@ bool buzzerIsOn = false;
  */
 void processBuzzer()
 {
-	if(buzzerIsOn && (elapsedTime(g_sysTime , timeOffBuzzer) < 10000) )
+	if(buzzerIsOn && timeIsAfter(g_sysTime , timeOffBuzzer) )
 	{
 		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
 		buzzerIsOn = false;
