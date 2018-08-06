@@ -42,6 +42,9 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
+#define BUZZER_ON_TIME 300
+#define BUZZER_INTERVAL 700
+#define BUZZER_TIME_IN_ERROR 10
 #define PIN_KEY_NUM 4
 #define LED_MACHINE_STATE_TDS_OUT GPIO_PORT_E_PIN_0
 #define LED_MACHINE_STATE_TDS_IN  GPIO_PORT_4_PIN_7
@@ -77,7 +80,8 @@ uint8_t led1Code = 0;
 uint8_t ledIndex;
 uint32_t timeOffBuzzer;
 bool buzzerIsOn = false;
-
+uint8_t timeBuzzerLeft ;
+uint32_t timeStartBuzzer;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -97,6 +101,11 @@ void processBuzzer()
 	{
 		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
 		buzzerIsOn = false;
+	}
+	if(timeIsAfter(g_sysTime, timeStartBuzzer + (BUZZER_TIME_IN_ERROR - timeBuzzerLeft) * BUZZER_INTERVAL))
+	{
+		Display_onBuzzerInMs(BUZZER_ON_TIME);
+		timeBuzzerLeft -- ;
 	}
 }
 void encodeLed4()
@@ -133,6 +142,11 @@ void Display_onBuzzerInMs(uint16_t msTime)
 	timeOffBuzzer = g_sysTime + msTime;
 	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
 	buzzerIsOn = true;
+}
+void Display_turnBuzzer10Time()
+{
+	timeStartBuzzer = g_sysTime;
+	timeBuzzerLeft = BUZZER_TIME_IN_ERROR;
 }
 /**
  * @brief One line documentation

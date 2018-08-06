@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_PORT.
-* Creation Date: 2018-08-01
+* Creation Date: 2018-08-06
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -55,6 +55,11 @@ Global variables and functions
 
 void R_Config_PORT_Create(void)
 {
+    /* Set PORT0 registers */
+    PORT0.PCR.BYTE = _00_Pm3_PULLUP_OFF;
+    PORT0.PMR.BYTE = _00_Pm3_PIN_GPIO;
+    PORT0.PDR.BYTE = _00_Pm3_MODE_INPUT | _D7_PDR0_DEFAULT;
+
     /* Set PORT1 registers */
     PORT1.PODR.BYTE = _00_Pm7_OUTPUT_0;
     PORT1.DSCR.BYTE = _00_Pm7_HIDRV_OFF;
@@ -64,9 +69,10 @@ void R_Config_PORT_Create(void)
     /* Set PORT3 registers */
     PORT3.PODR.BYTE = _02_Pm1_OUTPUT_1 | _04_Pm2_OUTPUT_1;
     PORT3.ODR0.BYTE = _00_Pm1_CMOS_OUTPUT | _00_Pm2_CMOS_OUTPUT;
+    PORT3.PCR.BYTE = _00_Pm6_PULLUP_OFF;
     PORT3.DSCR.BYTE = _00_Pm1_HIDRV_OFF | _00_Pm2_HIDRV_OFF;
-    PORT3.PMR.BYTE = _00_Pm1_PIN_GPIO | _00_Pm2_PIN_GPIO;
-    PORT3.PDR.BYTE = _02_Pm1_MODE_OUTPUT | _04_Pm2_MODE_OUTPUT | _18_PDR3_DEFAULT;
+    PORT3.PMR.BYTE = _00_Pm1_PIN_GPIO | _00_Pm2_PIN_GPIO | _00_Pm6_PIN_GPIO;
+    PORT3.PDR.BYTE = _02_Pm1_MODE_OUTPUT | _04_Pm2_MODE_OUTPUT | _00_Pm6_MODE_INPUT | _18_PDR3_DEFAULT;
 
     /* Set PORT4 registers */
     PORT4.PODR.BYTE = _04_Pm2_OUTPUT_1 | _08_Pm3_OUTPUT_1 | _10_Pm4_OUTPUT_1 | _80_Pm7_OUTPUT_1;
@@ -112,6 +118,12 @@ void R_Config_PORT_Create(void)
     PORTE.DSCR.BYTE = _00_Pm0_HIDRV_OFF | _00_Pm1_HIDRV_OFF | _00_Pm2_HIDRV_OFF;
     PORTE.PMR.BYTE = _00_Pm0_PIN_GPIO | _00_Pm1_PIN_GPIO | _00_Pm2_PIN_GPIO;
     PORTE.PDR.BYTE = _01_Pm0_MODE_OUTPUT | _02_Pm1_MODE_OUTPUT | _04_Pm2_MODE_OUTPUT | _C0_PDRE_DEFAULT;
+
+    /* Set PORTH registers */
+    PORTH.PODR.BYTE = _01_Pm0_OUTPUT_1;
+    PORTH.DSCR.BYTE = _00_Pm0_HIDRV_OFF;
+    PORTH.PMR.BYTE = _00_Pm0_PIN_GPIO;
+    PORTH.PDR.BYTE = _01_Pm0_MODE_OUTPUT | _F0_PDRH_DEFAULT;
 
     R_Config_PORT_Create_UserInit();
 }
