@@ -398,7 +398,7 @@ PUBLIC void ADC_UpdateTdsDisplay()
 	}
 
 	//tds out
-	tds_return = ADC_GetTdsValue(TDS_IN_VALUE);
+	tds_return = ADC_GetTdsValue(TDS_OUT_VALUE);
 		if((abs(tds_return - s_tds_out.tds_display) > TDS_THRESHOLD) || (s_tds_out.cnt_increase > CNT_THRESHOLD_MAX) || (s_tds_out.cnt_down > CNT_THRESHOLD_MAX))
 		{
 			s_tds_out.tds_display = tds_return;
