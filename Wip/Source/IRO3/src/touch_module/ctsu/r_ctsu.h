@@ -458,10 +458,10 @@
 #define CTSUSO_TS03                   (0x000)       /* TS03 ( RX113, RX130, RX23x, RX130, RX23x, RX130, RX23x, RX130 )*/
 #define CTSUSO_TS04                   (0x000)       /* TS04 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
 #define CTSUSO_TS05                   (0x000)       /* TS05 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
-#define CTSUSO_TS06                   (0x09E)       /* TS06 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
-#define CTSUSO_TS07                   (0x0C7)       /* TS07 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
-#define CTSUSO_TS08                   (0x103)       /* TS08 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
-#define CTSUSO_TS09                   (0x117)       /* TS09 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
+#define CTSUSO_TS06                   (0x0A2)       /* TS06 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
+#define CTSUSO_TS07                   (0x0CA)       /* TS07 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
+#define CTSUSO_TS08                   (0x106)       /* TS08 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
+#define CTSUSO_TS09                   (0x11B)       /* TS09 ( RX113, RX130, RX23x, RX130,        RX130,        RX130 )*/
 #define CTSUSO_TS10                   (0x000)       /* TS10 ( RX113, RX130,        RX130,        RX130,        RX130 )*/
 #define CTSUSO_TS11                   (0x000)       /* TS11 ( RX113, RX130,        RX130,        RX130               )*/
 #define CTSUSO_TS12                   (0x000)       /* TS12 (        RX130, RX23x, RX130, RX23x, RX130, RX23x        )*/

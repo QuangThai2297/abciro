@@ -65,9 +65,9 @@
 #define DF_CHIP_ID    ((DF_CCMD_VER << 8) | SELFCAP_SENSOR_MAX)
 
 /* Date of source file creation */
-#define CREATE_SOURCE_DATE0 (0x1807)    /* YYMM */
-#define CREATE_SOURCE_DATE1 (0x1409)    /* DDHH */
-#define CREATE_SOURCE_DATE2 (0x4115)    /* MMSS */
+#define CREATE_SOURCE_DATE0 (0x1808)    /* YYMM */
+#define CREATE_SOURCE_DATE1 (0x0709)    /* DDHH */
+#define CREATE_SOURCE_DATE2 (0x3036)    /* MMSS */
 #define CREATE_SOURCE_DATE3 (0x0000)    /* 0000 */
 
 /* Information for suppoted function */
@@ -185,10 +185,10 @@
 #define SELF_TS03_THR            (1003)
 #define SELF_TS04_THR            (1004)
 #define SELF_TS05_THR            (1005)
-#define SELF_TS06_THR            (1840)
-#define SELF_TS07_THR            (1918)
-#define SELF_TS08_THR            (2040)
-#define SELF_TS09_THR            (2050)
+#define SELF_TS06_THR            (900)
+#define SELF_TS07_THR            (889)
+#define SELF_TS08_THR            (903)
+#define SELF_TS09_THR            (829)
 #define SELF_TS10_THR            (1010)
 #define SELF_TS11_THR            (1011)
 #define SELF_TS12_THR            (1012)
@@ -223,10 +223,10 @@
 #define SELF_TS03_HYS            (53)
 #define SELF_TS04_HYS            (54)
 #define SELF_TS05_HYS            (55)
-#define SELF_TS06_HYS            (92)
-#define SELF_TS07_HYS            (95)
-#define SELF_TS08_HYS            (102)
-#define SELF_TS09_HYS            (102)
+#define SELF_TS06_HYS            (45)
+#define SELF_TS07_HYS            (44)
+#define SELF_TS08_HYS            (45)
+#define SELF_TS09_HYS            (41)
 #define SELF_TS10_HYS            (60)
 #define SELF_TS11_HYS            (61)
 #define SELF_TS12_HYS            (62)

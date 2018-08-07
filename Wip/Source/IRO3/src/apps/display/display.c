@@ -80,7 +80,7 @@ uint8_t led1Code = 0;
 uint8_t ledIndex;
 uint32_t timeOffBuzzer;
 bool buzzerIsOn = false;
-uint8_t timeBuzzerLeft ;
+uint8_t timeBuzzerLeft = 0 ;
 uint32_t timeStartBuzzer;
 /******************************************************************************
 * Local functions
@@ -102,10 +102,13 @@ void processBuzzer()
 		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
 		buzzerIsOn = false;
 	}
-	if(timeIsAfter(g_sysTime, timeStartBuzzer + (BUZZER_TIME_IN_ERROR - timeBuzzerLeft) * BUZZER_INTERVAL))
+	if(timeBuzzerLeft >0)
 	{
-		Display_onBuzzerInMs(BUZZER_ON_TIME);
-		timeBuzzerLeft -- ;
+		if(timeIsAfter(g_sysTime, timeStartBuzzer + (BUZZER_TIME_IN_ERROR - timeBuzzerLeft) * BUZZER_INTERVAL))
+		{
+			Display_onBuzzerInMs(BUZZER_ON_TIME);
+			timeBuzzerLeft -- ;
+		}
 	}
 }
 void encodeLed4()
