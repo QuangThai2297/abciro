@@ -110,7 +110,7 @@ void main(void)
 	UART_Init();
 	flash_app_init();
 	ADC_Init();
-
+	TIMER_Init();
 	Display_turnOnAllIn1s();
 	/* Main loop */
 	while(1)
@@ -135,6 +135,7 @@ void main(void)
     	{
     		ADC_UpdateTds (s_pwm_cnt);
     	}
+    	TIMER_CheckTimerEvent();
 	}
 }
 

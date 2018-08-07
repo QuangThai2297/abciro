@@ -42,6 +42,7 @@ Macro definitions
 ***********************************************************************************************************************/
 #define _06_AD0_SAMPLING_STATE_0           (0x06U) /* AN000 sampling time setting */
 #define _06_AD0_SAMPLING_STATE_1           (0x06U) /* AN001 sampling time setting */
+#define _06_AD0_SAMPLING_STATE_L           (0x06U) /* AN016-AN031 sampling time setting */
 
 /***********************************************************************************************************************
 Typedef definitions

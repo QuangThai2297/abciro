@@ -49,6 +49,7 @@
 #define  ADC_SAMPLE_QUEUE_SIZE			(8)
 #define  TDS_OUT_CHANNEL    ADCHANNEL0
 #define  TDS_IN_CHANNEL     ADCHANNEL1
+#define  H20_CHANNEL_DETECT   ADCHANNEL20
 #define  ADC_SAMPLE_CAL_MAX             (500)
 
 #define UPDATE_TDS_IN (0)
@@ -56,8 +57,12 @@
 #define UPDATE_VALUE   (2)
 #define TDS_OUT_VALUE_MIN  (0)
 #define TDS_OUT_MAX_DEFAULT (100)
+#define ADC_H2O_DET_DEFAULT (2000)
+#define H2O_DET_CNT_MAX   (100)
 #define TDS_OUT_VALUE_MAX  (1000)
 #define CALIB_POINT_MAX (12)
+#define TDS_THRESHOLD (1)
+#define CNT_THRESHOLD_MAX (5)
 /******************************************************************************
 * Types
 ******************************************************************************/
@@ -76,6 +81,9 @@ typedef struct
 	int32_t  sum_adc_low;
 	int16_t  sma_tds_adc;
 	int32_t  sum_tds_adc;
+	uint16_t tds_display;
+	uint8_t  cnt_down;
+	uint8_t cnt_increase;
 	QUEUE_NODE_T* adc_sample;
 
 }TDS_T;
@@ -93,6 +101,7 @@ typedef struct
 	TDS_CALIB_PARAM_T tds_in;	//
 	TDS_CALIB_PARAM_T tds_out;		//
 	uint16_t  tds_out_max;
+	uint16_t  adc_h2o_det;
 } TDS_CONFIG_T;
 
 typedef enum
@@ -132,6 +141,10 @@ PUBLIC ERR_E ADC_SetTdsOutMax(uint16_t value);
 PUBLIC uint16_t ADC_GetTdsOutMax();
 
 PUBLIC ERR_E ADC_CalibTdsValue(uint16_t tdsvalue,TDS_E channel);
+
+PUBLIC void ADC_UpdateTdsDisplay();
+
+PUBLIC uint16_t  ADC_GetTdsValueDisplay(TDS_E channel);
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

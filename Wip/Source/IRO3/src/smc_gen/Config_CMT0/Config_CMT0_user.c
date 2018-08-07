@@ -38,6 +38,7 @@ Includes
 #include "Config_CMT0.h"
 /* Start user code for include. Do not edit comment generated here */
 #include "Config_S12AD0.h"
+#include "timer.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -89,6 +90,7 @@ static void r_Config_CMT0_cmi0_interrupt(void)
 		PWM = g_pwm_value;
 		R_Config_S12AD0_Start();
 	}
+	TIMER_SystemTickEvent();
     /* End user code. Do not edit comment generated here */
 }
 

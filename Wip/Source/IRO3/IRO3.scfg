@@ -199,6 +199,8 @@
 <pinItem allocation="1" direction="None" id="P03" locked="false" status="0"/>
 <pinItem allocation="9" direction="None" id="P36" locked="false" status="0"/>
 <pinItem allocation="24" direction="None" id="PH0" locked="false" status="0"/>
+<pinItem allocation="48" direction="None" id="AN019" locked="false" status="0"/>
+<pinItem allocation="47" direction="None" id="AN020" locked="false" status="0"/>
 </tool>
 <tool id="Interrupt">
 <Item id="BSC_BUSERR" priority="15"/>
@@ -2753,13 +2755,13 @@
 <item id="ANusedisable" input="" vlaue="0"/>
 <item id="ANunusedisable" input="" vlaue="0"/>
 </option>
-<option enabled="true" id="AN019" selection="ANunuse">
+<option enabled="true" id="AN019" selection="ANuse">
 <item id="ANuse" input="" vlaue="0"/>
 <item id="ANunuse" input="" vlaue="0"/>
 <item id="ANusedisable" input="" vlaue="0"/>
 <item id="ANunusedisable" input="" vlaue="0"/>
 </option>
-<option enabled="true" id="AN020" selection="ANunuse">
+<option enabled="true" id="AN020" selection="ANuse">
 <item id="ANuse" input="" vlaue="0"/>
 <item id="ANunuse" input="" vlaue="0"/>
 <item id="ANusedisable" input="" vlaue="0"/>
