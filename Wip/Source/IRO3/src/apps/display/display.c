@@ -28,7 +28,7 @@
 #include "r_gpio_rx_if.h"
 #include "adc.h"
 #include "filter_time.h"
-#include "timer.h"
+#include "timeCheck.h"
 
 /******************************************************************************
 * External objects

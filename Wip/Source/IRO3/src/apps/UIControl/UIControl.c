@@ -28,7 +28,8 @@
 #include "display.h"
 #include "user_config.h"
 #include "filter_time.h"
-#include "timer.h"
+#include "timeCheck.h"
+
 
 /******************************************************************************
 * External objects
