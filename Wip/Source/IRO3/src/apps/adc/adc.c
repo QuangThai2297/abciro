@@ -239,11 +239,6 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 			break;
 		}
 	}
-if(tds_return == 319)
-{
-	sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",adc0_value);
-	UART_Debug (dbg);
-}
 
 	return tds_return;
 
