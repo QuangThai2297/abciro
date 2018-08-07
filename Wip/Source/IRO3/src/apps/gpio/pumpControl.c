@@ -111,7 +111,7 @@ void processPump()
 			s_pumpIsOn = false;
 			TURN_OFF_PUMP;
 			uint32_t pumpRuningTime = elapsedTime(g_sysTime , s_pumpStartTime);
-			filter_time_minusTime(pumpRuningTime);
+			filter_time_minusTime(pumpRuningTime / 1000);
 			onVanXaInMs(5000);
 		}
 	}

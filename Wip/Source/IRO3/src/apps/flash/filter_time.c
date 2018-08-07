@@ -106,7 +106,7 @@ void filter_time_init()
 
 void filter_time_minusTime(uint32_t second)
 {
-	for(uint8_t i = 1; i< FILTER_NUM; i++)
+	for(uint8_t i = 0; i< FILTER_NUM; i++)
 	{
 		s_time_filter[i] -= second;
 	}
