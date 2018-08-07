@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_S12AD0.
-* Creation Date: 2018-08-01
+* Creation Date: 2018-08-06
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -73,8 +73,10 @@ void R_Config_S12AD0_Create(void)
 
     /* Set channels and sampling time */
     S12AD.ADANSA0.WORD = _0001_AD_AN000_USED | _0002_AD_AN001_USED;
+    S12AD.ADANSA1.WORD = _0008_AD_AN019_USED | _0010_AD_AN020_USED;
     S12AD.ADSSTR0 = _06_AD0_SAMPLING_STATE_0;
     S12AD.ADSSTR1 = _06_AD0_SAMPLING_STATE_1;
+    S12AD.ADSSTRL = _06_AD0_SAMPLING_STATE_L;
 
     /* Set compare control register */
     S12AD.ADCMPCR.WORD = _0000_AD_WINDOWB_DISABLE | _0000_AD_WINDOWA_DISABLE | _0000_AD_WINDOWFUNCTION_DISABLE;
@@ -94,6 +96,16 @@ void R_Config_S12AD0_Create(void)
     PORT4.PMR.BYTE &= 0xFDU;
     PORT4.PDR.BYTE &= 0xFDU;
     MPC.P41PFS.BYTE = 0x80U;
+
+    /* Set AN019 pin */
+    PORTE.PMR.BYTE &= 0xF7U;
+    PORTE.PDR.BYTE &= 0xF7U;
+    MPC.PE3PFS.BYTE = 0x80U;
+
+    /* Set AN020 pin */
+    PORTE.PMR.BYTE &= 0xEFU;
+    PORTE.PDR.BYTE &= 0xEFU;
+    MPC.PE4PFS.BYTE = 0x80U;
 
     R_Config_S12AD0_Create_UserInit();
 }

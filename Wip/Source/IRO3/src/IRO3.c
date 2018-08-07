@@ -149,8 +149,6 @@ void run1msTask()
 	{
 		s_timeOut100ms++;
 	}
-//_asm_("jmp 0x00");
-//	reset();
 
 }
 void run100msTask()

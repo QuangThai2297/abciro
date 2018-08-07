@@ -88,6 +88,12 @@ LOCAL uint16_t s_interval_get_tds = 0;
 
 LOCAL uint16_t s_200ms_cnt ;
 
+LOCAL uint16_t s_adc_h2o_det = 0;
+
+LOCAL uint16_t s_cnt_h2o_det = 0;
+
+LOCAL bool s_is_h2O_det = FALSE;
+
 //LOCAL uint16_t s_adc_low_value = 0;
 
 /******************************************************************************
@@ -124,7 +130,8 @@ LOCAL void ADC_InitConfigFlash()
     {
     	memcpy(&(s_tds_calib_param.tds_in),&TDS_IN_CONFIG_DEFAULD,sizeof(s_tds_calib_param.tds_in));
     	memcpy(&(s_tds_calib_param.tds_out),&TDS_OUT_CONFIG_DEFAULD,sizeof(s_tds_calib_param.tds_out));
-    	s_tds_calib_param.tds_out_max   = TDS_OUT_MAX_DEFAULT;
+    	s_tds_calib_param.tds_out_max    = TDS_OUT_MAX_DEFAULT;
+    	s_tds_calib_param.adc_h2o_det = ADC_H2O_DET_DEFAULT;
     	flash_app_writeBlock((uint8_t *)&s_tds_calib_param, TDS_PARAM_BLOCK, sizeof(s_tds_calib_param));
     }
 
@@ -232,12 +239,16 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 
 PUBLIC uint16_t  ADC_GetTdsValueDisplay(TDS_E channel)
 {
-	uint16_t            tds_return = 0;
-	if(s_interval_get_tds == 0)
+
+	if(channel == TDS_IN_VALUE)
 	{
-		tds_return = ADC_GetTdsValue(channel);
+		return s_tds_in.tds_display;
 	}
-	return tds_return;
+	else
+	{
+		return s_tds_out.tds_display;
+	}
+
 }
 
 
@@ -270,11 +281,27 @@ PUBLIC void   ADC_UpdateTds (uint8_t state)
 		s_tds_out.low_cnt  = 0;
 		s_tds_out.sum_adc_high = 0;
 		s_tds_out.sum_adc_low  = 0;
-
+	    //check h2o det
+		R_Config_S12AD0_Get_ValueResult(H20_CHANNEL_DETECT,&s_adc_h2o_det);
+		if(s_adc_h2o_det > s_tds_calib_param.adc_h2o_det)
+		{
+			s_cnt_h2o_det ++;
+			if(s_cnt_h2o_det> H2O_DET_CNT_MAX)
+			{
+				s_is_h2O_det =TRUE;
+				s_cnt_h2o_det = 0;
+			}
+		}
+		else
+		{
+			s_cnt_h2o_det = 0;
+		}
 		goto end_function;
 	}
 	R_Config_S12AD0_Get_ValueResult(TDS_IN_CHANNEL, &adc_result_tds_in);
 	R_Config_S12AD0_Get_ValueResult(TDS_OUT_CHANNEL,&adc_result_tds_out);
+
+
 	if(g_pwm_value ==  0)
 	{
 
@@ -328,4 +355,73 @@ PUBLIC uint16_t ADC_GetTdsOutMax()
 PUBLIC ERR_E ADC_CalibTdsValue(uint16_t tdsvalue,TDS_E channel)
 {
    return OK;
+}
+
+
+PUBLIC void ADC_ClearH2oDet()
+{
+	s_is_h2O_det = 0;
+}
+
+PUBLIC bool ADC_GetH2oDet()
+{
+	return s_is_h2O_det ;
+}
+
+PUBLIC void ADC_UpdateTdsDisplay()
+{
+	uint16_t            tds_return = 0;
+
+	tds_return = ADC_GetTdsValue(TDS_IN_VALUE);
+	if((abs(tds_return - s_tds_in.tds_display) > TDS_THRESHOLD) || (s_tds_in.cnt_increase > CNT_THRESHOLD_MAX) || (s_tds_in.cnt_down > CNT_THRESHOLD_MAX))
+	{
+		s_tds_in.tds_display = tds_return;
+		s_tds_in.cnt_down = 0;
+		s_tds_in.cnt_increase = 0;
+	}
+	else
+	{
+		if(s_tds_in.tds_display > tds_return)
+		{
+			s_tds_in.cnt_down  = s_tds_in.cnt_down+1;
+		}
+		else if(s_tds_in.tds_display < tds_return)
+		{
+			s_tds_in.cnt_increase = s_tds_in.cnt_increase+1;
+		}
+		else
+		{
+			s_tds_in.cnt_down = 0;
+			s_tds_in.cnt_increase = 0;
+		}
+
+	}
+
+	//tds out
+	tds_return = ADC_GetTdsValue(TDS_IN_VALUE);
+		if((abs(tds_return - s_tds_out.tds_display) > TDS_THRESHOLD) || (s_tds_out.cnt_increase > CNT_THRESHOLD_MAX) || (s_tds_out.cnt_down > CNT_THRESHOLD_MAX))
+		{
+			s_tds_out.tds_display = tds_return;
+			s_tds_out.cnt_down = 0;
+			s_tds_out.cnt_increase = 0;
+		}
+		else
+		{
+			if(s_tds_out.tds_display > tds_return)
+			{
+				s_tds_out.cnt_down  = s_tds_out.tds_display+1;
+			}
+			else if(s_tds_out.tds_display < tds_return)
+			{
+				s_tds_out.cnt_increase = s_tds_out.cnt_increase+1;
+			}
+			else
+			{
+				s_tds_out.cnt_down = 0;
+				s_tds_out.cnt_increase = 0;
+			}
+
+		}
+
+
 }

@@ -251,16 +251,17 @@ void TIMER_CheckTimerEvent()
     {
     	if(nTimer & TIMER_1)
         {
-    		UART_Debug("timer1\r\n");
+    	//	UART_Debug("timer1\r\n");
             /* Call Timer 1 routine */
         //	Timer1Function();
+    		ADC_UpdateTdsDisplay();
         }
     	if(nTimer & TIMER_2)
         {
             /* Call Timer 2 routine */
         //	Timer2Function();
     		UART_Debug("timer2\r\n");
-    		TIMER_DeteteTimer(TIMER_1);
+    	//	TIMER_DeteteTimer(TIMER_1);
         }
 
     }
@@ -270,7 +271,7 @@ void TIMER_CheckTimerEvent()
 PUBLIC void TIMER_Init()
 {
 
-	TIMER_AddTimerMs(TIMER_2, 5060,0);
+//	TIMER_AddTimerMs(TIMER_2, 5060,0);
 	TIMER_AddTimerMs(TIMER_1, 1000,0);
 
 }

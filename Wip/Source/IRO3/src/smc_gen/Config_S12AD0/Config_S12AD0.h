@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_S12AD0.
-* Creation Date: 2018-08-01
+* Creation Date: 2018-08-06
 ***********************************************************************************************************************/
 
 #ifndef Config_S12AD0_H
@@ -42,6 +42,7 @@ Macro definitions
 ***********************************************************************************************************************/
 #define _06_AD0_SAMPLING_STATE_0           (0x06U) /* AN000 sampling time setting */
 #define _06_AD0_SAMPLING_STATE_1           (0x06U) /* AN001 sampling time setting */
+#define _06_AD0_SAMPLING_STATE_L           (0x06U) /* AN016-AN031 sampling time setting */
 
 /***********************************************************************************************************************
 Typedef definitions
