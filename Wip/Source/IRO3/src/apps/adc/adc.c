@@ -152,7 +152,7 @@ LOCAL void ADC_InitConfigFlash()
  */
 PUBLIC void ADC_Init()
 {   
-
+	R_Config_S12AD0_Create();
 	s_tds_in.adc_sample = QUEUE_InitQueue(ADC_SAMPLE_QUEUE_SIZE,sizeof(int16_t));
 	s_tds_out.adc_sample = QUEUE_InitQueue(ADC_SAMPLE_QUEUE_SIZE,sizeof(int16_t));
 	ADC_InitConfigFlash();
