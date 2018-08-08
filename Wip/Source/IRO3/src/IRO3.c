@@ -108,6 +108,7 @@ void main(void)
 	uint16_t s_adc_h2o_det = 0;
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
+//	TOUCH_init();
 	TOUCH_init();
 	UART_Init();
 	flash_app_init();
