@@ -2526,13 +2526,15 @@
 </allocator>
 <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
 </configuration>
-<configuration inuse="true" name="r_gpio_rx">
+<configuration inuse="false" name="r_gpio_rx">
 <component description="Dependency : r_bsp version(s) 2.90, 3.00, 3.01, 3.10, 3.20, 3.30, 3.40, 3.50, 3.60&#10;This code implements a General Purpose Input/Output driver. Common features such as reading, writing, and setting the direction of ports and pins is supported. Enabling features such as open-drain outputs and internal pull-ups are also supported." detailDescription="General Purpose Input/Output Driver" display="r_gpio_rx" id="r_gpio_rx2.31" version="2.31"/>
 <source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
-<configuration inuse="true" name="r_mpc_rx">
+<configuration inuse="false" name="r_mpc_rx">
 <component description="Dependency : r_bsp version(s) 2.90, 3.00, 3.01, 3.10, 3.20, 3.30, 3.40, 3.50, 3.60&#10;Dependency : r_gpio_rx version(s) 1.60, 1.70, 1.80, 1.90, 2.00, 2.10, 2.20, 2.30&#10;Implements a Multi-Function Pin Controller driver. Allows users to easily setup the MPC registers for their device using r_gpio_rx pin definitions." detailDescription="Multi-Function Pin Controller Driver" display="r_mpc_rx" id="r_mpc_rx2.31" version="2.31"/>
+<source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
@@ -2829,11 +2831,11 @@
 <item id="ANuse" input="" vlaue="0"/>
 <item id="ANunuse" input="" vlaue="0"/>
 </option>
-<option enabled="true" id="AN019_Add" selection="ANunuse">
+<option enabled="true" id="AN019_Add" selection="ANuse">
 <item id="ANuse" input="" vlaue="0"/>
 <item id="ANunuse" input="" vlaue="0"/>
 </option>
-<option enabled="true" id="AN020_Add" selection="ANunuse">
+<option enabled="true" id="AN020_Add" selection="ANuse">
 <item id="ANuse" input="" vlaue="0"/>
 <item id="ANunuse" input="" vlaue="0"/>
 </option>
@@ -3074,8 +3076,9 @@
 </allocator>
 <source description="Code generator components provide peripheral drivers with customized generated source geared towards small code size" display="Code Generator" id="com.renesas.smc.tools.swcomponent.codegenerator.source"/>
 </configuration>
-<configuration inuse="true" name="r_flash_rx">
+<configuration inuse="false" name="r_flash_rx">
 <component description="Dependency : r_bsp version(s) 3.60&#10;This module allows the user to program, erase, write and blankcheck the Code and/or Data flash." detailDescription="Flash API for RX100, RX200, RX600. and RX700." display="r_flash_rx" id="r_flash_rx3.30" version="3.30"/>
+<source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology (FIT) emphasize portability between microcontrollers within the RX Family." display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
