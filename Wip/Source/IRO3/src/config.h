@@ -58,11 +58,9 @@
 
 #define VERSION_SOFTWARE ("V1.0")
 
-#define IDLE_STATE (0)
 
-#define SETTING_STATE (1)
-
-#define CALIB_TDS_STATE (2)
+// machine specification
+#define FILTER_NUM 9
 
 
 /******************************************************************************

@@ -42,7 +42,6 @@
 /******************************************************************************
 * Macros
 ******************************************************************************/
-#define FILTER_NUM 9
 
 
 
@@ -50,7 +49,7 @@
 * Types
 ******************************************************************************/
 typedef struct UserConfigs {
-	uint32_t filterLifeTime[9];	// tuổi thọ lõi lọc tính theo giây
+	uint32_t filterLifeTime[FILTER_NUM];	// tuổi thọ lõi lọc tính theo giây
 	uint16_t tdsLimitIn;		// giới hạn tds đầu vào
 	uint16_t tdsLimitOut;		// giới hạn tds đầu ra
 	bool tdsToTimeMode;		// chế độ thời gian lõi lọc theo tds
@@ -66,6 +65,8 @@ extern UserConfig_t g_userConfig;
 ******************************************************************************/
 void user_config_init();
 void UserConfig_setFilterLifeTime(uint32_t lifeTime,uint8_t filterIndex);
+void UserConfig_setTdsLimitIn(uint16_t tdsLimit);
+void UserConfig_setTdsLimitOut(uint16_t tdsLimit);
 
 
 /******************************************************************************

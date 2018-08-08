@@ -50,7 +50,13 @@
 #define PIN_DK_BOM 		GPIO_PORT_3_PIN_1
 #define PIN_VAN_XA 		GPIO_PORT_H_PIN_0   // phần cứng chân khác, câu test tạm.
 
+#define CHECK_CO_AP_THAP 	(R_GPIO_PinRead(PIN_AP_THAP)== GPIO_LEVEL_HIGH)
+#define CHECK_CO_AP_CAO 	(R_GPIO_PinRead(PIN_AP_CAO)== GPIO_LEVEL_HIGH)
 
+#define TURN_ON_PUMP 		R_GPIO_PinWrite(PIN_DK_BOM,GPIO_LEVEL_HIGH)
+#define TURN_OFF_PUMP 		R_GPIO_PinWrite(PIN_DK_BOM,GPIO_LEVEL_LOW)
+#define TURN_ON_VAN_XA 		R_GPIO_PinWrite(PIN_VAN_XA,GPIO_LEVEL_HIGH)
+#define TURN_OFF_VAN_XA 	R_GPIO_PinWrite(PIN_VAN_XA,GPIO_LEVEL_LOW)
 
 
 /******************************************************************************

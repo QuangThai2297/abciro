@@ -39,13 +39,7 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
-#define CHECK_CO_AP_THAP 	(R_GPIO_PinRead(PIN_AP_THAP)== GPIO_LEVEL_HIGH)
-#define CHECK_CO_AP_CAO 	(R_GPIO_PinRead(PIN_AP_CAO)== GPIO_LEVEL_HIGH)
 
-#define TURN_ON_PUMP 		R_GPIO_PinWrite(PIN_DK_BOM,GPIO_LEVEL_HIGH)
-#define TURN_OFF_PUMP 		R_GPIO_PinWrite(PIN_DK_BOM,GPIO_LEVEL_LOW)
-#define TURN_ON_VAN_XA 		R_GPIO_PinWrite(PIN_VAN_XA,GPIO_LEVEL_HIGH)
-#define TURN_OFF_VAN_XA 	R_GPIO_PinWrite(PIN_VAN_XA,GPIO_LEVEL_LOW)
 
 /******************************************************************************
 * Local types
@@ -135,7 +129,15 @@ void pumpControl_process()
 	processPump();
 	processVanXa();
 }
-
+uint32_t pumpControl_getTimePumpRun()
+{
+	if(s_pumpIsOn)
+	{
+		return (elapsedTime(g_sysTime, s_pumpStartTime));
+	}else{
+		return 0;
+	}
+}
 /**
  * @brief One line documentation
  *

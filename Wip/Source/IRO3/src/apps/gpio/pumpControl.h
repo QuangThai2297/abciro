@@ -60,6 +60,7 @@
 * Global functions
 ******************************************************************************/
 void pumpControl_process();
+uint32_t pumpControl_getTimePumpRun();
 
 /******************************************************************************
 * Inline functions

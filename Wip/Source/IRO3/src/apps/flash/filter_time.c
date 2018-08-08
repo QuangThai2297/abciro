@@ -108,7 +108,14 @@ void filter_time_minusTime(uint32_t second)
 {
 	for(uint8_t i = 0; i< FILTER_NUM; i++)
 	{
-		s_time_filter[i] -= second;
+		if(s_time_filter[i] > second)
+		{
+			s_time_filter[i] -= second;
+		}
+		else // need new filter
+		{
+			s_time_filter[i] = 0;
+		}
 	}
 	filter_time_updateToFlash();
 }
@@ -117,6 +124,12 @@ uint16_t filter_time_getFilterHour(uint8_t filIndex)
 {
 	return (uint16_t)(s_time_filter[filIndex]/3600);
 }
+
+uint32_t filter_time_getFilterSecond(uint8_t filIndex)
+{
+	return (s_time_filter[filIndex]);
+}
+
 void filter_time_resetTimeAtIndex(uint8_t filIndex)
 {
 	s_time_filter[filIndex] = g_userConfig.filterLifeTime[filIndex];

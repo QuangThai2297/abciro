@@ -112,6 +112,18 @@ void UserConfig_setFilterLifeTime(uint32_t lifeTime,uint8_t filterIndex)
 	g_userConfig.filterLifeTime[filterIndex] = lifeTime;
 	user_config_updateToFlash();
 }
+void UserConfig_setTdsLimitIn(uint16_t tdsLimit)
+{
+	g_userConfig.tdsLimitIn = tdsLimit;
+	user_config_updateToFlash();
+}
+
+void UserConfig_setTdsLimitOut(uint16_t tdsLimit)
+{
+	g_userConfig.tdsLimitOut = tdsLimit;
+	user_config_updateToFlash();
+}
+
 /**
  * @brief One line documentation
  *

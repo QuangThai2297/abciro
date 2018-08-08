@@ -60,6 +60,7 @@
 void filter_time_init();
 void filter_time_minusTime(uint32_t second);
 uint16_t filter_time_getFilterHour(uint8_t filIndex);
+uint32_t filter_time_getFilterSecond(uint8_t filIndex);
 void filter_time_resetTimeAtIndex(uint8_t filIndex);
 
 /******************************************************************************
