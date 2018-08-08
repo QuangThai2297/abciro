@@ -57,7 +57,7 @@
 #define UPDATE_VALUE   (2)
 #define TDS_OUT_VALUE_MIN  (0)
 #define TDS_OUT_MAX_DEFAULT (100)
-#define ADC_H2O_DET_DEFAULT (2000)
+#define ADC_H2O_DET_DEFAULT (4000)
 #define H2O_DET_CNT_MAX   (100)
 #define TDS_OUT_VALUE_MAX  (1000)
 #define CALIB_POINT_MAX (12)
