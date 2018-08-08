@@ -290,7 +290,7 @@ PUBLIC void   ADC_UpdateTds (uint8_t state)
 		s_tds_out.sum_adc_low  = 0;
 	    //check h2o det
 		R_Config_S12AD0_Get_ValueResult(H20_CHANNEL_DETECT,&s_adc_h2o_det);
-		if(s_adc_h2o_det > s_tds_calib_param.adc_h2o_det)
+		if(s_adc_h2o_det < s_tds_calib_param.adc_h2o_det)
 		{
 			s_cnt_h2o_det ++;
 			if(s_cnt_h2o_det> H2O_DET_CNT_MAX)
