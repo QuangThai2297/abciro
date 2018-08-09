@@ -152,15 +152,23 @@ LOCAL void ADC_InitConfigFlash()
  */
 PUBLIC void ADC_Init()
 {   
-
+	R_Config_S12AD0_Create();
 	s_tds_in.adc_sample = QUEUE_InitQueue(ADC_SAMPLE_QUEUE_SIZE,sizeof(int16_t));
 	s_tds_out.adc_sample = QUEUE_InitQueue(ADC_SAMPLE_QUEUE_SIZE,sizeof(int16_t));
 	ADC_InitConfigFlash();
-	//
 	s_200ms_cnt = 0;
 	PWM = 0;
 	g_adc_flag = 0U;
 	R_Config_S12AD0_Start();
+	while((QUEUE_QueueIsEmpty(s_tds_out.adc_sample))||((QUEUE_QueueIsEmpty(s_tds_in.adc_sample))))
+	{
+    	if(g_adc_flag)
+    	{
+    		ADC_UpdateTds (0);
+    	}
+
+	}
+
 }
 
 
@@ -232,7 +240,6 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 		}
 	}
 
-
 	return tds_return;
 
 }
@@ -283,7 +290,7 @@ PUBLIC void   ADC_UpdateTds (uint8_t state)
 		s_tds_out.sum_adc_low  = 0;
 	    //check h2o det
 		R_Config_S12AD0_Get_ValueResult(H20_CHANNEL_DETECT,&s_adc_h2o_det);
-		if(s_adc_h2o_det > s_tds_calib_param.adc_h2o_det)
+		if(s_adc_h2o_det < s_tds_calib_param.adc_h2o_det)
 		{
 			s_cnt_h2o_det ++;
 			if(s_cnt_h2o_det> H2O_DET_CNT_MAX)

@@ -32,6 +32,7 @@
 #include "filter_time.h"
 #include "UIControl.h"
 #include "pumpControl.h"
+#include "timer.h"
 
 
 
@@ -104,8 +105,10 @@ void run_DisplayTds();
 void main(void);
 void main(void)
 {
+
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
+///	TOUCH_init();
 	TOUCH_init();
 	UART_Init();
 	flash_app_init();
@@ -115,6 +118,7 @@ void main(void)
 	/* Main loop */
 	while(1)
 	{
+
 		//////////////////////
     	if(g_run200usFlag == 1)
     	{
@@ -134,7 +138,9 @@ void main(void)
     	if(g_adc_flag)
     	{
     		ADC_UpdateTds (s_pwm_cnt);
+
     	}
+
     	TIMER_CheckTimerEvent();
 	}
 }
