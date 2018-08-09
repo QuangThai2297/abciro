@@ -29,6 +29,7 @@
 #include "adc.h"
 #include "filter_time.h"
 #include "timeCheck.h"
+#include "led7seg.h"
 
 /******************************************************************************
 * External objects

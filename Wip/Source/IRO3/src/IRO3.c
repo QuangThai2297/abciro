@@ -33,6 +33,7 @@
 #include "UIControl.h"
 #include "pumpControl.h"
 #include "timer.h"
+#include "errorCheck.h"
 
 
 
@@ -162,6 +163,7 @@ void run100msTask()
 {
 	UIControl_process();
 	pumpControl_process();
+	ErrorCheck_process();
 }
 
 void abort(void)

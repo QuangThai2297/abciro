@@ -145,6 +145,9 @@ PUBLIC ERR_E ADC_CalibTdsValue(uint16_t tdsvalue,TDS_E channel);
 PUBLIC void ADC_UpdateTdsDisplay();
 
 PUBLIC uint16_t  ADC_GetTdsValueDisplay(TDS_E channel);
+
+PUBLIC bool ADC_GetH2oDet();
+
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

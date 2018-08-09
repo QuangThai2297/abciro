@@ -26,6 +26,9 @@
 #include "errorCheck.h"
 #include "gpio.h"
 #include "timeCheck.h"
+#include "user_config.h"
+#include "adc.h"
+#include "filter_time.h"
 
 /******************************************************************************
 * External objects
@@ -82,9 +85,11 @@ typedef enum
 ******************************************************************************/
 void checkFilter();
 void checkWaterIn();
-void newErrorOccur(ErrorType_t error);
 void checkPumpRunTime();
+void checkTdsLimit();
+void checkH2ODet();
 
+void newErrorOccur(ErrorType_t error);
 
 /******************************************************************************
 * Local variables
@@ -170,6 +175,24 @@ void checkPumpRunTime()
 		newErrorOccur(ERROR_TYPE_PUMP_RUN_OVER_TIME);
 	}
 }
+void checkTdsLimit()
+{
+	if(ADC_GetTdsValue(TDS_IN_VALUE) > g_userConfig.tdsLimitIn)
+	{
+		newErrorOccur(ERROR_TYPE_TDS_IN);
+	}
+	if(ADC_GetTdsValue(TDS_OUT_VALUE) > g_userConfig.tdsLimitOut)
+	{
+		newErrorOccur(ERROR_TYPE_TDS_OUT);
+	}
+}
+void checkH2ODet()
+{
+	if(ADC_GetH2oDet())
+	{
+		newErrorOccur(ERROR_TYPE_LEAK_WATER);
+	}
+}
 /******************************************************************************
 * Global functions
 ******************************************************************************/
@@ -196,6 +219,8 @@ void ErrorCheck_process()
 	checkFilter();
 	checkWaterIn();
 	checkPumpRunTime();
+	checkTdsLimit();
+	checkH2ODet();
 }
 bool ErrorCheck_haveError()
 {
