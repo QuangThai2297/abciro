@@ -177,18 +177,18 @@ void checkPumpRunTime()
 }
 void checkTdsLimit()
 {
-	if(ADC_GetTdsValue(TDS_IN_VALUE) > g_userConfig.tdsLimitIn)
+	if((ADC_GetTdsValue(TDS_IN_VALUE) > g_userConfig.tdsLimitIn) && (!currentErrors[ERROR_TYPE_TDS_IN]))
 	{
 		newErrorOccur(ERROR_TYPE_TDS_IN);
 	}
-	if(ADC_GetTdsValue(TDS_OUT_VALUE) > g_userConfig.tdsLimitOut)
+	if((ADC_GetTdsValue(TDS_OUT_VALUE) > g_userConfig.tdsLimitOut)&& (!currentErrors[ERROR_TYPE_TDS_OUT]))
 	{
 		newErrorOccur(ERROR_TYPE_TDS_OUT);
 	}
 }
 void checkH2ODet()
 {
-	if(ADC_GetH2oDet())
+	if(ADC_GetH2oDet() && (!currentErrors[ERROR_TYPE_LEAK_WATER]))
 	{
 		newErrorOccur(ERROR_TYPE_LEAK_WATER);
 	}

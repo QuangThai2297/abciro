@@ -6,7 +6,7 @@
 *
 ***************************************************************************//*!
 *
-* @file        display.c
+* @file        led.c
 *
 * @author    quanvu
 *
@@ -23,11 +23,7 @@
 ******************************************************************************/
 
 
-#include <config.h>
-#include "display.h"
-#include "adc.h"
-#include "filter_time.h"
-#include "timeCheck.h"
+#include "led.h"
 #include "gpio.h"
 
 /******************************************************************************
@@ -45,6 +41,10 @@
 
 
 
+const gpio_port_pin_t LED_KEY_RED_PIN[] = {GPIO_PORT_B_PIN_6,GPIO_PORT_C_PIN_3,GPIO_PORT_C_PIN_6,GPIO_PORT_5_PIN_4};
+const gpio_port_pin_t LED_KEY_GREEN_PIN[] = {GPIO_PORT_C_PIN_2,GPIO_PORT_C_PIN_5,GPIO_PORT_C_PIN_7,GPIO_PORT_5_PIN_5};
+const gpio_port_pin_t LED_MACHINE_STATE_PIN[LED_MACHINE_STATE_NUM] = {LED_MACHINE_STATE_TDS_OUT,LED_MACHINE_STATE_TDS_IN,LED_MACHINE_STATE_FILTER};
+
 /******************************************************************************
 * Local types
 ******************************************************************************/
@@ -52,7 +52,6 @@
 /******************************************************************************
 * Local function prototypes
 ******************************************************************************/
-
 
 
 /******************************************************************************
@@ -77,11 +76,7 @@
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-void Display_process()
-{
-	Buzzer_process();
-	Led7seg_scanLed();
-}
+
 
 
 /**
@@ -95,42 +90,45 @@ void Display_process()
  * @return descrition for the function return value
  */
 
-void Display_showFilterTime(uint8_t filter)
+void Led_SetLedKeyState(LedKeyName_t ledName,LedKeyColor_t color, LedState_t state)
 {
-	Led_switchMachineStateLed(MACHINE_STATE_LED_FILTER);
-	Led7seg_SetNumberInLed4(filter_time_getFilterHour(filter));
-	Led7seg_SetNumberInLed1(filter +1);
-}
-extern volatile uint8_t g_run200usFlag;
-
-void Display_turnOnAllIn1s()
-{
-	Led_turnOnAll();
-	Led7seg_SetNumberInLed1(8);
-	Led7seg_SetNumberInLed4(8888);
-	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
-	uint32_t timeStart = g_sysTime;
-	while((g_sysTime - timeStart) < 1500)
+	if(color == LED_KEY_COLLOR_GREEN)
 	{
-    	if(g_run200usFlag == 1)
-    	{
-    		Led7seg_scanLed();
-    		g_run200usFlag= 0;
-    	}
+		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[ledName],state == LED_STATE_ON? GPIO_LEVEL_LOW:GPIO_LEVEL_HIGH);
+	}else
+	{
+		R_GPIO_PinWrite(LED_KEY_RED_PIN[ledName],state == LED_STATE_ON? GPIO_LEVEL_LOW:GPIO_LEVEL_HIGH);
 	}
-	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
-
 }
 
-void Display_showTdsOut()
+void Led_turnOnLedKey()
 {
-	Led7seg_SetNumberInLed1(LED_7SEG_OFF);
-	Led7seg_SetNumberInLed4(ADC_GetTdsValueDisplay(TDS_OUT_VALUE));
-	Led_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
+	for(uint8_t i = 0; i< PIN_KEY_NUM; i++)
+	{
+		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[i],GPIO_LEVEL_LOW);
+	}
 }
-void Display_showTdsIn()
+void Led_turnOffLedKey()
 {
-	Led7seg_SetNumberInLed1(LED_7SEG_OFF);
-	Led7seg_SetNumberInLed4(ADC_GetTdsValueDisplay(TDS_IN_VALUE));
-	Led_switchMachineStateLed(MACHINE_STATE_LED_TDS_IN);
+	for(uint8_t i = 0; i< PIN_KEY_NUM; i++)
+	{
+		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[i],GPIO_LEVEL_HIGH);
+	}
+}
+
+void Led_switchMachineStateLed(MachineStateLed_t machineState)
+{
+	uint8_t i;
+	for ( i = 0;  i < LED_MACHINE_STATE_NUM; ++ i) {
+		R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[i], GPIO_LEVEL_HIGH);
+	}
+	R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[machineState], GPIO_LEVEL_LOW);
+}
+
+void Led_turnOnAll()
+{
+	Led_turnOnLedKey();
+	for (uint8_t i = 0;  i < LED_MACHINE_STATE_NUM; ++ i) {
+		R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[i], GPIO_LEVEL_LOW);
+	}
 }

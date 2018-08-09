@@ -109,7 +109,7 @@ uint32_t s_lastPressTime;
 ******************************************************************************/
 void saveFilterLifeTime(uint8_t index)
 {
-	UserConfig_setFilterLifeTime(Display_getNumberInLed4()*3600,index);
+	UserConfig_setFilterLifeTime(Led7seg_getNumberInLed4()*3600,index);
 	filter_time_resetTimeAtIndex(index);
 }
 void saveCurentSetingNumer()
@@ -158,7 +158,7 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 		if(s_uiMode == UI_MODE_SETTING)
 		{
 			s_uiMode = UI_MODE_NOMAL;
-			Display_onBuzzerInMs(TIME_BUZZER_ON);
+			Buzzer_onInMs(TIME_BUZZER_ON);
 			saveCurentSetingNumer();
 		}
 		else
@@ -177,7 +177,7 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 		if(s_uiMode == UI_MODE_NOMAL)
 		{
 			s_uiMode = UI_MODE_SETTING;
-			Display_onBuzzerInMs(TIME_BUZZER_ON);
+			Buzzer_onInMs(TIME_BUZZER_ON);
 		}
 	}
 }
@@ -185,7 +185,7 @@ void UIControl_updateUI()
 {
 	switch (s_UIState) {
 		case UI_STATE_LOCK:
-			Display_turnOffLedKey();
+			Led_turnOffLedKey();
 			if(ErrorCheck_haveError())
 			{
 
@@ -233,13 +233,13 @@ void UIControl_switchUiStateTo(UI_State_t newState)
 {
 	if(s_UIState == UI_STATE_LOCK)
 	{
-		Display_turnOnLedKey();
-		Display_onBuzzerInMs(TIME_BUZZER_ON);
+		Led_turnOnLedKey();
+		Buzzer_onInMs(TIME_BUZZER_ON);
 	}
 	if(newState == UI_STATE_LOCK)
 	{
-		Display_turnOffLedKey();
-		Display_onBuzzerInMs(TIME_BUZZER_ON);
+		Led_turnOffLedKey();
+		Buzzer_onInMs(TIME_BUZZER_ON);
 	}
 	s_UIState = newState;
 	UIControl_updateUI();
@@ -369,7 +369,7 @@ void TouchBtnHoldRelease_cb(ButtonId_t btn)
 				}
 				else if(s_uiMode == UI_MODE_SETTING)
 				{
-					Display_increaseNumberInLed4(1);
+					Led7seg_increaseNumberInLed4(1);
 				}
 				break;
 			case BUTTON_ID_MINUS:
@@ -379,7 +379,7 @@ void TouchBtnHoldRelease_cb(ButtonId_t btn)
 				}
 				else if(s_uiMode == UI_MODE_SETTING)
 				{
-					Display_reduceNumberInLed4(1);
+					Led7seg_reduceNumberInLed4(1);
 				}
 				break;
 			case BUTTON_ID_SET:

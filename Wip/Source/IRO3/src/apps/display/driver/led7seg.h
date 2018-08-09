@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Embedded software team.
@@ -8,22 +7,22 @@
 ***************************************************************************/
 /**
  *
- * @file         gpio.h
+ * @file         led7seg.h
  *
- * @author    	trongkn
- * 
+ * @author    	quanvu
+ *
  * @version   1.0
- * 
- * @date      
- * 
+ *
+ * @date
+ *
  * @brief     Brief description of the file
  *
  * Detailed Description of the file. If not used, remove the separator above.
  *
  */
 
-#ifndef GPIO_H_
-#define GPIO_H_
+#ifndef APPS_DISPLAY_LED7SEG_H_
+#define APPS_DISPLAY_LED7SEG_H_
 
 
 /******************************************************************************
@@ -31,8 +30,7 @@
 ******************************************************************************/
 
 #include <config.h>
-#include "r_gpio_rx_if.h"
-
+#include <stdint.h>
 /******************************************************************************
 * Constants
 ******************************************************************************/
@@ -40,48 +38,35 @@
 
 
 /******************************************************************************
-* Macros 
+* Macros
 ******************************************************************************/
-// Pin define
-#define BUZZER_PIN GPIO_PORT_1_PIN_7
+#define LED_7SEG_OFF 10
+#define LED_7SEG_ERROR 11
 
-#define PIN_KEY_NUM 4
-
-#define LED_MACHINE_STATE_NUM 3
-#define LED_MACHINE_STATE_TDS_OUT GPIO_PORT_E_PIN_0
-#define LED_MACHINE_STATE_TDS_IN  GPIO_PORT_4_PIN_7
-#define LED_MACHINE_STATE_FILTER GPIO_PORT_E_PIN_1
-
-#define PIN_AP_THAP 	GPIO_PORT_0_PIN_3
-#define PIN_AP_CAO 		GPIO_PORT_3_PIN_6
-
-#define PIN_DK_BOM 		GPIO_PORT_3_PIN_1
-#define PIN_VAN_XA 		GPIO_PORT_H_PIN_0   // phần cứng chân khác, câu test tạm.
-
-// action define
-#define CHECK_CO_AP_THAP 	(R_GPIO_PinRead(PIN_AP_THAP)== GPIO_LEVEL_HIGH)
-#define CHECK_CO_AP_CAO 	(R_GPIO_PinRead(PIN_AP_CAO)== GPIO_LEVEL_HIGH)
-
-#define TURN_ON_PUMP 		R_GPIO_PinWrite(PIN_DK_BOM,GPIO_LEVEL_HIGH)
-#define TURN_OFF_PUMP 		R_GPIO_PinWrite(PIN_DK_BOM,GPIO_LEVEL_LOW)
-#define TURN_ON_VAN_XA 		R_GPIO_PinWrite(PIN_VAN_XA,GPIO_LEVEL_HIGH)
-#define TURN_OFF_VAN_XA 	R_GPIO_PinWrite(PIN_VAN_XA,GPIO_LEVEL_LOW)
 
 
 /******************************************************************************
 * Types
 ******************************************************************************/
 
-
 /******************************************************************************
 * Global variables
 ******************************************************************************/
-   
+
 
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-PUBLIC void GPIO_Init(void);
+void Led7seg_SetNumberInLed4(uint16_t number); // set number for 4 digit led
+uint16_t Led7seg_getNumberInLed4();
+void Led7seg_reduceNumberInLed4(uint16_t reduce);
+void Led7seg_increaseNumberInLed4(uint16_t reduce);
+
+void Led7seg_SetNumberInLed1(int8_t number); // set number for 1 digit led
+
+void Led7seg_scanLed(void);
+
+
 
 /******************************************************************************
 * Inline functions
@@ -89,6 +74,7 @@ PUBLIC void GPIO_Init(void);
 
 
 
-#endif 
 
 
+
+#endif /* APPS_DISPLAY_LED7SEG_H_ */

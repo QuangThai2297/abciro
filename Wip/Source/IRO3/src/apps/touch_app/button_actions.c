@@ -31,7 +31,7 @@ Includes   <System Includes> , "Project Includes"
 ***********************************************************************************************************************/
 #include "r_touch_button_if.h"
 #include "r_gpio_rx_if.h"
-#include "display.h"
+#include "led.h"
 #include "UIControl.h"
 
 /***********************************************************************************************************************
@@ -78,7 +78,7 @@ void App_TOUCH_Button_Notification(void * p_args)
 	   TouchBtnPressed_cb(button_id);
 	   if(button_id == BUTTON_ID_SET)
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_ON);
 	   }
 	   if(UIControl_stateIsLock())
 		   return;
@@ -86,26 +86,26 @@ void App_TOUCH_Button_Notification(void * p_args)
 	   {
 	   case BUTTON_ID_SET:
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_ON);
-		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
 		   break;
 	   }
 	   case BUTTON_ID_PLUS:
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_RED, LED_STATE_ON);
-		   Display_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
 		   break;
 	   }
 	   case BUTTON_ID_MINUS:
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_RED, LED_STATE_ON);
-		   Display_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
 		   break;
 	   }
 	   case BUTTON_ID_SELECT:
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_RED, LED_STATE_ON);
-		   Display_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_RED, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_GREEN, LED_STATE_OFF);
 		   break;
 	   }
 	   default:
@@ -118,7 +118,7 @@ void App_TOUCH_Button_Notification(void * p_args)
 	   TouchBtnHoldRelease_cb(button_id);
 	   if(button_id == BUTTON_ID_SET)
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_OFF);
 	   }
 	   if(UIControl_stateIsLock())
 		   return;
@@ -126,26 +126,26 @@ void App_TOUCH_Button_Notification(void * p_args)
 	   {
 	   case BUTTON_ID_SET:
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_OFF);
-		   Display_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_SET,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
 		   break;
 	   }
 	   case BUTTON_ID_PLUS:
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_RED, LED_STATE_OFF);
-		   Display_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_PLUS,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
 		   break;
 	   }
 	   case BUTTON_ID_MINUS:
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_RED, LED_STATE_OFF);
-		   Display_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_MINUS,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
 		   break;
 	   }
 	   case BUTTON_ID_SELECT:
 	   {
-		   Display_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_RED, LED_STATE_OFF);
-		   Display_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
+		   Led_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_RED, LED_STATE_OFF);
+		   Led_SetLedKeyState(LED_KEY_NAME_SELECT,LED_KEY_COLLOR_GREEN, LED_STATE_ON);
 		   break;
 	   }
 	   default:

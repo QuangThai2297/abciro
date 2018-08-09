@@ -6,7 +6,7 @@
 *
 ***************************************************************************//*!
 *
-* @file        display.c
+* @file        buzzer.c
 *
 * @author    quanvu
 *
@@ -23,13 +23,9 @@
 ******************************************************************************/
 
 
-#include <config.h>
-#include "display.h"
-#include "adc.h"
-#include "filter_time.h"
+#include "buzzer.h"
 #include "timeCheck.h"
 #include "gpio.h"
-
 /******************************************************************************
 * External objects
 ******************************************************************************/
@@ -42,6 +38,9 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
+#define BUZZER_ON_TIME 300
+#define BUZZER_INTERVAL 700
+#define BUZZER_TIME_IN_ERROR 10
 
 
 
@@ -54,11 +53,13 @@
 ******************************************************************************/
 
 
-
 /******************************************************************************
 * Local variables
 ******************************************************************************/
-
+uint32_t timeOffBuzzer;
+bool buzzerIsOn = false;
+uint8_t timeBuzzerLeft = 0 ;
+uint32_t timeStartBuzzer;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -72,16 +73,48 @@
  *
  * @return descrition for the function return value
  */
-
+void Buzzer_process()
+{
+	if(buzzerIsOn && timeIsAfter(g_sysTime , timeOffBuzzer) )
+	{
+		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
+		buzzerIsOn = false;
+	}
+	if(timeBuzzerLeft >0)
+	{
+		if(timeIsAfter(g_sysTime, timeStartBuzzer + (BUZZER_TIME_IN_ERROR - timeBuzzerLeft) * BUZZER_INTERVAL))
+		{
+			Buzzer_onInMs(BUZZER_ON_TIME);
+			timeBuzzerLeft -- ;
+		}
+	}
+}
 
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-void Display_process()
+
+void Buzzer_onInMs(uint16_t msTime)
 {
-	Buzzer_process();
-	Led7seg_scanLed();
+	timeOffBuzzer = g_sysTime + msTime;
+	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
+	buzzerIsOn = true;
 }
+void Buzzer_turn10Time()
+{
+	timeStartBuzzer = g_sysTime;
+	timeBuzzerLeft = BUZZER_TIME_IN_ERROR;
+}
+/**
+ * @brief One line documentation
+ *
+ * A more detailed documentation
+ *
+ * @param arg1 the first function argument
+ * @param arg2 the second function argument
+ *
+ * @return descrition for the function return value
+ */
 
 
 /**
@@ -95,42 +128,28 @@ void Display_process()
  * @return descrition for the function return value
  */
 
-void Display_showFilterTime(uint8_t filter)
-{
-	Led_switchMachineStateLed(MACHINE_STATE_LED_FILTER);
-	Led7seg_SetNumberInLed4(filter_time_getFilterHour(filter));
-	Led7seg_SetNumberInLed1(filter +1);
-}
-extern volatile uint8_t g_run200usFlag;
 
-void Display_turnOnAllIn1s()
-{
-	Led_turnOnAll();
-	Led7seg_SetNumberInLed1(8);
-	Led7seg_SetNumberInLed4(8888);
-	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
-	uint32_t timeStart = g_sysTime;
-	while((g_sysTime - timeStart) < 1500)
-	{
-    	if(g_run200usFlag == 1)
-    	{
-    		Led7seg_scanLed();
-    		g_run200usFlag= 0;
-    	}
-	}
-	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
+/**
+ * @brief One line documentation
+ *
+ * A more detailed documentation
+ *
+ * @param arg1 the first function argument
+ * @param arg2 the second function argument
+ *
+ * @return descrition for the function return value
+ */
 
-}
 
-void Display_showTdsOut()
-{
-	Led7seg_SetNumberInLed1(LED_7SEG_OFF);
-	Led7seg_SetNumberInLed4(ADC_GetTdsValueDisplay(TDS_OUT_VALUE));
-	Led_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
-}
-void Display_showTdsIn()
-{
-	Led7seg_SetNumberInLed1(LED_7SEG_OFF);
-	Led7seg_SetNumberInLed4(ADC_GetTdsValueDisplay(TDS_IN_VALUE));
-	Led_switchMachineStateLed(MACHINE_STATE_LED_TDS_IN);
-}
+/**
+ * @brief One line documentation
+ *
+ * A more detailed documentation
+ *
+ * @param arg1 the first function argument
+ * @param arg2 the second function argument
+ *
+ * @return descrition for the function return value
+ */
+
+
