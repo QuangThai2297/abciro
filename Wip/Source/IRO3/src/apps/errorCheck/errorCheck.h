@@ -47,7 +47,25 @@
 /******************************************************************************
 * Types
 ******************************************************************************/
-
+typedef enum
+{
+	ERROR_TYPE_FILTER_1 = 0,
+	ERROR_TYPE_FILTER_2,
+	ERROR_TYPE_FILTER_3,
+	ERROR_TYPE_FILTER_4,
+	ERROR_TYPE_FILTER_5,
+	ERROR_TYPE_FILTER_6,
+	ERROR_TYPE_FILTER_7,
+	ERROR_TYPE_FILTER_8,
+	ERROR_TYPE_FILTER_9,
+	ERROR_TYPE_INCOME_WATER_LOST,
+	ERROR_TYPE_INCOME_WATER_NO_STABILITY ,
+	ERROR_TYPE_PUMP_RUN_OVER_TIME ,
+	ERROR_TYPE_LEAK_WATER,
+	ERROR_TYPE_TDS_IN,
+	ERROR_TYPE_TDS_OUT,
+	MAX_ERROR_NUM,
+}ErrorType_t;
 
 /******************************************************************************
 * Global variables
@@ -60,6 +78,11 @@
 void ErrorCheck_init();
 void ErrorCheck_process();
 bool ErrorCheck_haveError();
+ErrorType_t ErrorCheck_getNextError(ErrorType_t currentError);
+
+
+//callback
+void ErroCheck_newError_cb(ErrorType_t newError);
 
 /******************************************************************************
 * Inline functions

@@ -87,6 +87,7 @@ static void r_Config_CMT1_cmi1_interrupt(void)
 		g_run1msFlag = 1;
 	}
 	g_run200usFlag = 1;
+	Led7seg_scanLed();
     /* End user code. Do not edit comment generated here */
 }
 

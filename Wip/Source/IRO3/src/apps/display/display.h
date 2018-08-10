@@ -44,14 +44,19 @@
 /******************************************************************************
 * Macros
 ******************************************************************************/
-#define LED_7SEG_OFF 10
 
 
 
 /******************************************************************************
 * Types
 ******************************************************************************/
-
+typedef enum
+{
+	ERROR_CODE_INCOME_WATER_LOST = 4,
+	ERROR_CODE_INCOME_WATER_NO_STABILITY = 2,
+	ERROR_CODE_PUMP_RUN_OVER_TIME = 1,
+	ERROR_CODE_LEAK_WATER = 5,
+}ErrorCode_t;
 
 
 /******************************************************************************
@@ -71,7 +76,7 @@ void Display_showFilterTime(uint8_t filter);
 void Display_turnOnAllIn1s();
 void Display_showTdsOut();
 void Display_showTdsIn();
-
+void Display_showCurentError();
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

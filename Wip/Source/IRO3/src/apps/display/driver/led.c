@@ -125,6 +125,13 @@ void Led_switchMachineStateLed(MachineStateLed_t machineState)
 	R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[machineState], GPIO_LEVEL_LOW);
 }
 
+void Led_turnOffMachineStateled()
+{
+	uint8_t i;
+	for ( i = 0;  i < LED_MACHINE_STATE_NUM; ++ i) {
+		R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[i], GPIO_LEVEL_HIGH);
+	}
+}
 void Led_turnOnAll()
 {
 	Led_turnOnLedKey();

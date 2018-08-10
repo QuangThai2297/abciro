@@ -29,6 +29,7 @@
 #include "filter_time.h"
 #include "timeCheck.h"
 #include "gpio.h"
+#include "errorCheck.h"
 
 /******************************************************************************
 * External objects
@@ -42,7 +43,7 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
-
+#define TIME_SHOW_1_ERROR 5000
 
 
 /******************************************************************************
@@ -58,7 +59,8 @@
 /******************************************************************************
 * Local variables
 ******************************************************************************/
-
+ErrorType_t currentError;
+uint32_t timeStartDisplayError;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -80,7 +82,14 @@
 void Display_process()
 {
 	Buzzer_process();
-	Led7seg_scanLed();
+	if(ErrorCheck_haveError())
+	{
+		if(elapsedTime(g_sysTime, timeStartDisplayError) >= TIME_SHOW_1_ERROR)
+		{
+			timeStartDisplayError = g_sysTime;
+			currentError = ErrorCheck_getNextError(currentError);
+		}
+	}
 }
 
 
@@ -134,3 +143,62 @@ void Display_showTdsIn()
 	Led7seg_SetNumberInLed4(ADC_GetTdsValueDisplay(TDS_IN_VALUE));
 	Led_switchMachineStateLed(MACHINE_STATE_LED_TDS_IN);
 }
+
+void Display_showGenaralError(ErrorType_t error)
+{
+	ErrorCode_t code;
+	switch (error) {
+		case ERROR_TYPE_INCOME_WATER_LOST:
+			code = ERROR_CODE_INCOME_WATER_LOST;
+			break;
+		case ERROR_TYPE_INCOME_WATER_NO_STABILITY:
+			code = ERROR_CODE_INCOME_WATER_NO_STABILITY;
+			break;
+		case ERROR_TYPE_LEAK_WATER:
+			code = ERROR_CODE_LEAK_WATER;
+			break;
+		case ERROR_TYPE_PUMP_RUN_OVER_TIME:
+			code = ERROR_CODE_PUMP_RUN_OVER_TIME;
+			break;
+		default:
+			break;
+	}
+	Led_turnOffMachineStateled();
+	Led7seg_SetNumberInLed1(LED_7SEG_ERROR);
+	Led7seg_SetNumberInLed4(code);
+}
+
+void Display_showFilterExpired(uint8_t filter)
+{
+	Led_switchMachineStateLed(MACHINE_STATE_LED_FILTER);
+	Led7seg_SetNumberInLed4(0);
+	Led7seg_SetNumberInLed1(filter +1);
+}
+void Display_showCurentError()
+{
+	if(currentError <= ERROR_TYPE_FILTER_9)
+	{
+		Display_showFilterExpired(currentError);
+	}
+	else if(currentError <= ERROR_TYPE_LEAK_WATER)
+	{
+		Display_showGenaralError(currentError);
+	}
+	else if(currentError == ERROR_TYPE_TDS_IN)
+	{
+		Display_showTdsIn();
+	}
+	else if(currentError == ERROR_TYPE_TDS_OUT)
+	{
+		Display_showTdsOut();
+	}
+}
+
+// callback
+void ErroCheck_newError_cb(ErrorType_t newError)
+{
+	currentError = newError;
+	timeStartDisplayError = g_sysTime;
+	Buzzer_turn10Time();
+}
+

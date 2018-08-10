@@ -188,7 +188,7 @@ void UIControl_updateUI()
 			Led_turnOffLedKey();
 			if(ErrorCheck_haveError())
 			{
-
+				Display_showCurentError();
 			}else
 				Display_showTdsOut();
 			break;

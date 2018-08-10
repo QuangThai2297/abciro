@@ -47,32 +47,8 @@
 /******************************************************************************
 * Local types
 ******************************************************************************/
-typedef enum
-{
-	ERROR_CODE_INCOME_WATER_LOST = 4,
-	ERROR_CODE_INCOME_WATER_NO_STABILITY = 2,
-	ERROR_CODE_PUMP_RUN_OVER_TIME = 1,
-	ERROR_CODE_LEAK_WATER = 5,
-}ErrorCode_t;
-typedef enum
-{
-	ERROR_TYPE_FILTER_1 = 0,
-	ERROR_TYPE_FILTER_2,
-	ERROR_TYPE_FILTER_3,
-	ERROR_TYPE_FILTER_4,
-	ERROR_TYPE_FILTER_5,
-	ERROR_TYPE_FILTER_6,
-	ERROR_TYPE_FILTER_7,
-	ERROR_TYPE_FILTER_8,
-	ERROR_TYPE_FILTER_9,
-	ERROR_TYPE_INCOME_WATER_LOST,
-	ERROR_TYPE_INCOME_WATER_NO_STABILITY ,
-	ERROR_TYPE_PUMP_RUN_OVER_TIME ,
-	ERROR_TYPE_LEAK_WATER,
-	ERROR_TYPE_TDS_IN,
-	ERROR_TYPE_TDS_OUT,
-	MAX_ERROR_NUM,
-}ErrorType_t;
+
+
 
 typedef enum
 {
@@ -119,6 +95,8 @@ uint8_t s_waterInBlinkCnt = 0;
 void newErrorOccur(ErrorType_t error)
 {
 	currentErrors[error] = true;
+	errorCount++;
+	ErroCheck_newError_cb(error);
 //	Display_turnBuzzer10Time();
 //	currentDisplay = error;
 //	lastTimeShow = g_sysTime;
@@ -227,6 +205,20 @@ bool ErrorCheck_haveError()
 	return (errorCount > 0 ? true:false);
 }
 
+ErrorType_t ErrorCheck_getNextError(ErrorType_t currentError)
+{
+	ErrorType_t nextError = currentError;
+	while(1)
+	{
+		if(++nextError == MAX_ERROR_NUM)
+			nextError = ERROR_TYPE_FILTER_1;
+		if(currentErrors[nextError])
+		{
+			return nextError;
+		}
+	}
+	return currentError;
+}
 /**
  * @brief One line documentation
  *
