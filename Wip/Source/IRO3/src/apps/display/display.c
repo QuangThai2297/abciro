@@ -30,7 +30,7 @@
 #include "timeCheck.h"
 #include "gpio.h"
 #include "errorCheck.h"
-
+#include "user_config.h"
 /******************************************************************************
 * External objects
 ******************************************************************************/
@@ -194,11 +194,23 @@ void Display_showCurentError()
 	}
 }
 
+void Display_showTdsInLimit()
+{
+	Led7seg_SetNumberInLed1(LED_7SEG_OFF);
+	Led7seg_SetNumberInLed4(g_userConfig.tdsLimitIn);
+	Led_switchMachineStateLed(MACHINE_STATE_LED_TDS_IN);
+}
+void Display_showTdsOutLimit()
+{
+	Led7seg_SetNumberInLed1(LED_7SEG_OFF);
+	Led7seg_SetNumberInLed4(g_userConfig.tdsLimitOut);
+	Led_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
+}
 // callback
 void ErroCheck_newError_cb(ErrorType_t newError)
 {
 	currentError = newError;
 	timeStartDisplayError = g_sysTime;
-	Buzzer_turn10Time();
+	Buzzer_blinkError();
 }
 

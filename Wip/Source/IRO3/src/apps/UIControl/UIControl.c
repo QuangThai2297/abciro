@@ -30,7 +30,7 @@
 #include "filter_time.h"
 #include "timeCheck.h"
 #include "errorCheck.h"
-
+#include "adc.h"
 
 /******************************************************************************
 * External objects
@@ -75,6 +75,13 @@ typedef enum
 	UI_MODE_NOMAL,
 	UI_MODE_SETTING,
 }UIMode_t ;
+
+typedef enum
+{
+	TDS_SETTING_MODE_LIMIT,
+	TDS_SETTING_MODE_CALIB,
+}TdsSettingMode_t ;
+
 typedef enum
 {
 	BTN_STATE_RELEASE = 0,
@@ -95,6 +102,7 @@ void UIControl_btnProcess();
 void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime);
 void UIControl_switchUiStateTo(UI_State_t newState);
 void UIControl_updateUI();
+void UIControl_resetSettingNumber();
 
 
 /******************************************************************************
@@ -104,6 +112,7 @@ UI_State_t s_UIState = UI_STATE_LOCK;
 BtnControl_t btnControls[BUTTON_NUM];
 UIMode_t s_uiMode = UI_MODE_NOMAL;
 uint32_t s_lastPressTime;
+TdsSettingMode_t tdsSettingMode;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -116,9 +125,21 @@ void saveCurentSetingNumer()
 {
 	switch (s_UIState) {
 		case UI_STATE_TDS_OUT:
+		{
+			if(tdsSettingMode == TDS_SETTING_MODE_LIMIT)
+				UserConfig_setTdsLimitOut(Led7seg_getNumberInLed4());
+			else if(tdsSettingMode == TDS_SETTING_MODE_CALIB)
+				ADC_CalibTdsValue(Led7seg_getNumberInLed4(),TDS_OUT_VALUE);
 			break;
+		}
 		case UI_STATE_TDS_IN:
+		{
+			if(tdsSettingMode == TDS_SETTING_MODE_LIMIT)
+				UserConfig_setTdsLimitIn(Led7seg_getNumberInLed4());
+			else if(tdsSettingMode == TDS_SETTING_MODE_CALIB)
+				ADC_CalibTdsValue(Led7seg_getNumberInLed4(),TDS_IN_VALUE);
 			break;
+		}
 		case UI_STATE_FILTER_1:
 			saveFilterLifeTime(0);
 			break;
@@ -177,7 +198,19 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 		if(s_uiMode == UI_MODE_NOMAL)
 		{
 			s_uiMode = UI_MODE_SETTING;
+			UIControl_resetSettingNumber();
+			tdsSettingMode = TDS_SETTING_MODE_LIMIT;
 			Buzzer_onInMs(TIME_BUZZER_ON);
+		}
+	}
+	else if((btn == BUTTON_ID_PLUS) && (holdingTime == HOLD_TIME2) && !UIControl_stateIsLock())
+	{
+		if((s_uiMode == UI_MODE_NOMAL) && ((s_UIState == UI_STATE_TDS_OUT)|| (s_UIState == UI_STATE_TDS_IN)))
+		{
+			s_uiMode = UI_MODE_SETTING;
+			UIControl_resetSettingNumber();
+			tdsSettingMode = TDS_SETTING_MODE_CALIB;
+			Buzzer_blink(2);
 		}
 	}
 }
@@ -228,6 +261,25 @@ void UIControl_updateUI()
 		default:
 			break;
 	}
+}
+void UIControl_resetSettingNumber()
+{
+	if(tdsSettingMode == TDS_SETTING_MODE_LIMIT)
+	{
+		if(s_UIState == UI_STATE_TDS_IN)
+		{
+			Display_showTdsInLimit();
+		}
+		else if(s_UIState == UI_STATE_TDS_OUT)
+		{
+			Display_showTdsOutLimit();
+		}
+	}
+	else
+	{
+		UIControl_updateUI();
+	}
+
 }
 void UIControl_switchUiStateTo(UI_State_t newState)
 {
@@ -385,7 +437,7 @@ void TouchBtnHoldRelease_cb(ButtonId_t btn)
 			case BUTTON_ID_SET:
 				if(s_uiMode == UI_MODE_SETTING)
 				{
-					UIControl_updateUI();
+					UIControl_resetSettingNumber();
 				}
 				break;
 			default:

@@ -77,6 +77,9 @@ void Display_turnOnAllIn1s();
 void Display_showTdsOut();
 void Display_showTdsIn();
 void Display_showCurentError();
+void Display_showTdsInLimit();
+void Display_showTdsOutLimit();
+
 /******************************************************************************
 * Inline functions
 ******************************************************************************/
