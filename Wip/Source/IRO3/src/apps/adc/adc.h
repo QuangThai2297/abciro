@@ -62,7 +62,7 @@
 #define TDS_OUT_VALUE_MAX  (1000)
 #define CALIB_POINT_MAX (12)
 #define TDS_THRESHOLD (1)
-#define CNT_THRESHOLD_MAX (5)
+#define CNT_THRESHOLD_MAX (10)
 /******************************************************************************
 * Types
 ******************************************************************************/
@@ -119,14 +119,6 @@ typedef enum
 * Global functions
 ******************************************************************************/
 PUBLIC void	ADC_Init(void);
-
-PUBLIC ERR_E  ADC_Read(ad_channel_t channel,uint16_t* adc_result);
-
-PUBLIC ERR_E  ADC_ReadTds(ad_channel_t channel);
-
-PUBLIC uint16_t  ADC_GetAdcLowValue();
-
-PUBLIC uint16_t  ADC_GetAdcTdsValue();
 
 PUBLIC int16_t  ADC_GetAdcTdsOutValue();
 

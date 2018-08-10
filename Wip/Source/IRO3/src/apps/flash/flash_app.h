@@ -51,13 +51,17 @@
 #define FILLTER_TIME_BLOCK 	FLASH_DF_BLOCK_0
 #define USER_CONFIG_BLOCK 	FLASH_DF_BLOCK_1
 #define TDS_PARAM_BLOCK     FLASH_DF_BLOCK_2
-
-
-
+#define MAX_LEN_FLASH       (1024) //1Kb
+#define BYTE_SAVE_LEN      (2)
+#define NUMBER_BYTE_VALID_MAX  (MAX_LEN_FLASH - BYTE_SAVE_LEN)
 /******************************************************************************
 * Types
 ******************************************************************************/
-
+union data_len
+{
+	uint16_t len;
+	uint8_t  len_byte[BYTE_SAVE_LEN];
+};
 
 /******************************************************************************
 * Global variables
@@ -69,7 +73,7 @@
 ******************************************************************************/
 void flash_app_init();
 void flash_app_eraseBlock(flash_block_address_t blockAdress);
-void flash_app_writeBlock(uint8_t * data, flash_block_address_t blockAdress,uint16_t dataSize);
+bool flash_app_writeBlock(uint8_t * data, flash_block_address_t blockAdress,uint16_t dataSize);
 bool flash_app_readData(uint8* dataRead, flash_block_address_t blockAdress,uint16_t dataSize);
 
 /******************************************************************************
