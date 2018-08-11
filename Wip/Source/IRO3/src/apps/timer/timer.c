@@ -260,7 +260,8 @@ void TIMER_CheckTimerEvent()
         {
             /* Call Timer 2 routine */
         //	Timer2Function();
-    		UART_Debug("timer2\r\n");
+    	//	UART_Debug("timer2\r\n");
+    		UART_CheckDataReadDonePacket();
     	//	TIMER_DeteteTimer(TIMER_1);
         }
 
@@ -271,8 +272,8 @@ void TIMER_CheckTimerEvent()
 PUBLIC void TIMER_Init()
 {
 
-//	TIMER_AddTimerMs(TIMER_2, 5060,0);
-	TIMER_AddTimerMs(TIMER_1, 1000,0);
+	TIMER_AddTimerMs(TIMER_2,1,0);
+	TIMER_AddTimerMs(TIMER_1, 1500,0);
 
 }
 /**

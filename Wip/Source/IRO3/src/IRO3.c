@@ -34,7 +34,7 @@
 #include "pumpControl.h"
 #include "timer.h"
 #include "errorCheck.h"
-
+#include "uart.h"
 
 
 
@@ -140,7 +140,7 @@ void main(void)
     		ADC_UpdateTds (s_pwm_cnt);
 
     	}
-
+    	UART_Process();
     	TIMER_CheckTimerEvent();
 	}
 }

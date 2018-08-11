@@ -22,7 +22,7 @@
 * Version      : 1.1.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_SCI1.
-* Creation Date: 2018-08-06
+* Creation Date: 2018-08-10
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -37,6 +37,8 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "Config_SCI1.h"
 /* Start user code for include. Do not edit comment generated here */
+#include "queue.h"
+#include "uart.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -57,6 +59,14 @@ volatile uint8_t g_tx_flag = 0U;
 volatile uint8_t g_rx_flag;
 /* Flag used to detect completion of transmission */
 static volatile uint8_t SCI1_txdone;
+
+static QUEUE_NODE_T* s_uart_data_queue ;
+
+LOCAL volatile uint16_t  s_rev_index = 0;
+
+LOCAL  uint16_t  s_rev_index_pre = 0;
+
+LOCAL volatile bool  s_rev_done = false;
 /* Sends SCI2 data and waits for transmit end flag */
 MD_STATUS R_SCI1_AsyncTransmit(uint8_t * const tx_buf, const uint16_t
 tx_num);
@@ -72,6 +82,8 @@ tx_num);
 void R_Config_SCI1_Create_UserInit(void)
 {
     /* Start user code for user init. Do not edit comment generated here */
+	s_uart_data_queue =  QUEUE_InitQueue(MAX_QUEUE_DATA_UART,sizeof(uint8_t));
+
     /* End user code. Do not edit comment generated here */
 }
 
@@ -203,6 +215,9 @@ static void r_Config_SCI1_callback_receiveend(void)
 	g_rx_flag = 1U;
 	/* Set SCI1 receive buffer address and restart reception */
 	R_Config_SCI1_Serial_Receive((uint8_t *)&g_rx_char, 1);
+	QUEUE_EnQueue(s_uart_data_queue,&g_rx_char);
+//	s_rev_index_pre = s_rev_index;
+	s_rev_index = s_rev_index+1;
     /* End user code. Do not edit comment generated here */
 }
 
@@ -241,7 +256,43 @@ tx_num)
 * End of function R_SCI2_AsyncTransmit
 *****************************************************************
 **************/
+PUBLIC uint16_t  UART_ReadData(uint8_t * data,uint16_t maxlen)
+{
+	uint16_t ret = 0;
+	if(data  == NULL)
+	{
+	 return ret;
+	}
 
+	while(!QUEUE_QueueIsEmpty(s_uart_data_queue))
+	{
+	    QUEUE_DeQueue(s_uart_data_queue,data+ret);
+		ret ++;
+		if(ret > maxlen) return ret;
+	}
+	s_rev_index = 0;
+	s_rev_index_pre = 0;
+	s_rev_done = false;
+	g_rx_flag = 0U;
+	return ret;
+}
+
+
+// timer 1 ms check if
+PUBLIC void UART_CheckDataReadDonePacket (void )
+{
+	if((s_rev_index == s_rev_index_pre) && (g_rx_flag))
+	{
+		s_rev_done = true;
+	}
+	s_rev_index_pre = s_rev_index;
+}
+
+
+PUBLIC bool UART_IsDoneFrame(void)
+{
+	return s_rev_done;
+}
 /* End user code. Do not edit comment generated here */   
 
 
