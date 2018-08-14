@@ -264,20 +264,54 @@ void UIControl_updateUI()
 }
 void UIControl_resetSettingNumber()
 {
-	if(tdsSettingMode == TDS_SETTING_MODE_LIMIT)
-	{
-		if(s_UIState == UI_STATE_TDS_IN)
-		{
-			Display_showTdsInLimit();
-		}
-		else if(s_UIState == UI_STATE_TDS_OUT)
-		{
-			Display_showTdsOutLimit();
-		}
-	}
-	else
-	{
-		UIControl_updateUI();
+	switch (s_UIState) {
+		case UI_STATE_TDS_OUT:
+			if(tdsSettingMode == TDS_SETTING_MODE_LIMIT)
+			{
+				Display_showTdsOutLimit();
+			}else
+			{
+				Display_showTdsOut();
+			}
+			break;
+		case UI_STATE_TDS_IN:
+			if(tdsSettingMode == TDS_SETTING_MODE_LIMIT)
+			{
+				Display_showTdsInLimit();
+			}else
+			{
+				Display_showTdsIn();
+			}
+			break;
+		case UI_STATE_FILTER_1:
+			Display_showFilterLifeTime(0);
+			break;
+		case UI_STATE_FILTER_2:
+			Display_showFilterLifeTime(1);
+			break;
+		case UI_STATE_FILTER_3:
+			Display_showFilterLifeTime(2);
+			break;
+		case UI_STATE_FILTER_4:
+			Display_showFilterLifeTime(3);
+			break;
+		case UI_STATE_FILTER_5:
+			Display_showFilterLifeTime(4);
+			break;
+		case UI_STATE_FILTER_6:
+			Display_showFilterLifeTime(5);
+			break;
+		case UI_STATE_FILTER_7:
+			Display_showFilterLifeTime(6);
+			break;
+		case UI_STATE_FILTER_8:
+			Display_showFilterLifeTime(7);
+			break;
+		case UI_STATE_FILTER_9:
+			Display_showFilterLifeTime(8);
+			break;
+		default:
+			break;
 	}
 
 }
@@ -449,4 +483,9 @@ void TouchBtnHoldRelease_cb(ButtonId_t btn)
 	s_lastPressTime = g_sysTime;
 }
 
-
+// callback
+void ErroCheck_newError_cb(ErrorType_t newError)
+{
+	Display_showNewError(newError);
+	UIControl_switchUiStateTo(UI_STATE_LOCK);
+}

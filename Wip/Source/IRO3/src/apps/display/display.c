@@ -29,7 +29,6 @@
 #include "filter_time.h"
 #include "timeCheck.h"
 #include "gpio.h"
-#include "errorCheck.h"
 #include "user_config.h"
 /******************************************************************************
 * External objects
@@ -104,12 +103,6 @@ void Display_process()
  * @return descrition for the function return value
  */
 
-void Display_showFilterTime(uint8_t filter)
-{
-	Led_switchMachineStateLed(MACHINE_STATE_LED_FILTER);
-	Led7seg_SetNumberInLed4(filter_time_getFilterHour(filter));
-	Led7seg_SetNumberInLed1(filter +1);
-}
 extern volatile uint8_t g_run200usFlag;
 
 void Display_turnOnAllIn1s()
@@ -131,6 +124,19 @@ void Display_turnOnAllIn1s()
 
 }
 
+void Display_showFilterTime(uint8_t filter)
+{
+	Led_switchMachineStateLed(MACHINE_STATE_LED_FILTER);
+	Led7seg_SetNumberInLed4(filter_time_getFilterHour(filter));
+	Led7seg_SetNumberInLed1(filter +1);
+}
+
+void Display_showFilterLifeTime(uint8_t filter)
+{
+	Led_switchMachineStateLed(MACHINE_STATE_LED_FILTER);
+	Led7seg_SetNumberInLed4(g_userConfig.filterLifeTime[filter]/3600);
+	Led7seg_SetNumberInLed1(filter +1);
+}
 void Display_showTdsOut()
 {
 	Led7seg_SetNumberInLed1(LED_7SEG_OFF);
@@ -206,11 +212,11 @@ void Display_showTdsOutLimit()
 	Led7seg_SetNumberInLed4(g_userConfig.tdsLimitOut);
 	Led_switchMachineStateLed(MACHINE_STATE_LED_TDS_OUT);
 }
-// callback
-void ErroCheck_newError_cb(ErrorType_t newError)
+void Display_showNewError(ErrorType_t newError)
 {
 	currentError = newError;
 	timeStartDisplayError = g_sysTime;
 	Buzzer_blinkError();
 }
+
 

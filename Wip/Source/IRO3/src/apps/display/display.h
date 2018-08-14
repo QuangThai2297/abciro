@@ -34,6 +34,7 @@
 #include "led7seg.h"
 #include "led.h"
 #include "buzzer.h"
+#include "errorCheck.h"
 
 /******************************************************************************
 * Constants
@@ -71,14 +72,18 @@ typedef enum
 
 void Display_process();
 
-void Display_showFilterTime(uint8_t filter);
-
 void Display_turnOnAllIn1s();
+
 void Display_showTdsOut();
 void Display_showTdsIn();
+void Display_showFilterLifeTime(uint8_t filter);
+void Display_showFilterTime(uint8_t filter);
+
+
 void Display_showCurentError();
 void Display_showTdsInLimit();
 void Display_showTdsOutLimit();
+void Display_showNewError(ErrorType_t newError);
 
 /******************************************************************************
 * Inline functions
