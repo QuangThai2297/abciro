@@ -55,7 +55,8 @@ const gpio_port_pin_t LED7_DIGITS[] = {GPIO_PORT_B_PIN_7,GPIO_PORT_4_PIN_4,GPIO_
 ******************************************************************************/
 void showDigitAtIndex(uint8_t digit,uint8_t index);
 void processBuzzer();
-void encodeLed4();
+void encodeLed4(uint16_t number);
+void encodeCurrentLed4();
 
 
 /******************************************************************************
@@ -80,9 +81,8 @@ uint8_t ledIndex;
  * @return descrition for the function return value
  */
 
-void encodeLed4()
+void encodeLed4(uint16_t number)
 {
-	uint16_t number = s_led4Number;
 	for(int i = 0; i<4; i++)
 	{
 		led4Digits[i] = LED7_CODE[number%10];
@@ -102,6 +102,10 @@ void encodeLed4()
 	}
 }
 
+void encodeCurrentLed4()
+{
+	encodeLed4(s_led4Number);
+}
 void showDigitAtIndex(uint8_t digit,uint8_t index)
 {
 	for(int i = 0; i<5; i++)
@@ -185,7 +189,7 @@ void Led7seg_SetNumberInLed1(int8_t number)
 void Led7seg_SetNumberInLed4(uint16_t number)
 {
 	s_led4Number = number;
-	encodeLed4();
+	encodeCurrentLed4();
 }
 
 uint16_t Led7seg_getNumberInLed4()
@@ -196,16 +200,26 @@ uint16_t Led7seg_getNumberInLed4()
 void Led7seg_reduceNumberInLed4(uint16_t reduce)
 {
 	s_led4Number -= reduce;
-	encodeLed4();
+	encodeCurrentLed4();
 }
 
 void Led7seg_increaseNumberInLed4(uint16_t reduce)
 {
 	s_led4Number += reduce;
-	encodeLed4();
+	encodeCurrentLed4();
 }
 
+void Led7seg_turnOnLed4()
+{
+	encodeCurrentLed4();
+}
 
-
+void Led7seg_turnOffLed4()
+{
+	for(uint8_t i = 0; i<4; i++)
+	{
+		led4Digits[i] = LED7_CODE[LED_7SEG_OFF];
+	}
+}
 
 

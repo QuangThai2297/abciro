@@ -57,7 +57,7 @@ const gpio_port_pin_t LED_MACHINE_STATE_PIN[LED_MACHINE_STATE_NUM] = {LED_MACHIN
 /******************************************************************************
 * Local variables
 ******************************************************************************/
-
+MachineStateLed_t s_currentMachineState;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -118,6 +118,7 @@ void Led_turnOffLedKey()
 
 void Led_switchMachineStateLed(MachineStateLed_t machineState)
 {
+	s_currentMachineState = machineState;
 	uint8_t i;
 	for ( i = 0;  i < LED_MACHINE_STATE_NUM; ++ i) {
 		R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[i], GPIO_LEVEL_HIGH);
@@ -132,6 +133,12 @@ void Led_turnOffMachineStateled()
 		R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[i], GPIO_LEVEL_HIGH);
 	}
 }
+
+void Led_turnOnMachineStateled()
+{
+	Led_switchMachineStateLed(s_currentMachineState);
+}
+
 void Led_turnOnAll()
 {
 	Led_turnOnLedKey();

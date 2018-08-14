@@ -99,6 +99,7 @@ void Led_turnOffLedKey();
 
 void Led_switchMachineStateLed(MachineStateLed_t machineState);
 void Led_turnOffMachineStateled();
+void Led_turnOnMachineStateled();
 
 void Led_turnOnAll();
 
