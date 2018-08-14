@@ -53,7 +53,7 @@
 #define FALSE  0
 #define PNULL  0
 //#define DEBUG_ENABLE
-#define MAX_TRACE_LEN				(100)
+#define MAX_TRACE_LEN				(120)
 #define  ARR_SIZE( _a )  ( sizeof( (_a) ) / sizeof( (_a[0]) ) )
 
 #define VERSION_SOFTWARE ("V1.0")

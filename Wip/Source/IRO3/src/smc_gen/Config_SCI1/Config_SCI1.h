@@ -22,7 +22,7 @@
 * Version      : 1.1.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_SCI1.
-* Creation Date: 2018-08-06
+* Creation Date: 2018-08-10
 ***********************************************************************************************************************/
 
 #ifndef Config_SCI1_H
@@ -58,6 +58,8 @@ static void r_Config_SCI1_callback_transmitend(void);
 static void r_Config_SCI1_callback_receiveend(void);
 static void r_Config_SCI1_callback_receiveerror(void);
 /* Start user code for function. Do not edit comment generated here */
+ void UART_CheckDataReadDonePacket (void );
+  bool UART_IsDoneFrame(void);
 /* End user code. Do not edit comment generated here */
 #endif
 

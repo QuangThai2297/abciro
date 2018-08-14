@@ -84,8 +84,6 @@ LOCAL TDS_T  s_tds_in;
 
 LOCAL TDS_T  s_tds_out;
 
-LOCAL uint16_t s_interval_get_tds = 0;
-
 LOCAL uint16_t s_200ms_cnt ;
 
 LOCAL uint16_t s_adc_h2o_det = 0;
@@ -135,6 +133,29 @@ LOCAL void ADC_InitConfigFlash()
     	flash_app_writeBlock((uint8_t *)&s_tds_calib_param, TDS_PARAM_BLOCK, sizeof(s_tds_calib_param));
     }
 
+
+}
+
+LOCAL bool ADC_GetIndexCalibFromTds(TDS_E channel,uint16_t tds_value,uint8_t *index_ret)
+{
+
+	uint8_t				ret_index = 0;
+	uint8_t				index_level = 0;
+	TDS_CALIB_PARAM_T   *calib_param = (channel  == TDS_IN_VALUE)?&(s_tds_calib_param.tds_in): &(s_tds_calib_param.tds_out);
+
+	if(tds_value > calib_param->tds_value[CALIB_POINT_MAX -1]) return false;
+	for(index_level = 0; index_level < (CALIB_POINT_MAX -1) ; index_level++)
+	{
+		if((tds_value >= calib_param->tds_value[index_level]) && (tds_value < calib_param->tds_value[index_level+1]) )
+		{
+			if((2*tds_value) > (calib_param->tds_value[index_level] + calib_param->tds_value[index_level+1]))
+				ret_index = index_level+1;
+			else ret_index = index_level;
+			break;
+		}
+	}
+	*index_ret = ret_index;
+	return true;
 }
 /******************************************************************************
 * Global functions
@@ -207,15 +228,19 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 	if(channel == TDS_IN_VALUE)
 	{
 		adc0_value = s_tds_in.sma_tds_adc;
+		char dbg[UART_SEND_MAX_LEN];
+		sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",adc0_value);
+		UART_Debug (dbg);
 	}
 	else if(channel == TDS_OUT_VALUE)
 	{
 		adc0_value = s_tds_out.sma_tds_adc;
+		char dbg[UART_SEND_MAX_LEN];
+		sprintf(dbg,"ADC_GetAdcTdsOutValue = %d\r\n",adc0_value);
+		UART_Debug (dbg);
 	}
 
-	char dbg[UART_SEND_MAX_LEN];
-	sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",adc0_value);
-	UART_Debug (dbg);
+
 	if(adc0_value > calib_param->adc_value[0] )
 	{
 		tds_return = 0;
@@ -361,7 +386,27 @@ PUBLIC uint16_t ADC_GetTdsOutMax()
 
 PUBLIC ERR_E ADC_CalibTdsValue(uint16_t tdsvalue,TDS_E channel)
 {
-   return OK;
+	uint8_t index = 0;
+	ERR_E f_ret = OK;
+	bool ret = false;
+	if(ADC_GetIndexCalibFromTds(channel,tdsvalue,&index) == true)
+	{
+		if(channel  == TDS_IN_VALUE)
+		{
+			s_tds_calib_param.tds_in.tds_value[index] = tdsvalue;
+			s_tds_calib_param.tds_in.adc_value[index] = s_tds_in.sma_tds_adc;
+		}
+		else if(channel  == TDS_OUT_VALUE)
+		{
+			s_tds_calib_param.tds_out.tds_value[index] = tdsvalue;
+			s_tds_calib_param.tds_out.adc_value[index] = s_tds_out.sma_tds_adc;
+		}
+		ret = flash_app_writeBlock((uint8_t *)&s_tds_calib_param, TDS_PARAM_BLOCK, sizeof(s_tds_calib_param));
+		f_ret = (ret == true)?OK:ERR;
+		return f_ret;
+	}
+	else return ERR;
+
 }
 
 
@@ -431,4 +476,41 @@ PUBLIC void ADC_UpdateTdsDisplay()
 		}
 
 
+}
+
+
+PUBLIC ERR_E ADC_GetCalibTdsParam(TDS_E channel,uint8_t* out)
+{
+	TDS_CALIB_PARAM_T   *calib_param = (channel  == TDS_IN_VALUE)?&(s_tds_calib_param.tds_in): &(s_tds_calib_param.tds_out);
+	sprintf(out,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",calib_param->tds_value[0],calib_param->tds_value[1],calib_param->tds_value[2],calib_param->tds_value[3],calib_param->tds_value[4],calib_param->tds_value[5] \
+			,calib_param->tds_value[6],calib_param->tds_value[7],calib_param->tds_value[8],calib_param->tds_value[9],calib_param->tds_value[10],calib_param->tds_value[11],calib_param->adc_value[0],calib_param->adc_value[1],calib_param->adc_value[2],calib_param->adc_value[3],calib_param->adc_value[4],calib_param->adc_value[5] \
+			,calib_param->adc_value[6],calib_param->adc_value[7],calib_param->adc_value[8],calib_param->adc_value[9],calib_param->adc_value[10],calib_param->adc_value[11]
+			);
+	return OK;
+}
+
+PUBLIC ERR_E ADC_CalibTdsValueFromUart(uint16_t tdsvalue,TDS_E channel,uint8_t index)
+{
+	ERR_E f_ret = OK;
+	bool ret = false;
+	if(index > (CALIB_POINT_MAX -1))
+	{
+		return ERR;
+	}
+	else
+	{
+		if(channel  == TDS_IN_VALUE)
+		{
+			s_tds_calib_param.tds_in.tds_value[index] = tdsvalue;
+			s_tds_calib_param.tds_in.adc_value[index] = (index == 0)?(s_tds_in.sma_tds_adc - 10) :s_tds_in.sma_tds_adc;
+		}
+		else if(channel  == TDS_OUT_VALUE)
+		{
+			s_tds_calib_param.tds_out.tds_value[index] = tdsvalue;
+			s_tds_calib_param.tds_out.adc_value[index] = (index == 0)?(s_tds_out.sma_tds_adc -10):s_tds_out.sma_tds_adc;
+		}
+		ret = flash_app_writeBlock((uint8_t *)&s_tds_calib_param, TDS_PARAM_BLOCK, sizeof(s_tds_calib_param));
+		f_ret = (ret == true)?OK:ERR;
+		return f_ret;
+	}
 }
