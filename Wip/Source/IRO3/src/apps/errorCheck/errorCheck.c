@@ -30,6 +30,7 @@
 #include "adc.h"
 #include "filter_time.h"
 #include "pumpControl.h"
+#include "adc.h"
 
 /******************************************************************************
 * External objects
