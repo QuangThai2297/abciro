@@ -64,9 +64,10 @@ void encodeCurrentLed4();
 ******************************************************************************/
 uint8_t led4Digits[4] = {0xff,0xff,0xff,0xff};
 uint16_t s_led4Number;
+uint16_t s_led1Number;
 uint8_t led1Code = 0;
 uint8_t ledIndex;
-
+bool led7IsOn = true;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -104,7 +105,8 @@ void encodeLed4(uint16_t number)
 
 void encodeCurrentLed4()
 {
-	encodeLed4(s_led4Number);
+	if(led7IsOn)
+		encodeLed4(s_led4Number);
 }
 void showDigitAtIndex(uint8_t digit,uint8_t index)
 {
@@ -173,7 +175,9 @@ void Led7seg_scanLed(void)
  */
 void Led7seg_SetNumberInLed1(int8_t number)
 {
-	led1Code = LED7_CODE[number];
+	s_led1Number = number;
+	if(led7IsOn)
+		led1Code = LED7_CODE[number];
 }
 
 /**
@@ -209,17 +213,21 @@ void Led7seg_increaseNumberInLed4(uint16_t reduce)
 	encodeCurrentLed4();
 }
 
-void Led7seg_turnOnLed4()
+void Led7seg_turnOnLed()
 {
 	encodeCurrentLed4();
+	led1Code = LED7_CODE[s_led1Number];
+	led7IsOn = true;
 }
 
-void Led7seg_turnOffLed4()
+void Led7seg_turnOffLed()
 {
+	led7IsOn = false;
 	for(uint8_t i = 0; i<4; i++)
 	{
 		led4Digits[i] = LED7_CODE[LED_7SEG_OFF];
 	}
+	led1Code = LED7_CODE[LED_7SEG_OFF];
 }
 
 

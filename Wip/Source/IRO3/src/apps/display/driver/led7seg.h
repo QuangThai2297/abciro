@@ -61,8 +61,8 @@ void Led7seg_SetNumberInLed4(uint16_t number); // set number for 4 digit led
 uint16_t Led7seg_getNumberInLed4();
 void Led7seg_reduceNumberInLed4(uint16_t reduce);
 void Led7seg_increaseNumberInLed4(uint16_t reduce);
-void Led7seg_turnOnLed4();
-void Led7seg_turnOffLed4();
+void Led7seg_turnOnLed();
+void Led7seg_turnOffLed();
 
 void Led7seg_SetNumberInLed1(int8_t number); // set number for 1 digit led
 

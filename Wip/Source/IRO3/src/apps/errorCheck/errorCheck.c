@@ -29,6 +29,7 @@
 #include "user_config.h"
 #include "adc.h"
 #include "filter_time.h"
+#include "pumpControl.h"
 
 /******************************************************************************
 * External objects
@@ -71,14 +72,15 @@ void newErrorOccur(ErrorType_t error);
 * Local variables
 ******************************************************************************/
 bool currentErrors[MAX_ERROR_NUM];
-uint8_t errorCount = 0;
 ErrorType_t currentDisplay;
 uint32_t lastTimeShow;
 
 bool s_oldWaterInState = true;
 WaterInError_t s_waterInError = WATER_IN_ERROR_NOMAL;
 uint32_t s_timeHaveWater = 0;
+uint32_t s_timeLostWater = 0;
 uint8_t s_waterInBlinkCnt = 0;
+bool haveError = false;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -95,12 +97,13 @@ uint8_t s_waterInBlinkCnt = 0;
 void newErrorOccur(ErrorType_t error)
 {
 	currentErrors[error] = true;
-	errorCount++;
 	ErroCheck_newError_cb(error);
+	haveError = true;
 //	Display_turnBuzzer10Time();
 //	currentDisplay = error;
 //	lastTimeShow = g_sysTime;
 }
+
 void checkFilter()
 {
 	for(uint8_t i = 0; i<FILTER_NUM ; i++)
@@ -123,12 +126,15 @@ void checkWaterIn()
 		else if((elapsedTime(g_sysTime,s_timeHaveWater) > MIN_TIME_WATER_STABILITY) && (s_waterInError != WATER_IN_ERROR_NOMAL))
 		{
 			s_waterInError = WATER_IN_ERROR_NOMAL;
+			currentErrors[ERROR_TYPE_INCOME_WATER_LOST] = false;
+			currentErrors[ERROR_TYPE_INCOME_WATER_NO_STABILITY] = false;
 		}
 
 	}
 	else if((!CHECK_CO_AP_THAP)&& s_oldWaterInState)
 	{
 		s_oldWaterInState = false;
+		s_timeLostWater = g_sysTime;
 		if(s_waterInError == WATER_IN_ERROR_NOMAL)
 		{
 			s_waterInError = WATER_IN_ERROR_LOST;
@@ -143,6 +149,14 @@ void checkWaterIn()
 				newErrorOccur(ERROR_TYPE_INCOME_WATER_NO_STABILITY);
 			}
 		}
+	}
+	if((!CHECK_CO_AP_THAP)&& (!s_oldWaterInState)&&
+			(elapsedTime(g_sysTime, s_timeLostWater) > MIN_TIME_WATER_STABILITY) &&
+			(s_waterInError == WATER_IN_ERROR_NO_STABILITY))
+	{
+		s_waterInError = WATER_IN_ERROR_LOST;
+		currentErrors[ERROR_TYPE_INCOME_WATER_NO_STABILITY] = false;
+		newErrorOccur(ERROR_TYPE_INCOME_WATER_LOST);
 	}
 }
 void checkPumpRunTime()
@@ -199,10 +213,19 @@ void ErrorCheck_process()
 	checkPumpRunTime();
 	checkTdsLimit();
 	checkH2ODet();
+	if((haveError == true) && (ErrorCheck_haveError()== false))
+	{
+		ErrorCheck_allErrorAreRemoved_cb();
+	}
 }
 bool ErrorCheck_haveError()
 {
-	return (errorCount > 0 ? true:false);
+	for(uint8_t i=0; i< MAX_ERROR_NUM; i++)
+	{
+		if(currentErrors[i] == true)
+			return true;
+	}
+	return false;
 }
 
 ErrorType_t ErrorCheck_getNextError(ErrorType_t currentError)

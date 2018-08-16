@@ -43,6 +43,8 @@
 * Constants and macros
 ******************************************************************************/
 #define TIME_SHOW_1_ERROR 5000
+#define BLINK_CYCLE_ERROR 1000
+#define BLINK_ON_TIME_ERROR 700
 
 
 /******************************************************************************
@@ -60,6 +62,9 @@
 ******************************************************************************/
 ErrorType_t currentError;
 uint32_t timeStartDisplayError;
+bool blinkLedEnable = false;
+uint32_t timeStartBlinkCycle;
+
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -73,14 +78,25 @@ uint32_t timeStartDisplayError;
  *
  * @return descrition for the function return value
  */
-
-
-/******************************************************************************
-* Global functions
-******************************************************************************/
-void Display_process()
+void blinkLedErrorProcess()
 {
-	Buzzer_process();
+	if(blinkLedEnable)
+	{
+		if(elapsedTime(g_sysTime, timeStartBlinkCycle) < BLINK_ON_TIME_ERROR)
+		{
+			Led7seg_turnOnLed();
+		}
+		else if(elapsedTime(g_sysTime, timeStartBlinkCycle) < BLINK_CYCLE_ERROR)
+		{
+			Led7seg_turnOffLed();
+		}
+		else{
+			timeStartBlinkCycle = g_sysTime;
+		}
+	}
+}
+void errorDisplayProcess()
+{
 	if(ErrorCheck_haveError())
 	{
 		if(elapsedTime(g_sysTime, timeStartDisplayError) >= TIME_SHOW_1_ERROR)
@@ -89,6 +105,15 @@ void Display_process()
 			currentError = ErrorCheck_getNextError(currentError);
 		}
 	}
+}
+/******************************************************************************
+* Global functions
+******************************************************************************/
+void Display_process()
+{
+	Buzzer_process();
+	errorDisplayProcess();
+	blinkLedErrorProcess();
 }
 
 
@@ -182,6 +207,7 @@ void Display_showFilterExpired(uint8_t filter)
 }
 void Display_showCurentError()
 {
+	blinkLedEnable = true;
 	if(currentError <= ERROR_TYPE_FILTER_9)
 	{
 		Display_showFilterExpired(currentError);
@@ -217,6 +243,12 @@ void Display_showNewError(ErrorType_t newError)
 	currentError = newError;
 	timeStartDisplayError = g_sysTime;
 	Buzzer_blinkError();
+	timeStartBlinkCycle = g_sysTime;
 }
 
+void Display_turnOffBlinkled()
+{
+	blinkLedEnable = false;
+	Led7seg_turnOnLed();
+}
 

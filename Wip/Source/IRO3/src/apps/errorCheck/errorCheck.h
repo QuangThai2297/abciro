@@ -83,7 +83,7 @@ ErrorType_t ErrorCheck_getNextError(ErrorType_t currentError);
 
 //callback
 void ErroCheck_newError_cb(ErrorType_t newError);
-
+void ErrorCheck_allErrorAreRemoved_cb();
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

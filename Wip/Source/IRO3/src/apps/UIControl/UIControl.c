@@ -198,8 +198,8 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 		if(s_uiMode == UI_MODE_NOMAL)
 		{
 			s_uiMode = UI_MODE_SETTING;
-			UIControl_resetSettingNumber();
 			tdsSettingMode = TDS_SETTING_MODE_LIMIT;
+			UIControl_resetSettingNumber();
 			Buzzer_onInMs(TIME_BUZZER_ON);
 		}
 	}
@@ -208,8 +208,8 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 		if((s_uiMode == UI_MODE_NOMAL) && ((s_UIState == UI_STATE_TDS_OUT)|| (s_UIState == UI_STATE_TDS_IN)))
 		{
 			s_uiMode = UI_MODE_SETTING;
-			UIControl_resetSettingNumber();
 			tdsSettingMode = TDS_SETTING_MODE_CALIB;
+			UIControl_resetSettingNumber();
 			Buzzer_blink(2);
 		}
 	}
@@ -321,6 +321,7 @@ void UIControl_switchUiStateTo(UI_State_t newState)
 	{
 		Led_turnOnLedKey();
 		Buzzer_onInMs(TIME_BUZZER_ON);
+		Display_turnOffBlinkled();
 	}
 	if(newState == UI_STATE_LOCK)
 	{
@@ -488,4 +489,9 @@ void ErroCheck_newError_cb(ErrorType_t newError)
 {
 	Display_showNewError(newError);
 	UIControl_switchUiStateTo(UI_STATE_LOCK);
+}
+
+void ErrorCheck_allErrorAreRemoved_cb()
+{
+	Display_turnOffBlinkled();
 }

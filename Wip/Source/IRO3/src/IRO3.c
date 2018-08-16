@@ -76,6 +76,8 @@ uint16_t value ;
 uint32_t time_out = 0;
 uint32_t i = 0;
 uint8_t s_timeOut100ms;
+uint8_t s_timeOut10ms;
+
 LOCAL uint8_t s_pwm_cnt = 0;
 //LOCAL BOOLEAN s_is_timeout = TRUE;
 
@@ -86,6 +88,7 @@ LOCAL uint8_t s_pwm_cnt = 0;
 ******************************************************************************/
 void run200usTask();
 void run1msTask();
+void run10msTask();
 void run100msTask();
 void run_DisplayTds();
 
@@ -130,6 +133,11 @@ void main(void)
     		run1msTask();
     		g_run1msFlag= 0;
     	}
+    	if(s_timeOut10ms >= 10)
+    	{
+    		run10msTask();
+    		s_timeOut10ms = 0;
+    	}
     	if(s_timeOut100ms >= 100)
     	{
     		run100msTask();
@@ -147,7 +155,7 @@ void main(void)
 
 void run200usTask()
 {
-	Display_process();
+
 }
 void run1msTask()
 {
@@ -156,8 +164,17 @@ void run1msTask()
 	{
 		s_timeOut100ms++;
 	}
-
+	if(s_timeOut10ms <10)
+	{
+		s_timeOut10ms++;
+	}
 }
+
+void run10msTask()
+{
+	Display_process();
+}
+
 void run100msTask()
 {
 	UIControl_process();
