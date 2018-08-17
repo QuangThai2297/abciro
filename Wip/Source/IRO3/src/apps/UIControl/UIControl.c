@@ -31,6 +31,7 @@
 #include "timeCheck.h"
 #include "errorCheck.h"
 #include "adc.h"
+#include "tools.h"
 
 /******************************************************************************
 * External objects
@@ -212,6 +213,10 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 			UIControl_resetSettingNumber();
 			Buzzer_blink(2);
 		}
+	}
+	else if((btn == BUTTON_ID_SELECT) && (holdingTime == HOLD_TIME3))
+	{
+		mySoftwareReset();
 	}
 }
 void UIControl_updateUI()
