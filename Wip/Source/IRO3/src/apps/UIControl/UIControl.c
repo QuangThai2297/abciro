@@ -96,6 +96,11 @@ typedef struct
 	BtnState_t state;
 	uint32_t timePress;
 }BtnControl_t;
+typedef enum{
+	FAST_CHAGNE_NON,
+	FAST_CHAGNE_PLUS,
+	FAST_CHAGNE_MINUS
+}fashChange_t ;
 /******************************************************************************
 * Local function prototypes
 ******************************************************************************/
@@ -114,6 +119,8 @@ BtnControl_t btnControls[BUTTON_NUM];
 UIMode_t s_uiMode = UI_MODE_NOMAL;
 uint32_t s_lastPressTime;
 TdsSettingMode_t tdsSettingMode;
+fashChange_t s_fastChangeState = FAST_CHAGNE_NON;
+
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -217,6 +224,17 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 	else if((btn == BUTTON_ID_SELECT) && (holdingTime == HOLD_TIME3))
 	{
 		mySoftwareReset();
+	}
+	if((s_uiMode == UI_MODE_SETTING) && (holdingTime == HOLD_TIME1))
+	{
+		if(btn == BUTTON_ID_PLUS)
+		{
+			s_fastChangeState = FAST_CHAGNE_PLUS;
+		}
+		else
+		{
+			s_fastChangeState = FAST_CHAGNE_MINUS;
+		}
 	}
 }
 void UIControl_updateUI()
@@ -394,6 +412,17 @@ void UIControl_btnProcess()
 		}
 	}
 }
+void fashChangeProcess()
+{
+	if(s_fastChangeState == FAST_CHAGNE_MINUS)
+	{
+		Led7seg_reduceNumberInLed4(1);
+	}
+	else if(s_fastChangeState == FAST_CHAGNE_PLUS)
+	{
+		Led7seg_increaseNumberInLed4(1);
+	}
+}
 /******************************************************************************
 * Global functions
 ******************************************************************************/
@@ -426,6 +455,7 @@ void UIControl_process()
 		s_uiMode = UI_MODE_NOMAL;
 
 	}
+	fashChangeProcess();
 }
 
 /**
@@ -449,40 +479,49 @@ void TouchBtnPressed_cb(ButtonId_t btn)
 
 void TouchBtnHoldRelease_cb(ButtonId_t btn)
 {
-	if(!UIControl_stateIsLock() && btnControls[btn].state == BTN_STATE_PRESS)
+	if(!UIControl_stateIsLock() )
 	{
-		switch (btn) {
-			case BUTTON_ID_SELECT:
-				break;
-			case BUTTON_ID_PLUS:
-				if(s_uiMode == UI_MODE_NOMAL)
-				{
-					UIControl_goNextState();
-				}
-				else if(s_uiMode == UI_MODE_SETTING)
-				{
-					Led7seg_increaseNumberInLed4(1);
-				}
-				break;
-			case BUTTON_ID_MINUS:
-				if(s_uiMode == UI_MODE_NOMAL)
-				{
-					UIControl_goPrevState();
-				}
-				else if(s_uiMode == UI_MODE_SETTING)
-				{
-					Led7seg_reduceNumberInLed4(1);
-				}
-				break;
-			case BUTTON_ID_SET:
-				if(s_uiMode == UI_MODE_SETTING)
-				{
-					UIControl_resetSettingNumber();
-				}
-				break;
-			default:
-				break;
+		if(btnControls[btn].state == BTN_STATE_PRESS)
+		{
+			switch (btn) {
+				case BUTTON_ID_SELECT:
+					break;
+				case BUTTON_ID_PLUS:
+					if(s_uiMode == UI_MODE_NOMAL)
+					{
+						UIControl_goNextState();
+					}
+					else if(s_uiMode == UI_MODE_SETTING)
+					{
+						Led7seg_increaseNumberInLed4(1);
+					}
+					break;
+				case BUTTON_ID_MINUS:
+					if(s_uiMode == UI_MODE_NOMAL)
+					{
+						UIControl_goPrevState();
+					}
+					else if(s_uiMode == UI_MODE_SETTING)
+					{
+						Led7seg_reduceNumberInLed4(1);
+					}
+					break;
+				case BUTTON_ID_SET:
+					if(s_uiMode == UI_MODE_SETTING)
+					{
+						UIControl_resetSettingNumber();
+					}
+					break;
+				default:
+					break;
+			}
+
 		}
+		else if((btn == BUTTON_ID_PLUS) || (btn == BUTTON_ID_MINUS))
+		{
+			s_fastChangeState = FAST_CHAGNE_NON;
+		}
+
 
 	}
 	btnControls[btn].state = BTN_STATE_RELEASE;

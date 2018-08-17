@@ -77,7 +77,6 @@ uint32_t time_out = 0;
 uint32_t i = 0;
 uint8_t s_timeOut100ms;
 uint8_t s_timeOut10ms;
-
 LOCAL uint8_t s_pwm_cnt = 0;
 //LOCAL BOOLEAN s_is_timeout = TRUE;
 
