@@ -122,7 +122,14 @@ void filter_time_minusTime(uint32_t second)
 
 uint16_t filter_time_getFilterHour(uint8_t filIndex)
 {
-	return (uint16_t)(s_time_filter[filIndex]/3600);
+	if(s_time_filter[filIndex]%3600 >0)
+	{
+		return (uint16_t)(s_time_filter[filIndex]/3600 +1);
+	}
+	else
+	{
+		return (uint16_t)(s_time_filter[filIndex]/3600);
+	}
 }
 
 uint32_t filter_time_getFilterSecond(uint8_t filIndex)
