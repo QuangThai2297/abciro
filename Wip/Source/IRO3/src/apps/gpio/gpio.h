@@ -56,7 +56,7 @@
 #define PIN_AP_CAO 		GPIO_PORT_3_PIN_6
 
 #define PIN_DK_BOM 		GPIO_PORT_3_PIN_1
-#define PIN_VAN_XA 		GPIO_PORT_H_PIN_0   // phần cứng chân khác, câu test tạm.
+#define PIN_VAN_XA 		GPIO_PORT_0_PIN_5   // phần cứng chân khác, câu test tạm.
 
 // action define
 #define CHECK_CO_AP_THAP 	(R_GPIO_PinRead(PIN_AP_THAP)== GPIO_LEVEL_HIGH)

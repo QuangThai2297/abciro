@@ -108,7 +108,6 @@ void run_DisplayTds();
 void main(void);
 void main(void)
 {
-
 	R_Config_CMT0_Start();
 	R_Config_CMT1_Start();
 	TOUCH_init();
@@ -117,10 +116,10 @@ void main(void)
 	ADC_Init();
 	TIMER_Init();
 	Display_turnOnAllIn1s();
+	pumpControl_onVanXaInMs(15000);
 	/* Main loop */
 	while(1)
 	{
-
 		//////////////////////
     	if(g_run200usFlag == 1)
     	{

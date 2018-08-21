@@ -124,6 +124,11 @@ void UserConfig_setTdsLimitOut(uint16_t tdsLimit)
 	user_config_updateToFlash();
 }
 
+
+uint16_t UserConfig_getDefaultLifeTimeHour(uint8_t filterIndex)
+{
+	 return (USER_CONFIG_DEFAULD.filterLifeTime[filterIndex] / 3600);
+}
 /**
  * @brief One line documentation
  *

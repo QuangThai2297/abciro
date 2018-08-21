@@ -50,7 +50,6 @@
 ******************************************************************************/
 void processVanXa();
 void processPump();
-void onVanXaInMs(uint32_t msTime);
 
 /******************************************************************************
 * Local variables
@@ -80,12 +79,7 @@ void processVanXa()
 		vanXaIsOn = false;
 	}
 }
-void onVanXaInMs(uint32_t msTime)
-{
-	timeOffVanXa = g_sysTime + msTime;
-	TURN_ON_VAN_XA;
-	vanXaIsOn = true;
-}
+
 void processPump()
 {
 	if(CHECK_CO_AP_THAP && CHECK_CO_AP_CAO )
@@ -95,7 +89,7 @@ void processPump()
 			s_pumpIsOn = true;
 			TURN_ON_PUMP;
 			s_pumpStartTime = g_sysTime;
-			onVanXaInMs(15000);
+			pumpControl_onVanXaInMs(15000);
 		}
 	}
 	else
@@ -106,7 +100,7 @@ void processPump()
 			TURN_OFF_PUMP;
 			uint32_t pumpRuningTime = elapsedTime(g_sysTime , s_pumpStartTime);
 			filter_time_minusTime(pumpRuningTime / 1000);
-			onVanXaInMs(5000);
+			pumpControl_onVanXaInMs(5000);
 		}
 	}
 }
@@ -114,6 +108,12 @@ void processPump()
 * Global functions
 ******************************************************************************/
 
+void pumpControl_onVanXaInMs(uint32_t msTime)
+{
+	timeOffVanXa = g_sysTime + msTime;
+	TURN_ON_VAN_XA;
+	vanXaIsOn = true;
+}
 /**
  * @brief One line documentation
  *

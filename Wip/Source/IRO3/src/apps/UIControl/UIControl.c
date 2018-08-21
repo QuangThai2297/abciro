@@ -51,6 +51,8 @@
 
 #define MAX_TIME_WAIT 30000
 #define TIME_BUZZER_ON 300 //ms
+
+
 /******************************************************************************
 * Local types
 ******************************************************************************/
@@ -71,6 +73,8 @@ typedef enum UI_State
 	UI_STATE_COUNT
 }UI_State_t;
 
+#define UI_STATE_IS_FILTER(state) ((state >= UI_STATE_FILTER_1) && (state <= UI_STATE_FILTER_9))
+#define UI_STATE_TO_FILTER_INDEX(state) (state - UI_STATE_FILTER_1)
 typedef enum
 {
 	UI_MODE_NOMAL,
@@ -231,7 +235,7 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 		{
 			s_fastChangeState = FAST_CHAGNE_PLUS;
 		}
-		else
+		else if(btn == BUTTON_ID_MINUS)
 		{
 			s_fastChangeState = FAST_CHAGNE_MINUS;
 		}
@@ -254,35 +258,12 @@ void UIControl_updateUI()
 		case UI_STATE_TDS_IN:
 			Display_showTdsIn();
 			break;
-		case UI_STATE_FILTER_1:
-			Display_showFilterTime(0);
-			break;
-		case UI_STATE_FILTER_2:
-			Display_showFilterTime(1);
-			break;
-		case UI_STATE_FILTER_3:
-			Display_showFilterTime(2);
-			break;
-		case UI_STATE_FILTER_4:
-			Display_showFilterTime(3);
-			break;
-		case UI_STATE_FILTER_5:
-			Display_showFilterTime(4);
-			break;
-		case UI_STATE_FILTER_6:
-			Display_showFilterTime(5);
-			break;
-		case UI_STATE_FILTER_7:
-			Display_showFilterTime(6);
-			break;
-		case UI_STATE_FILTER_8:
-			Display_showFilterTime(7);
-			break;
-		case UI_STATE_FILTER_9:
-			Display_showFilterTime(8);
-			break;
 		default:
 			break;
+	}
+	if(UI_STATE_IS_FILTER(s_UIState))
+	{
+		Display_showFilterTime(UI_STATE_TO_FILTER_INDEX(s_UIState));
 	}
 }
 void UIControl_resetSettingNumber()
@@ -485,6 +466,14 @@ void TouchBtnHoldRelease_cb(ButtonId_t btn)
 		{
 			switch (btn) {
 				case BUTTON_ID_SELECT:
+					if(s_uiMode == UI_MODE_NOMAL)
+					{
+						UIControl_switchUiStateTo(UI_STATE_TDS_OUT);
+					}
+					else if(s_uiMode == UI_MODE_SETTING && UI_STATE_IS_FILTER(s_UIState))
+					{
+						Led7seg_SetNumberInLed4(UserConfig_getDefaultLifeTimeHour(UI_STATE_TO_FILTER_INDEX(s_UIState)));
+					}
 					break;
 				case BUTTON_ID_PLUS:
 					if(s_uiMode == UI_MODE_NOMAL)

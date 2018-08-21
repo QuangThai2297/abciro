@@ -67,6 +67,7 @@ void user_config_init();
 void UserConfig_setFilterLifeTime(uint32_t lifeTime,uint8_t filterIndex);
 void UserConfig_setTdsLimitIn(uint16_t tdsLimit);
 void UserConfig_setTdsLimitOut(uint16_t tdsLimit);
+uint16_t UserConfig_getDefaultLifeTimeHour(uint8_t filterIndex);
 
 
 /******************************************************************************
