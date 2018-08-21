@@ -59,6 +59,7 @@ uint32_t s_pumpStartTime = 0;
 uint32_t timeOffVanXa;
 bool vanXaIsOn = false;
 bool turnOffAll = false;
+uint32_t s_lastUpdateFilterTime = 0;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -90,7 +91,14 @@ void processPump()
 			s_pumpIsOn = true;
 			TURN_ON_PUMP;
 			s_pumpStartTime = g_sysTime;
+			s_lastUpdateFilterTime = g_sysTime;
 			pumpControl_onVanXaInMs(15000);
+		}
+		if(elapsedTime(g_sysTime, s_lastUpdateFilterTime) > 600000)
+		{
+			uint32_t pumpRuningTime = elapsedTime(g_sysTime , s_lastUpdateFilterTime);
+			s_lastUpdateFilterTime = g_sysTime;
+			filter_time_minusTime(pumpRuningTime / 1000);
 		}
 	}
 	else
@@ -99,7 +107,7 @@ void processPump()
 		{
 			s_pumpIsOn = false;
 			TURN_OFF_PUMP;
-			uint32_t pumpRuningTime = elapsedTime(g_sysTime , s_pumpStartTime);
+			uint32_t pumpRuningTime = elapsedTime(g_sysTime , s_lastUpdateFilterTime);
 			filter_time_minusTime(pumpRuningTime / 1000);
 			pumpControl_onVanXaInMs(5000);
 		}
@@ -148,6 +156,8 @@ void pumpControl_turnOffAll()
 {
 	TURN_OFF_PUMP;
 	TURN_OFF_VAN_XA;
+	s_pumpIsOn = false;
+	vanXaIsOn = false;
 	turnOffAll = true;
 }
 /**
