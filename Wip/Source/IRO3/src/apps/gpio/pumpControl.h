@@ -62,6 +62,7 @@
 void pumpControl_process();
 uint32_t pumpControl_getTimePumpRun();
 void pumpControl_onVanXaInMs(uint32_t msTime);
+void pumpControl_turnOffAll();
 
 /******************************************************************************
 * Inline functions

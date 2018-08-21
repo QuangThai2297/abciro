@@ -58,6 +58,7 @@ bool s_pumpIsOn = false;
 uint32_t s_pumpStartTime = 0;
 uint32_t timeOffVanXa;
 bool vanXaIsOn = false;
+bool turnOffAll = false;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -110,6 +111,8 @@ void processPump()
 
 void pumpControl_onVanXaInMs(uint32_t msTime)
 {
+	if(turnOffAll)
+		return;
 	timeOffVanXa = g_sysTime + msTime;
 	TURN_ON_VAN_XA;
 	vanXaIsOn = true;
@@ -126,6 +129,8 @@ void pumpControl_onVanXaInMs(uint32_t msTime)
  */
 void pumpControl_process()
 {
+	if(turnOffAll)
+		return;
 	processPump();
 	processVanXa();
 }
@@ -137,6 +142,13 @@ uint32_t pumpControl_getTimePumpRun()
 	}else{
 		return 0;
 	}
+}
+
+void pumpControl_turnOffAll()
+{
+	TURN_OFF_PUMP;
+	TURN_OFF_VAN_XA;
+	turnOffAll = true;
 }
 /**
  * @brief One line documentation

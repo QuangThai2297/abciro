@@ -187,6 +187,7 @@ void checkH2ODet()
 {
 	if(ADC_GetH2oDet() && (!currentErrors[ERROR_TYPE_LEAK_WATER]))
 	{
+		pumpControl_turnOffAll();
 		newErrorOccur(ERROR_TYPE_LEAK_WATER);
 	}
 }
