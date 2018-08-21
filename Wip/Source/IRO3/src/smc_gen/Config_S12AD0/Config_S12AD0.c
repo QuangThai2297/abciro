@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_S12AD0.
-* Creation Date: 2018-08-06
+* Creation Date: 2018-08-21
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -56,7 +56,7 @@ Global variables and functions
 void R_Config_S12AD0_Create(void)
 {
     /* Cancel S12AD0 module stop state */
-    MSTP(S12AD) = 0U;
+    MSTP(S12AD) = 0U;  
 
     /* Disable and clear interrupt flags of S12AD0 module */
     S12AD.ADCSR.BIT.ADIE = 0U;
@@ -64,7 +64,7 @@ void R_Config_S12AD0_Create(void)
 
     /* Set S12AD0 control registers */
     S12AD.ADDISCR.BYTE = _00_AD_DISCONECT_UNUSED;
-    S12AD.ADCSR.WORD = _0000_AD_DBLTRIGGER_DISABLE | _0000_AD_SYNCASYNCTRG_DISABLE |
+    S12AD.ADCSR.WORD = _0000_AD_DBLTRIGGER_DISABLE | _0000_AD_SYNCASYNCTRG_DISABLE | 
                        _1000_AD_SCAN_END_INTERRUPT_ENABLE | _0000_AD_SINGLE_SCAN_MODE;
     S12AD.ADHVREFCNT.BYTE |= _00_AD_HIGH_POTENTIAL_AVCC0 | _00_AD_LOW_POTENTIAL_AVSS0;
     S12AD.ADBUFEN.BYTE |= _00_AD_STORAGE_BUFF_UNUSED;
@@ -74,6 +74,7 @@ void R_Config_S12AD0_Create(void)
     /* Set channels and sampling time */
     S12AD.ADANSA0.WORD = _0001_AD_AN000_USED | _0002_AD_AN001_USED;
     S12AD.ADANSA1.WORD = _0008_AD_AN019_USED | _0010_AD_AN020_USED;
+    S12AD.ADADS1.WORD = _0008_AD_AN019_ADD_USED | _0010_AD_AN020_ADD_USED;
     S12AD.ADSSTR0 = _06_AD0_SAMPLING_STATE_0;
     S12AD.ADSSTR1 = _06_AD0_SAMPLING_STATE_1;
     S12AD.ADSSTRL = _06_AD0_SAMPLING_STATE_L;
@@ -109,8 +110,6 @@ void R_Config_S12AD0_Create(void)
 
     R_Config_S12AD0_Create_UserInit();
 }
-
-
 
 /***********************************************************************************************************************
 * Function Name: R_Config_S12AD0_Start
