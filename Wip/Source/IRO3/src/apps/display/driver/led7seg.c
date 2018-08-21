@@ -41,6 +41,7 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
+const uint8_t LED7_CODE_START[] = {0xFE,};
 
 const uint8_t LED7_CODE[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff,0x86};
 const gpio_port_pin_t LED7_PIN[] = {GPIO_PORT_A_PIN_3,GPIO_PORT_A_PIN_0,GPIO_PORT_B_PIN_3,GPIO_PORT_A_PIN_6,GPIO_PORT_A_PIN_4,GPIO_PORT_A_PIN_1,GPIO_PORT_B_PIN_5,GPIO_PORT_B_PIN_1};
@@ -62,12 +63,12 @@ void encodeCurrentLed4();
 /******************************************************************************
 * Local variables
 ******************************************************************************/
-uint8_t led4Digits[4] = {0xff,0xff,0xff,0xff};
+uint8_t s_led4Digits[4] = {0xff,0xff,0xff,0xff};
 uint16_t s_led4Number;
 uint16_t s_led1Number;
-uint8_t led1Code = 0;
-uint8_t ledIndex;
-bool led7IsOn = true;
+uint8_t s_led1Code = 0xff;
+uint8_t s_ledIndex;
+bool s_led7IsOn = true;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -86,18 +87,18 @@ void encodeLed4(uint16_t number)
 {
 	for(int i = 0; i<4; i++)
 	{
-		led4Digits[i] = LED7_CODE[number%10];
+		s_led4Digits[i] = LED7_CODE[number%10];
 		number /= 10;
 	}
-	if(led4Digits[3] == LED7_CODE[0])
+	if(s_led4Digits[3] == LED7_CODE[0])
 	{
-		led4Digits[3] = LED7_CODE[LED_7SEG_OFF];
-		if(led4Digits[2] == LED7_CODE[0])
+		s_led4Digits[3] = LED7_CODE[LED_7SEG_OFF];
+		if(s_led4Digits[2] == LED7_CODE[0])
 		{
-			led4Digits[2] = LED7_CODE[LED_7SEG_OFF];
-			if(led4Digits[1] == LED7_CODE[0])
+			s_led4Digits[2] = LED7_CODE[LED_7SEG_OFF];
+			if(s_led4Digits[1] == LED7_CODE[0])
 			{
-				led4Digits[1] = LED7_CODE[LED_7SEG_OFF];
+				s_led4Digits[1] = LED7_CODE[LED_7SEG_OFF];
 			}
 		}
 	}
@@ -105,7 +106,7 @@ void encodeLed4(uint16_t number)
 
 void encodeCurrentLed4()
 {
-	if(led7IsOn)
+	if(s_led7IsOn)
 		encodeLed4(s_led4Number);
 }
 void showDigitAtIndex(uint8_t digit,uint8_t index)
@@ -114,7 +115,7 @@ void showDigitAtIndex(uint8_t digit,uint8_t index)
 	{
 		R_GPIO_PinWrite(LED7_DIGITS[i],GPIO_LEVEL_HIGH);
 	}
-	for(int i = 0; i<7;i++)
+	for(int i = 0; i<8;i++)
 	{
 		R_GPIO_PinWrite(LED7_PIN[i],(digit & (1<<i)));
 	}
@@ -149,17 +150,17 @@ void showDigitAtIndex(uint8_t digit,uint8_t index)
 void Led7seg_scanLed(void)
 {
 	uint8_t digit = 0;
-	if(ledIndex < 4)
+	if(s_ledIndex < 4)
 	{
-		showDigitAtIndex(led4Digits[ledIndex],ledIndex);
+		showDigitAtIndex(s_led4Digits[s_ledIndex],s_ledIndex);
 	}else{
-		digit = led1Code;
-		showDigitAtIndex(digit,ledIndex);
+		digit = s_led1Code;
+		showDigitAtIndex(digit,s_ledIndex);
 	}
 
-	if(ledIndex++ == 4)
+	if(s_ledIndex++ == 4)
 	{
-		ledIndex = 0;
+		s_ledIndex = 0;
 	}
 }
 
@@ -176,8 +177,8 @@ void Led7seg_scanLed(void)
 void Led7seg_SetNumberInLed1(int8_t number)
 {
 	s_led1Number = number;
-	if(led7IsOn)
-		led1Code = LED7_CODE[number];
+	if(s_led7IsOn)
+		s_led1Code = LED7_CODE[number];
 }
 
 /**
@@ -216,18 +217,42 @@ void Led7seg_increaseNumberInLed4(uint16_t reduce)
 void Led7seg_turnOnLed()
 {
 	encodeCurrentLed4();
-	led1Code = LED7_CODE[s_led1Number];
-	led7IsOn = true;
+	s_led1Code = LED7_CODE[s_led1Number];
+	s_led7IsOn = true;
 }
 
 void Led7seg_turnOffLed()
 {
-	led7IsOn = false;
+	s_led7IsOn = false;
 	for(uint8_t i = 0; i<4; i++)
 	{
-		led4Digits[i] = LED7_CODE[LED_7SEG_OFF];
+		s_led4Digits[i] = LED7_CODE[LED_7SEG_OFF];
 	}
-	led1Code = LED7_CODE[LED_7SEG_OFF];
+	s_led1Code = LED7_CODE[LED_7SEG_OFF];
 }
 
+// for start up
+void Led7seg_setAllLedCode(uint8_t ledCode)
+{
+	for(int i = 0; i<4; i++)
+	{
+		s_led4Digits[i] = ledCode;
+	}
+	s_led1Code = ledCode;
+}
 
+void Led7seg_OnAllSegInLed(uint8_t ledIndex)
+{
+	for(uint8_t i = 0; i<4; i++)
+	{
+		s_led4Digits[i] = LED7_CODE[LED_7SEG_OFF];
+	}
+	s_led1Code = LED7_CODE[LED_7SEG_OFF];
+	if(ledIndex < 4)
+	{
+		s_led4Digits[ledIndex] = 0x00;
+	}else{
+		s_led1Code = 0x00;
+	}
+}
+// end code for start

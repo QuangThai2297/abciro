@@ -81,7 +81,7 @@ WaterInError_t s_waterInError = WATER_IN_ERROR_NOMAL;
 uint32_t s_timeHaveWater = 0;
 uint32_t s_timeLostWater = 0;
 uint8_t s_waterInBlinkCnt = 0;
-bool haveError = false;
+bool lastError = false;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -99,7 +99,6 @@ void newErrorOccur(ErrorType_t error)
 {
 	currentErrors[error] = true;
 	ErroCheck_newError_cb(error);
-	haveError = true;
 //	Display_turnBuzzer10Time();
 //	currentDisplay = error;
 //	lastTimeShow = g_sysTime;
@@ -109,9 +108,14 @@ void checkFilter()
 {
 	for(uint8_t i = 0; i<FILTER_NUM ; i++)
 	{
-		if((filter_time_getFilterSecond(i) == 0) && (currentErrors[i] == false))
+		if(filter_time_getFilterSecond(i) == 0)
 		{
-			newErrorOccur(i);
+			if(currentErrors[i] == false)
+				newErrorOccur(i);
+		}
+		else
+		{
+			currentErrors[i] = false;
 		}
 	}
 }
@@ -214,10 +218,11 @@ void ErrorCheck_process()
 	checkPumpRunTime();
 	checkTdsLimit();
 	checkH2ODet();
-	if((haveError == true) && (ErrorCheck_haveError()== false))
+	if((lastError == true) && (ErrorCheck_haveError()== false))
 	{
 		ErrorCheck_allErrorAreRemoved_cb();
 	}
+	lastError = ErrorCheck_haveError();
 }
 bool ErrorCheck_haveError()
 {

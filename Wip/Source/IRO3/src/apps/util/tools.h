@@ -10,6 +10,7 @@
 #include "config.h"
 
 int mySoftwareReset(void);
+void tools_softDelay(uint32_t ms);
 
 
 #endif /* APPS_UTIL_TOOLS_H_ */

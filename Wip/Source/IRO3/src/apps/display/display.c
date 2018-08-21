@@ -30,6 +30,8 @@
 #include "timeCheck.h"
 #include "gpio.h"
 #include "user_config.h"
+#include "tools.h"
+
 /******************************************************************************
 * External objects
 ******************************************************************************/
@@ -128,27 +130,49 @@ void Display_process()
  * @return descrition for the function return value
  */
 
-extern volatile uint8_t g_run200usFlag;
 
-void Display_turnOnAllIn1s()
+void Display_showStart()
 {
-	Led_turnOnAll();
-	Led7seg_SetNumberInLed1(8);
-	Led7seg_SetNumberInLed4(8888);
-	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
-	uint32_t timeStart = g_sysTime;
-	while((g_sysTime - timeStart) < 1500)
+	for(uint8_t i = 0; i< 8; i++)
 	{
-    	if(g_run200usFlag == 1)
-    	{
-    		Led7seg_scanLed();
-    		g_run200usFlag= 0;
-    	}
+		Led7seg_setAllLedCode(~(1<<i));
+		Led_turnOffAllLedKey();
+		if(i<4)
+		{
+			Led_SetLedKeyState(i,LED_KEY_COLLOR_GREEN,LED_STATE_ON);
+		}
+		else
+		{
+			Led_SetLedKeyState(i-4,LED_KEY_COLLOR_RED,LED_STATE_ON);
+		}
+		Led_switchMachineStateLed(i%3);
+		if(i<2)
+		{
+			Buzzer_turnOn(true);
+		}
+		tools_softDelay(250);
+		if(i<2)
+		{
+			Buzzer_turnOn(false);
+		}
+		tools_softDelay(250);
 	}
-	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
-
+	for(uint8_t i = 0; i< 5; i++)
+	{
+		Led7seg_OnAllSegInLed(i);
+		if(i%2 == 0){
+			Led_turnAllLedKey(LED_KEY_COLLOR_GREEN);
+			Led_turnAllLedMachineState(LED_STATE_ON);
+		}
+		else
+		{
+			Led_turnAllLedKey(LED_KEY_COLLOR_RED);
+			Led_turnAllLedMachineState(LED_STATE_OFF);
+		}
+		tools_softDelay(500);
+	}
+	Led_turnOffAllLedKey();
 }
-
 void Display_showFilterTime(uint8_t filter)
 {
 	Led_switchMachineStateLed(MACHINE_STATE_LED_FILTER);

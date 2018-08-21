@@ -4,6 +4,7 @@
  *  Created on: Aug 17, 2018
  *      Author: Admin
  */
+
 #include "tools.h"
 
 
@@ -19,3 +20,8 @@ int mySoftwareReset(void) {
 
 }
 
+void tools_softDelay(uint32_t ms)
+{
+	uint32_t lastTime = g_sysTime;
+	while(elapsedTime(g_sysTime, lastTime)<ms);
+}

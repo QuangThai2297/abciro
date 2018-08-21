@@ -115,7 +115,7 @@ void main(void)
 	flash_app_init();
 	ADC_Init();
 	TIMER_Init();
-	Display_turnOnAllIn1s();
+	Display_showStart();
 	pumpControl_onVanXaInMs(15000);
 	/* Main loop */
 	while(1)

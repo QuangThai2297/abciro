@@ -79,9 +79,9 @@ typedef enum LED_STATE
 
 typedef enum
 {
-	MACHINE_STATE_LED_TDS_OUT = 0,
+	MACHINE_STATE_LED_FILTER  = 0,
 	MACHINE_STATE_LED_TDS_IN,
-	MACHINE_STATE_LED_FILTER,
+	MACHINE_STATE_LED_TDS_OUT,
 }MachineStateLed_t;
 /******************************************************************************
 * Global variables
@@ -102,6 +102,9 @@ void Led_turnOffMachineStateled();
 void Led_turnOnMachineStateled();
 
 void Led_turnOnAll();
+void Led_turnAllLedMachineState(LedState_t state);
+void Led_turnAllLedKey(LedKeyColor_t color);
+void Led_turnOffAllLedKey();
 
 /******************************************************************************
 * Inline functions

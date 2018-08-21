@@ -71,8 +71,7 @@ typedef enum
 
 
 void Display_process();
-
-void Display_turnOnAllIn1s();
+void Display_showStart();
 
 void Display_showTdsOut();
 void Display_showTdsIn();

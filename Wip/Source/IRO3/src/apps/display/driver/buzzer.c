@@ -100,6 +100,16 @@ void Buzzer_onInMs(uint16_t msTime)
 	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
 	buzzerIsOn = true;
 }
+void Buzzer_turnOn(bool isOn)
+{
+	if(isOn)
+	{
+		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
+	}
+	else{
+		R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_LOW);
+	}
+}
 void Buzzer_blink(uint8_t time)
 {
 	timeStartBuzzer = g_sysTime;

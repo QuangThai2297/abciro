@@ -68,6 +68,8 @@ void Led7seg_SetNumberInLed1(int8_t number); // set number for 1 digit led
 
 void Led7seg_scanLed(void);
 
+void Led7seg_setAllLedCode(uint8_t ledCode);
+void Led7seg_OnAllSegInLed(uint8_t ledIndex);
 
 
 /******************************************************************************
