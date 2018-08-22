@@ -276,3 +276,7 @@ void Display_turnOffBlinkled()
 	Led7seg_turnOnLed();
 }
 
+void Display_cancelError()
+{
+	Buzzer_cancelBlink();
+}

@@ -83,6 +83,7 @@ uint32_t s_timeHaveWater = 0;
 uint32_t s_timeLostWater = 0;
 uint8_t s_waterInBlinkCnt = 0;
 bool lastError = false;
+ErrorType_t s_recentNewError;
 /******************************************************************************
 * Local functions
 ******************************************************************************/
@@ -100,6 +101,7 @@ void newErrorOccur(ErrorType_t error)
 {
 	currentErrors[error] = true;
 	ErroCheck_newError_cb(error);
+	s_recentNewError = error;
 //	Display_turnBuzzer10Time();
 //	currentDisplay = error;
 //	lastTimeShow = g_sysTime;
@@ -143,6 +145,10 @@ void checkWaterIn()
 		{
 			s_waterInError = WATER_IN_ERROR_NOMAL;
 			currentErrors[ERROR_TYPE_INCOME_WATER_LOST] = false;
+			if(s_recentNewError == ERROR_TYPE_INCOME_WATER_LOST)
+			{
+				Display_cancelError();
+			}
 		}
 
 	}

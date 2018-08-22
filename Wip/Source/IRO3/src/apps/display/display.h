@@ -85,6 +85,7 @@ void Display_showTdsOutLimit();
 void Display_showNewError(ErrorType_t newError);
 
 void Display_turnOffBlinkled();
+void Display_cancelError();
 
 /******************************************************************************
 * Inline functions

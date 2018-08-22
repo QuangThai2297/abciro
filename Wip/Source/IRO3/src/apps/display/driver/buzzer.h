@@ -66,6 +66,7 @@ void Buzzer_onInMs(uint16_t msTime);
 void Buzzer_blink(uint8_t time);
 void Buzzer_blinkError();
 void Buzzer_turnOn(bool isOn);
+void Buzzer_cancelBlink();
 
 
 /******************************************************************************

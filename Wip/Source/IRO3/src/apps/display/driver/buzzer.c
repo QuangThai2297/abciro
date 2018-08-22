@@ -120,6 +120,10 @@ void Buzzer_blinkError()
 {
 	Buzzer_blink(BUZZER_TIME_IN_ERROR);
 }
+void Buzzer_cancelBlink()
+{
+	timeBuzzerLeft = 0;
+}
 /**
  * @brief One line documentation
  *
