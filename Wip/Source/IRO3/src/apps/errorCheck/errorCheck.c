@@ -44,8 +44,9 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
-#define MIN_TIME_WATER_STABILITY 10000
-#define PUMP_RUN_OVER_TIME 18000000
+#define MIN_TIME_WATER_STABILITY 	20000
+#define MIN_TIME_WATER_HAVE 		10000
+#define PUMP_RUN_OVER_TIME 			18000000
 /******************************************************************************
 * Local types
 ******************************************************************************/
@@ -128,11 +129,20 @@ void checkWaterIn()
 			s_oldWaterInState = true;
 			s_timeHaveWater = g_sysTime;
 		}
-		else if((elapsedTime(g_sysTime,s_timeHaveWater) > MIN_TIME_WATER_STABILITY) && (s_waterInError != WATER_IN_ERROR_NOMAL))
+		else if(elapsedTime(g_sysTime,s_timeHaveWater) > MIN_TIME_WATER_HAVE)
+		{
+			s_waterInBlinkCnt = 0;
+			if(s_waterInError != WATER_IN_ERROR_NOMAL)
+			{
+				s_waterInError = WATER_IN_ERROR_NOMAL;
+				currentErrors[ERROR_TYPE_INCOME_WATER_LOST] = false;
+				currentErrors[ERROR_TYPE_INCOME_WATER_NO_STABILITY] = false;
+			}
+		}
+		if(s_waterInError == WATER_IN_ERROR_LOST)
 		{
 			s_waterInError = WATER_IN_ERROR_NOMAL;
 			currentErrors[ERROR_TYPE_INCOME_WATER_LOST] = false;
-			currentErrors[ERROR_TYPE_INCOME_WATER_NO_STABILITY] = false;
 		}
 
 	}
@@ -140,24 +150,21 @@ void checkWaterIn()
 	{
 		s_oldWaterInState = false;
 		s_timeLostWater = g_sysTime;
-		if(s_waterInError == WATER_IN_ERROR_NOMAL)
+
+		if((elapsedTime(g_sysTime,s_timeHaveWater) < MIN_TIME_WATER_HAVE))
 		{
-			s_waterInError = WATER_IN_ERROR_LOST;
-			newErrorOccur(ERROR_TYPE_INCOME_WATER_LOST);
-		}
-		else if(s_waterInError == WATER_IN_ERROR_LOST)
-		{
-			if(++s_waterInBlinkCnt >= 5)
+			if((++s_waterInBlinkCnt >= 5) && (s_waterInError != WATER_IN_ERROR_NO_STABILITY))
 			{
 				s_waterInError = WATER_IN_ERROR_NO_STABILITY;
 				currentErrors[ERROR_TYPE_INCOME_WATER_LOST] = false;
 				newErrorOccur(ERROR_TYPE_INCOME_WATER_NO_STABILITY);
+				s_waterInBlinkCnt = 0;
 			}
 		}
 	}
 	if((!CHECK_CO_AP_THAP)&& (!s_oldWaterInState)&&
 			(elapsedTime(g_sysTime, s_timeLostWater) > MIN_TIME_WATER_STABILITY) &&
-			(s_waterInError == WATER_IN_ERROR_NO_STABILITY))
+			(s_waterInError != WATER_IN_ERROR_LOST))
 	{
 		s_waterInError = WATER_IN_ERROR_LOST;
 		currentErrors[ERROR_TYPE_INCOME_WATER_NO_STABILITY] = false;
