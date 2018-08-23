@@ -31,6 +31,7 @@
 #include "filter_time.h"
 #include "pumpControl.h"
 #include "adc.h"
+#include "display.h"
 
 /******************************************************************************
 * External objects
@@ -194,6 +195,14 @@ void checkTdsLimit()
 	if((ADC_GetTdsValue(TDS_OUT_VALUE) > g_userConfig.tdsLimitOut)&& (!currentErrors[ERROR_TYPE_TDS_OUT]))
 	{
 		newErrorOccur(ERROR_TYPE_TDS_OUT);
+	}
+	if((ADC_GetTdsValue(TDS_IN_VALUE) < g_userConfig.tdsLimitIn) && (currentErrors[ERROR_TYPE_TDS_IN]))
+	{
+		currentErrors[ERROR_TYPE_TDS_IN] = false;
+	}
+	if((ADC_GetTdsValue(TDS_OUT_VALUE) < g_userConfig.tdsLimitOut)&& (currentErrors[ERROR_TYPE_TDS_OUT]))
+	{
+		currentErrors[ERROR_TYPE_TDS_OUT] = false;
 	}
 }
 void checkH2ODet()
