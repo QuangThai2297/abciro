@@ -204,13 +204,18 @@ uint16_t Led7seg_getNumberInLed4()
 
 void Led7seg_reduceNumberInLed4(uint16_t reduce)
 {
-	s_led4Number -= reduce;
+	if(s_led4Number >= reduce)
+		s_led4Number -= reduce;
+	else
+		s_led4Number = 0;
 	encodeCurrentLed4();
 }
 
 void Led7seg_increaseNumberInLed4(uint16_t reduce)
 {
 	s_led4Number += reduce;
+	if(s_led4Number > 9999)
+		s_led4Number = 9999;
 	encodeCurrentLed4();
 }
 
