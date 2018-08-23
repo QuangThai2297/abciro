@@ -398,9 +398,11 @@ void fashChangeProcess()
 	if(s_fastChangeState == FAST_CHAGNE_MINUS)
 	{
 		Led7seg_reduceNumberInLed4(1);
+		s_lastPressTime = g_sysTime;
 	}
 	else if(s_fastChangeState == FAST_CHAGNE_PLUS)
 	{
+		s_lastPressTime = g_sysTime;
 		Led7seg_increaseNumberInLed4(1);
 	}
 }
