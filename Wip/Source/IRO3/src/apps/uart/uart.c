@@ -352,11 +352,11 @@ PUBLIC void UART_Debug(uint8_t * data)
 
 PUBLIC void UART_Process()
 {
-	uint8_t data[20] ={0};
+	uint8_t data[30] ={0};
 	uint16_t len = 0;
 	if(UART_IsDoneFrame())
 	{
-		len = UART_ReadData(data,20);
+		len = UART_ReadData(data,30);
 		UART_HandleProcess(data,len);
 	}
 }
