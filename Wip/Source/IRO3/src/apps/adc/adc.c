@@ -229,14 +229,14 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 	{
 		adc0_value = s_tds_in.sma_tds_adc;
 		char dbg[UART_SEND_MAX_LEN];
-		sprintf(dbg,"ADC_GetAdcTdsInValue = %d\r\n",adc0_value);
+		sprintf(dbg," %d,",adc0_value);
 		UART_Debug (dbg);
 	}
 	else if(channel == TDS_OUT_VALUE)
 	{
 		adc0_value = s_tds_out.sma_tds_adc;
 		char dbg[UART_SEND_MAX_LEN];
-		sprintf(dbg,"ADC_GetAdcTdsOutValue = %d\r\n",adc0_value);
+		sprintf(dbg,"%d\r\n",adc0_value);
 		UART_Debug (dbg);
 	}
 
