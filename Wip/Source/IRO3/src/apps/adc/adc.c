@@ -482,10 +482,16 @@ PUBLIC void ADC_UpdateTdsDisplay()
 PUBLIC ERR_E ADC_GetCalibTdsParam(TDS_E channel,uint8_t* out)
 {
 	TDS_CALIB_PARAM_T   *calib_param = (channel  == TDS_IN_VALUE)?&(s_tds_calib_param.tds_in): &(s_tds_calib_param.tds_out);
-	sprintf(out,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",calib_param->tds_value[0],calib_param->tds_value[1],calib_param->tds_value[2],calib_param->tds_value[3],calib_param->tds_value[4],calib_param->tds_value[5] \
-			,calib_param->tds_value[6],calib_param->tds_value[7],calib_param->tds_value[8],calib_param->tds_value[9],calib_param->tds_value[10],calib_param->tds_value[11],calib_param->adc_value[0],calib_param->adc_value[1],calib_param->adc_value[2],calib_param->adc_value[3],calib_param->adc_value[4],calib_param->adc_value[5] \
-			,calib_param->adc_value[6],calib_param->adc_value[7],calib_param->adc_value[8],calib_param->adc_value[9],calib_param->adc_value[10],calib_param->adc_value[11]
-			);
+	for(uint8_t i = 0; i< CALIB_POINT_MAX; i++)
+	{
+		char calibStr[20]= "";
+		sprintf(calibStr,"(%d,%d)",calib_param->tds_value[i],calib_param->adc_value[i]);
+		strcat((char*)out,calibStr);
+	}
+//	sprintf(out,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",calib_param->tds_value[0],calib_param->tds_value[1],calib_param->tds_value[2],calib_param->tds_value[3],calib_param->tds_value[4],calib_param->tds_value[5] \
+//			,calib_param->tds_value[6],calib_param->tds_value[7],calib_param->tds_value[8],calib_param->tds_value[9],calib_param->tds_value[10],calib_param->tds_value[11],calib_param->adc_value[0],calib_param->adc_value[1],calib_param->adc_value[2],calib_param->adc_value[3],calib_param->adc_value[4],calib_param->adc_value[5] \
+//			,calib_param->adc_value[6],calib_param->adc_value[7],calib_param->adc_value[8],calib_param->adc_value[9],calib_param->adc_value[10],calib_param->adc_value[11]
+//			);
 	return OK;
 }
 

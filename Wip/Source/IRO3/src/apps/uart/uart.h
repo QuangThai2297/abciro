@@ -46,7 +46,7 @@
 /******************************************************************************
 * Macros 
 ******************************************************************************/
-#define UART_SEND_MAX_LEN (120)
+#define UART_SEND_MAX_LEN (200)
 #define MAX_QUEUE_DATA_UART (30)
 #define COMMAND_MAX_LEN (15)
 #define MSG_FIELD_SEPARATOR (',')
