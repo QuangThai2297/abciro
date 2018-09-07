@@ -45,7 +45,7 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
-//#define ENABLE_TDS_LIMIT_CHECK
+#define ENABLE_TDS_LIMIT_CHECK
 
 #define MIN_TIME_WATER_STABILITY 	20000
 #define MIN_TIME_WATER_HAVE 		10000
