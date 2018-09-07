@@ -50,7 +50,7 @@
 #define  TDS_OUT_CHANNEL    ADCHANNEL0
 #define  TDS_IN_CHANNEL     ADCHANNEL1
 #define  H20_CHANNEL_DETECT   ADCHANNEL20
-#define  ADC_SAMPLE_CAL_MAX             (500)
+#define  ADC_SAMPLE_CAL_MAX             (250)
 
 #define UPDATE_TDS_IN (0)
 #define UPDATE_TDS_OUT (1)
@@ -60,7 +60,7 @@
 #define ADC_H2O_DET_DEFAULT (4000)
 #define H2O_DET_CNT_MAX   (20)
 #define TDS_OUT_VALUE_MAX  (1000)
-#define CALIB_POINT_MAX (20)
+#define CALIB_POINT_MAX (21)
 #define TDS_THRESHOLD (1)
 #define CNT_THRESHOLD_MAX (10)
 /******************************************************************************
