@@ -218,6 +218,7 @@ PUBLIC int16_t  ADC_GetAdcTdsOutValue()
 PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 {
 
+	return 0;
 
 	float				calculate_value = 0;
 	float				slope;
@@ -228,16 +229,16 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 	if(channel == TDS_IN_VALUE)
 	{
 		adc0_value = s_tds_in.sma_tds_adc;
-		char dbg[UART_SEND_MAX_LEN];
-		sprintf(dbg," %d,",adc0_value);
-		UART_Debug (dbg);
+//		char dbg[UART_SEND_MAX_LEN];
+//		sprintf(dbg," %d,",adc0_value);
+//		UART_Debug (dbg);
 	}
 	else if(channel == TDS_OUT_VALUE)
 	{
 		adc0_value = s_tds_out.sma_tds_adc;
-		char dbg[UART_SEND_MAX_LEN];
-		sprintf(dbg,"%d\r\n",adc0_value);
-		UART_Debug (dbg);
+//		char dbg[UART_SEND_MAX_LEN];
+//		sprintf(dbg,"%d\r\n",adc0_value);
+//		UART_Debug (dbg);
 	}
 
 
@@ -295,6 +296,15 @@ PUBLIC void   ADC_UpdateTds (uint8_t state)
 	if(s_200ms_cnt >= ADC_SAMPLE_CAL_MAX)
 	{
 		s_200ms_cnt = 0;
+
+		char dbg[UART_SEND_MAX_LEN];
+		sprintf(dbg," %d,",(s_tds_in.sum_adc_high/s_tds_in.high_cnt));
+		UART_Debug (dbg);
+
+		sprintf(dbg," %d\r\n",(s_tds_out.sum_adc_high/s_tds_out.high_cnt));
+		UART_Debug (dbg);
+
+
 		//update tds in
 		adc_tds_in = ((s_tds_in.high_cnt == 0)| (s_tds_in.low_cnt==0))?0: \
 				((s_tds_in.sum_adc_high/s_tds_in.high_cnt) - (s_tds_in.sum_adc_low/s_tds_in.low_cnt));
