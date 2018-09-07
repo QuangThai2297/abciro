@@ -45,6 +45,8 @@
 /******************************************************************************
 * Constants and macros
 ******************************************************************************/
+//#define ENABLE_TDS_LIMIT_CHECK
+
 #define MIN_TIME_WATER_STABILITY 	20000
 #define MIN_TIME_WATER_HAVE 		10000
 #define PUMP_RUN_OVER_TIME 			18000000
@@ -188,6 +190,7 @@ void checkPumpRunTime()
 }
 void checkTdsLimit()
 {
+#ifdef ENABLE_TDS_LIMIT_CHECK
 	if((ADC_GetTdsValue(TDS_IN_VALUE) > g_userConfig.tdsLimitIn) && (!currentErrors[ERROR_TYPE_TDS_IN]))
 	{
 		newErrorOccur(ERROR_TYPE_TDS_IN);
@@ -204,6 +207,7 @@ void checkTdsLimit()
 	{
 		currentErrors[ERROR_TYPE_TDS_OUT] = false;
 	}
+#endif
 }
 void checkH2ODet()
 {
