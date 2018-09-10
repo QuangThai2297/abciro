@@ -1,0 +1,10 @@
+diff a/Wip/Source/IRO3/src/IRO3.c b/Wip/Source/IRO3/src/IRO3.c	(rejected hunks)
+@@ -175,6 +175,8 @@
+ 
+ void run10msTask()
+ {
++	g_pwm_value ^= 1;
++	PWM = g_pwm_value;
+ 	Display_process();
+ }
+ 

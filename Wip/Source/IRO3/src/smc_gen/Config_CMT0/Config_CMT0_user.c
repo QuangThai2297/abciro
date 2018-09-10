@@ -22,7 +22,7 @@
 * Version      : 1.3.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_CMT0.
-* Creation Date: 2018-09-07
+* Creation Date: 2018-08-21
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -48,6 +48,7 @@ Global variables and functions
 /* Start user code for global. Do not edit comment generated here */
 volatile uint8_t g_pwm_timer;
 extern volatile uint8_t g_adc_flag;
+volatile uint8_t g_pwm_value = 0;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -85,8 +86,8 @@ static void r_Config_CMT0_cmi0_interrupt(void)
 //	g_adc_flag = 0;
 	if(0U == g_adc_flag)
 	{
-//		g_pwm_value ^= 1;
-//		PWM = g_pwm_value;
+		g_pwm_value ^= 1;
+		PWM = g_pwm_value;
 		R_Config_S12AD0_Start();
 	}
 	TIMER_SystemTickEvent();
