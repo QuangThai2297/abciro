@@ -155,8 +155,13 @@ void run200usTask()
 {
 
 }
+
+volatile uint8_t g_pwm_value = 0;
+
 void run1msTask()
 {
+
+
 	TOUCH_process();
 	if(s_timeOut100ms <100)
 	{
@@ -170,6 +175,8 @@ void run1msTask()
 
 void run10msTask()
 {
+	g_pwm_value ^= 1;
+	PWM = g_pwm_value;
 	Display_process();
 }
 

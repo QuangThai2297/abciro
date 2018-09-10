@@ -64,16 +64,16 @@ extern volatile uint8_t g_pwm_value;
 
 LOCAL const TDS_CALIB_PARAM_T TDS_IN_CONFIG_DEFAULD =
 {
-		.adc_value = {2270,2210,2100,1870,1367,1180,777,146,(-200),(-350),(-805),(-940)},
-		.tds_value = {0,4,10,20,31,50,118,260,400,600,1210,4000}
+		.adc_value = {2670,2677,2687,2704,2718,2734,2746,2760,2771,2784,2795,2807,2871,2918,2958,2992,3019,3043,3067,3149,4000},
+		.tds_value = {0,6,10,20,30,40,50,60,70,80,90,100,170,240,310,380,450,520,600,1000,2000}
 
 };
 
 
 LOCAL const TDS_CALIB_PARAM_T TDS_OUT_CONFIG_DEFAULD =
 {
-		.adc_value = {2270,2210,2100,1870,1367,1180,777,146,(-200),(-350),(-805),(-940)},
-		.tds_value = {0,4,10,20,31,50,118,260,400,600,1210,4000}
+		.adc_value = {2670,2677,2687,2704,2718,2734,2746,2760,2771,2784,2795,2807,2871,2918,2958,2992,3019,3043,3067,3149,3261},
+		.tds_value = {0,6,10,20,30,40,50,60,70,80,90,100,170,240,310,380,450,520,600,1000,2000}
 
 };
 
@@ -218,7 +218,6 @@ PUBLIC int16_t  ADC_GetAdcTdsOutValue()
 PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 {
 
-
 	float				calculate_value = 0;
 	float				slope;
 	uint16_t            tds_return = 0;
@@ -228,26 +227,26 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 	if(channel == TDS_IN_VALUE)
 	{
 		adc0_value = s_tds_in.sma_tds_adc;
-		char dbg[UART_SEND_MAX_LEN];
-		sprintf(dbg," %d,",adc0_value);
-		UART_Debug (dbg);
+//		char dbg[UART_SEND_MAX_LEN];
+//		sprintf(dbg," %d,",adc0_value);
+//		UART_Debug (dbg);
 	}
 	else if(channel == TDS_OUT_VALUE)
 	{
 		adc0_value = s_tds_out.sma_tds_adc;
-		char dbg[UART_SEND_MAX_LEN];
-		sprintf(dbg,"%d\r\n",adc0_value);
-		UART_Debug (dbg);
+//		char dbg[UART_SEND_MAX_LEN];
+//		sprintf(dbg,"%d\r\n",adc0_value);
+//		UART_Debug (dbg);
 	}
 
 
-	if(adc0_value > calib_param->adc_value[0] )
+	if(adc0_value < calib_param->adc_value[0] )
 	{
 		tds_return = 0;
 		return tds_return;
 	}
 
-	if(adc0_value < calib_param->adc_value[CALIB_POINT_MAX-1])
+	if(adc0_value > calib_param->adc_value[CALIB_POINT_MAX-1])
 	{
 		tds_return = calib_param->tds_value[CALIB_POINT_MAX-1];
 		return tds_return;
@@ -256,10 +255,10 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 	for(index_level = 0; index_level < (CALIB_POINT_MAX -1) ; index_level++)
 	{
 
-		if((adc0_value <= calib_param->adc_value[index_level]) && (adc0_value >= calib_param->adc_value[index_level+1]) )
+		if((adc0_value >= calib_param->adc_value[index_level]) && (adc0_value <= calib_param->adc_value[index_level+1]) )
 		{
-			slope = ((float)(calib_param->tds_value[index_level+1] - calib_param->tds_value[index_level]))/((float)(calib_param->adc_value[index_level] - calib_param->adc_value[index_level+1]));
-			calculate_value = calib_param->tds_value[index_level] + slope * ( calib_param->adc_value[index_level] - adc0_value);
+			slope = ((float)(calib_param->tds_value[index_level+1] - calib_param->tds_value[index_level]))/((float)(calib_param->adc_value[index_level+1] - calib_param->adc_value[index_level]));
+			calculate_value = calib_param->tds_value[index_level] + slope * (adc0_value - calib_param->adc_value[index_level]);
 			tds_return= (calculate_value <= 0)?0:(uint16_t) (calculate_value+0.5);
 			break;
 		}
@@ -296,14 +295,21 @@ PUBLIC void   ADC_UpdateTds (uint8_t state)
 	{
 		s_200ms_cnt = 0;
 		//update tds in
-		adc_tds_in = ((s_tds_in.high_cnt == 0)| (s_tds_in.low_cnt==0))?0: \
-				((s_tds_in.sum_adc_high/s_tds_in.high_cnt) - (s_tds_in.sum_adc_low/s_tds_in.low_cnt));
+		adc_tds_in = (s_tds_in.high_cnt == 0)?0: \
+				(s_tds_in.sum_adc_high/s_tds_in.high_cnt);
 		ADC_PushDataToQueue(adc_tds_in,&s_tds_in);
 
 	//	update tds out
-		adc_tds_out = ((s_tds_out.high_cnt == 0)| (s_tds_out.low_cnt==0))?0: \
-				((s_tds_out.sum_adc_high/s_tds_out.high_cnt) - (s_tds_out.sum_adc_low/s_tds_out.low_cnt));
+		adc_tds_out = (s_tds_out.high_cnt == 0)?0: \
+				(s_tds_out.sum_adc_high/s_tds_out.high_cnt);
 		ADC_PushDataToQueue(adc_tds_out,&s_tds_out);
+
+		char dbg[UART_SEND_MAX_LEN];
+		sprintf(dbg," %d,",(s_tds_in.sma_tds_adc));
+		UART_Debug (dbg);
+
+		sprintf(dbg," %d\r\n",(s_tds_out.sma_tds_adc));
+		UART_Debug (dbg);
 
 		s_tds_in.high_cnt = 0;
 		s_tds_in.low_cnt  = 0;
@@ -332,28 +338,11 @@ PUBLIC void   ADC_UpdateTds (uint8_t state)
 	}
 	R_Config_S12AD0_Get_ValueResult(TDS_IN_CHANNEL, &adc_result_tds_in);
 	R_Config_S12AD0_Get_ValueResult(TDS_OUT_CHANNEL,&adc_result_tds_out);
-
-
-	if(g_pwm_value ==  0)
-	{
-
-		s_tds_in.low_cnt ++;
-		s_tds_in.sum_adc_low  += adc_result_tds_in;
-
-		s_tds_out.low_cnt ++;
-		s_tds_out.sum_adc_low  += adc_result_tds_out;
-
-	}
-	else
-	{
-
 		s_tds_in.high_cnt ++;
 		s_tds_in.sum_adc_high  += adc_result_tds_in;
 
 		s_tds_out.high_cnt ++;
 		s_tds_out.sum_adc_high  += adc_result_tds_out;
-
-	}
 
 
     end_function:

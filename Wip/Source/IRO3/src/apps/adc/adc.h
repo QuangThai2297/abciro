@@ -50,7 +50,7 @@
 #define  TDS_OUT_CHANNEL    ADCHANNEL0
 #define  TDS_IN_CHANNEL     ADCHANNEL1
 #define  H20_CHANNEL_DETECT   ADCHANNEL20
-#define  ADC_SAMPLE_CAL_MAX             (500)
+#define  ADC_SAMPLE_CAL_MAX             (250)
 
 #define UPDATE_TDS_IN (0)
 #define UPDATE_TDS_OUT (1)
