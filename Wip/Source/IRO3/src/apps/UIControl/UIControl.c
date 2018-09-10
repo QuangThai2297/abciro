@@ -330,7 +330,6 @@ void UIControl_switchUiStateTo(UI_State_t newState)
 	if(newState == UI_STATE_LOCK)
 	{
 		Led_turnOffLedKey();
-		Buzzer_onInMs(TIME_BUZZER_ON);
 	}
 	s_UIState = newState;
 	UIControl_updateUI();
