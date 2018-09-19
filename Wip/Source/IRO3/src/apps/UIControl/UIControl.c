@@ -198,9 +198,11 @@ void UIControl_btnHold_cb(ButtonId_t btn,uint32_t holdingTime)
 		{
 			if(s_UIState == UI_STATE_LOCK)
 			{
+				Buzzer_onInMs(TIME_BUZZER_ON);
 				UIControl_switchUiStateTo(UI_STATE_TDS_OUT);
 			}else if(s_UIState == UI_STATE_TDS_OUT)
 			{
+				Buzzer_onInMs(TIME_BUZZER_ON);
 				UIControl_switchUiStateTo(UI_STATE_LOCK);
 			}
 		}
@@ -324,7 +326,6 @@ void UIControl_switchUiStateTo(UI_State_t newState)
 	if(s_UIState == UI_STATE_LOCK)
 	{
 		Led_turnOnLedKey();
-		Buzzer_onInMs(TIME_BUZZER_ON);
 		Display_turnOffBlinkled();
 	}
 	if(newState == UI_STATE_LOCK)
