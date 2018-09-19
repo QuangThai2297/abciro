@@ -76,6 +76,11 @@ LOCAL ERR_E UART_HandleDbg(uint8_t* value,uint8_t* out );
 
 LOCAL ERR_E UART_HandleTdsParam(uint8_t* value,uint8_t* out );
 
+LOCAL ERR_E UART_HandleGetAdcTable(uint8_t* value,uint8_t* out );
+
+LOCAL ERR_E UART_HandleGetTdsTable (uint8* value,uint8* out );
+
+
 /**
 * @brief One line documentation
 *
@@ -107,8 +112,9 @@ LOCAL const PARSE_PACKET_PROCESS_T packet_process_table[] =
 	{2,"SOFTWAREVER",UART_HandleSoftVer},
 	{3,"DEBUG_EN",UART_HandleDbg},
 	{4,"TDS_PARAM",UART_HandleTdsParam},
-	{5,"RESET",NULL}
-
+	{5,"RESET",NULL},
+	{6,"ADC_TABLE",UART_HandleGetAdcTable},
+	{7,"TDS_TABLE",UART_HandleGetTdsTable}
 
 };
 
@@ -171,6 +177,45 @@ LOCAL ERR_E UART_HandleTdsParam (uint8* value,uint8* out )
 	return OK;
 
 }
+
+LOCAL ERR_E UART_HandleGetAdcTable (uint8* value,uint8* out )
+{
+	uint8_t  param[9] = {0};
+	int param_int = 0;
+	TDS_E channel_tds = TDS_IN_VALUE;
+	if(strlen ((char*)value) > 8)
+	{
+		return ERR_PARAM;
+	}
+    //in 0: out 1
+
+	strcpy((char*)param,(char*)value);
+	param_int = atoi((char*)param);
+	channel_tds =  (param_int == 0)?TDS_IN_VALUE:TDS_OUT_VALUE;
+	ADC_GetAdcTable(channel_tds,out);
+	return OK;
+
+}
+LOCAL ERR_E UART_HandleGetTdsTable (uint8* value,uint8* out )
+{
+	uint8_t  param[9] = {0};
+	int param_int = 0;
+	TDS_E channel_tds = TDS_IN_VALUE;
+	if(strlen ((char*)value) > 8)
+	{
+		return ERR_PARAM;
+	}
+    //in 0: out 1
+
+	strcpy((char*)param,(char*)value);
+	param_int = atoi((char*)param);
+	channel_tds =  (param_int == 0)?TDS_IN_VALUE:TDS_OUT_VALUE;
+	ADC_GetTdsTable(channel_tds,out);
+	return OK;
+
+}
+
+
 /**
 * @brief One line documentation
 *

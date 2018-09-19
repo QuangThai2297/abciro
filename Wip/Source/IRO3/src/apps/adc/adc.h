@@ -142,6 +142,11 @@ PUBLIC ERR_E ADC_CalibTdsValueFromUart(uint16_t tdsvalue,TDS_E channel,uint8_t i
 
 PUBLIC bool ADC_GetH2oDet();
 
+PUBLIC ERR_E ADC_GetAdcTable(TDS_E channel,uint8_t* out);
+
+PUBLIC ERR_E ADC_GetTdsTable(TDS_E channel,uint8_t* out);
+
+
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

@@ -228,16 +228,16 @@ PUBLIC uint16_t  ADC_GetTdsValue(TDS_E channel)
 	if(channel == TDS_IN_VALUE)
 	{
 		adc0_value = s_tds_in.sma_tds_adc;
-		char dbg[UART_SEND_MAX_LEN];
-		sprintf(dbg," %d,",adc0_value);
-		UART_Debug (dbg);
+//		char dbg[UART_SEND_MAX_LEN];
+//		sprintf(dbg," %d,",adc0_value);
+//		UART_Debug (dbg);
 	}
 	else if(channel == TDS_OUT_VALUE)
 	{
 		adc0_value = s_tds_out.sma_tds_adc;
-		char dbg[UART_SEND_MAX_LEN];
-		sprintf(dbg,"%d\r\n",adc0_value);
-		UART_Debug (dbg);
+//		char dbg[UART_SEND_MAX_LEN];
+//		sprintf(dbg,"%d\r\n",adc0_value);
+//		UART_Debug (dbg);
 	}
 
 
@@ -283,6 +283,12 @@ PUBLIC uint16_t  ADC_GetTdsValueDisplay(TDS_E channel)
 
 }
 
+void debugADC(int16_t adcIn,int16_t adcOut)
+{
+	char dbg[UART_SEND_MAX_LEN];
+	sprintf(dbg,"%d,%d\r\n",adcIn,adcOut);
+	UART_Debug (dbg);
+}
 
 PUBLIC void   ADC_UpdateTds (uint8_t state)
 {
@@ -305,6 +311,7 @@ PUBLIC void   ADC_UpdateTds (uint8_t state)
 				((s_tds_out.sum_adc_high/s_tds_out.high_cnt) - (s_tds_out.sum_adc_low/s_tds_out.low_cnt));
 		ADC_PushDataToQueue(adc_tds_out,&s_tds_out);
 
+		debugADC(s_tds_in.sma_tds_adc,s_tds_out.sma_tds_adc);
 		s_tds_in.high_cnt = 0;
 		s_tds_in.low_cnt  = 0;
 		s_tds_in.sum_adc_high = 0;
@@ -488,10 +495,36 @@ PUBLIC ERR_E ADC_GetCalibTdsParam(TDS_E channel,uint8_t* out)
 		sprintf(calibStr,"(%d,%d)",calib_param->tds_value[i],calib_param->adc_value[i]);
 		strcat((char*)out,calibStr);
 	}
-//	sprintf(out,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",calib_param->tds_value[0],calib_param->tds_value[1],calib_param->tds_value[2],calib_param->tds_value[3],calib_param->tds_value[4],calib_param->tds_value[5] \
-//			,calib_param->tds_value[6],calib_param->tds_value[7],calib_param->tds_value[8],calib_param->tds_value[9],calib_param->tds_value[10],calib_param->tds_value[11],calib_param->adc_value[0],calib_param->adc_value[1],calib_param->adc_value[2],calib_param->adc_value[3],calib_param->adc_value[4],calib_param->adc_value[5] \
-//			,calib_param->adc_value[6],calib_param->adc_value[7],calib_param->adc_value[8],calib_param->adc_value[9],calib_param->adc_value[10],calib_param->adc_value[11]
-//			);
+	return OK;
+}
+
+PUBLIC ERR_E ADC_GetAdcTable(TDS_E channel,uint8_t* out)
+{
+	TDS_CALIB_PARAM_T   *calib_param = (channel  == TDS_IN_VALUE)?&(s_tds_calib_param.tds_in): &(s_tds_calib_param.tds_out);
+	for(uint8_t i = 0; i< CALIB_POINT_MAX; i++)
+	{
+		char calibStr[20]= "";
+		if(i == (CALIB_POINT_MAX - 1))
+			sprintf(calibStr,"%d",calib_param->adc_value[i]);
+		else
+			sprintf(calibStr,"%d,",calib_param->adc_value[i]);
+		strcat((char*)out,calibStr);
+	}
+	return OK;
+}
+
+PUBLIC ERR_E ADC_GetTdsTable(TDS_E channel,uint8_t* out)
+{
+	TDS_CALIB_PARAM_T   *calib_param = (channel  == TDS_IN_VALUE)?&(s_tds_calib_param.tds_in): &(s_tds_calib_param.tds_out);
+	for(uint8_t i = 0; i< CALIB_POINT_MAX; i++)
+	{
+		char calibStr[20]= "";
+		if(i == (CALIB_POINT_MAX - 1))
+			sprintf(calibStr,"%d",calib_param->tds_value[i]);
+		else
+			sprintf(calibStr,"%d,",calib_param->tds_value[i]);
+		strcat((char*)out,calibStr);
+	}
 	return OK;
 }
 
