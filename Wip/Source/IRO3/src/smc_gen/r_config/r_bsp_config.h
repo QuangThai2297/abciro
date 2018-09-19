@@ -303,7 +303,7 @@ Configuration Options
    0 = RTOS is not used. 
    1 = RTOS is used.
 */
-#define BSP_CFG_RTOS_USED               (0)
+#define BSP_CFG_RTOS_USED               (0) // <-- Updated by GUI. Do not edit this value manually
 
 /* By default modules will use global locks found in mcu_locks.c. If the user is using a RTOS and would rather use its
    locking mechanisms then they can change this macro. 

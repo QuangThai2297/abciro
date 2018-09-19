@@ -19,10 +19,10 @@
 
 /***********************************************************************************************************************
 * File Name    : Config_PORT.h
-* Version      : 1.3.0
+* Version      : 1.4.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_PORT.
-* Creation Date: 2018-08-21
+* Creation Date: 2018-09-19
 ***********************************************************************************************************************/
 
 #ifndef Config_PORT_H

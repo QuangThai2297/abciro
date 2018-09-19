@@ -5,6 +5,9 @@
 <property id="com.renesas.smc.service.project.buildArtefactType" values="com.renesas.smc.service.project.buildArtefactType.exe"/>
 <toolchain id="com.renesas.smc.toolchain.rxc.toolchain.rxc">
 <option id="com.renesas.smc.toolchain.option.buildArtefactType" key="com.renesas.smc.toolchain.option.buildArtefactType.exe"/>
+<option id="com.renesas.smc.toolchain.option.rtos" key="com.renesas.smc.toolchain.option.rtos.none">
+<item id="com.renesas.smc.toolchain.option.rtos.freertos" value="FreeRTOS_RX_V10.0.00"/>
+</option>
 </toolchain>
 </configuration>
 <platform id="R5F51303AxFM"/>
@@ -371,7 +374,7 @@
 <item id="Level15" input="" vlaue="0"/>
 </option>
 </allocatable>
-<component description="This software component provides configurations for 16-bit/32-bit timer with module CMT/CMTW and can generate interrupts at set intervals. " detailDescription="" display="Compare Match Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.cmtw" version="1.3.0"/>
+<component description="This software component provides configurations for 16-bit/32-bit timer with module CMT/CMTW and can generate interrupts at set intervals. " detailDescription="" display="Compare Match Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.cmtw" version="1.4.0"/>
 <allocator channelLevel0="0" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Compare Match Timer 0" display="CMT0" id="com.renesas.smc.tools.swcomponent.codegenerator.cmtw.rx130.cmt0" type="CMT">
 <context/>
 </allocator>
@@ -2472,7 +2475,7 @@
 <item id="PortUnuse" input="" vlaue="0"/>
 </option>
 </allocatable>
-<component description="This software component provides configurations for General Purpose Input/Output. Common features such as reading, writing, and setting the direction of ports and pins can be configured. Enabling features such as open-drain outputs and internal pull-ups are also supported. " detailDescription="" display="Ports" id="com.renesas.smc.tools.swcomponent.codegenerator.port" version="1.3.0"/>
+<component description="This software component provides configurations for General Purpose Input/Output. Common features such as reading, writing, and setting the direction of ports and pins can be configured. Enabling features such as open-drain outputs and internal pull-ups are also supported. " detailDescription="" display="Ports" id="com.renesas.smc.tools.swcomponent.codegenerator.port" version="1.4.0"/>
 <allocator channelLevel0="" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Input output configuration of PORT" display="PORT" id="com.renesas.smc.tools.swcomponent.codegenerator.port.rx130.PORT" type="">
 <context/>
 </allocator>
@@ -2522,7 +2525,7 @@
 <item id="Level15" input="" vlaue="0"/>
 </option>
 </allocatable>
-<component description="This software component provides configurations for 16-bit/32-bit timer with module CMT/CMTW and can generate interrupts at set intervals. " detailDescription="" display="Compare Match Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.cmtw" version="1.3.0"/>
+<component description="This software component provides configurations for 16-bit/32-bit timer with module CMT/CMTW and can generate interrupts at set intervals. " detailDescription="" display="Compare Match Timer" id="com.renesas.smc.tools.swcomponent.codegenerator.cmtw" version="1.4.0"/>
 <allocator channelLevel0="1" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="Compare Match Timer 1" display="CMT1" id="com.renesas.smc.tools.swcomponent.codegenerator.cmtw.rx130.cmt1" type="CMT">
 <context/>
 </allocator>
@@ -3060,7 +3063,7 @@
 <item id="AllScan" input="" vlaue="0"/>
 </option>
 </allocatable>
-<component description="This software component provides single scan mode configurations for 12-Bit A/D Converter which the analog inputs of up to 8 (unit 0) and 21 (unit 1) channels arbitrarily selected are converted for only once in ascending channel order." detailDescription="" display="Single Scan Mode S12AD" id="com.renesas.smc.tools.swcomponent.codegenerator.singlescanmode" version="1.3.0"/>
+<component description="This software component provides single scan mode configurations for 12-Bit A/D Converter which the analog inputs arbitrarily selected are converted for only once in ascending channel order." detailDescription="" display="Single Scan Mode S12AD" id="com.renesas.smc.tools.swcomponent.codegenerator.singlescanmode" version="1.4.0"/>
 <allocator channelLevel0="0" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="S12AD0 Single Scan Mode" display="S12AD0" id="com.renesas.smc.tools.swcomponent.codegenerator.singlescanmode.rx130.s12ad0" type="">
 <context/>
 </allocator>
@@ -3095,7 +3098,7 @@
 <item id="16Cyl" input="" vlaue="0"/>
 <item id="8Cyl" input="" vlaue="0"/>
 </option>
-<option enabled="true" id="Bitrate" selection="38400">
+<option enabled="true" id="Bitrate" selection="FreeValue">
 <item id="9600" input="9600" vlaue="0"/>
 <item id="19200" input="19200" vlaue="0"/>
 <item id="31250" input="31250" vlaue="0"/>
@@ -3104,7 +3107,7 @@
 <item id="150000" input="150000" vlaue="0"/>
 <item id="325000" input="325000" vlaue="0"/>
 <item id="375000" input="375000" vlaue="0"/>
-<item id="FreeValue" input="38400" vlaue="9600"/>
+<item id="FreeValue" input="115200" vlaue="9600"/>
 </option>
 <option enabled="true" id="DutyCorrection" selection="Disable">
 <item id="Enable" input="" vlaue="0"/>
@@ -3174,7 +3177,7 @@
 <item id="Odd" input="" vlaue="0"/>
 </option>
 </allocatable>
-<component description="This software component provides configurations for SCI(SCIF) single(multi-processor) asynchronous mode. " detailDescription="" display="SCI/SCIF Asynchronous Mode" id="com.renesas.smc.tools.swcomponent.codegenerator.sciasyncmode" version="1.1.0"/>
+<component description="This software component provides configurations for SCI(SCIF) single(multi-processor) asynchronous mode. " detailDescription="" display="SCI/SCIF Asynchronous Mode" id="com.renesas.smc.tools.swcomponent.codegenerator.sciasyncmode" version="1.2.0"/>
 <allocator channelLevel0="1" channelLevel1="" channelLevel2="" channelLevel3="" channelLevel4="" channelLevel5="" description="SCI channel 1" display="SCI1" id="com.renesas.smc.tools.swcomponent.codegenerator.sciasync.rx130.sci1" type="SCI">
 <context>
 <option enabled="true" id="Mode" selection="BothMode">

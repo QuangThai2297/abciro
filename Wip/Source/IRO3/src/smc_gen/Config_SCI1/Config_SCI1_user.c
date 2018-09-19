@@ -19,10 +19,10 @@
 
 /***********************************************************************************************************************
 * File Name    : Config_SCI1_user.c
-* Version      : 1.1.0
+* Version      : 1.2.0
 * Device(s)    : R5F51303AxFM
 * Description  : This file implements device driver for Config_SCI1.
-* Creation Date: 2018-08-21
+* Creation Date: 2018-09-19
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -45,8 +45,8 @@ Includes
 /***********************************************************************************************************************
 Global variables and functions
 ***********************************************************************************************************************/
-extern volatile uint8_t * gp_sci1_tx_address;                /* SCI1 send buffer address */
-extern volatile uint16_t  g_sci1_tx_count;                   /* SCI1 send data number */
+extern volatile uint8_t * gp_sci1_tx_address;                /* SCI1 transmit buffer address */
+extern volatile uint16_t  g_sci1_tx_count;                   /* SCI1 transmit data number */
 extern volatile uint8_t * gp_sci1_rx_address;                /* SCI1 receive buffer address */
 extern volatile uint16_t  g_sci1_rx_count;                   /* SCI1 receive data number */
 extern volatile uint16_t  g_sci1_rx_length;                  /* SCI1 receive data length */
@@ -294,6 +294,7 @@ PUBLIC bool UART_IsDoneFrame(void)
 	return s_rev_done;
 }
 /* End user code. Do not edit comment generated here */   
+
 
 
 
