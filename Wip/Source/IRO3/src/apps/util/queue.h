@@ -38,13 +38,14 @@
 
 typedef struct
 {
-    uint32 max_count;
-	uint32 get_index;
-	uint32 current_count;
-	uint32 node_size;
-	BOOLEAN busy;
-    void *queue;    
+    uint32 max_count;			//số phần tử trong queue
+	uint32 get_index;			//trỏ đến phần tử được coi là đầu hàng đợi, với bộ đệm vòng get_index có thể là bất kì vị trí phần tử nào
+	uint32 current_count;		//số phần tử hiện có trong queue
+	uint32 node_size;			//sizeof 1 phần tử
+	BOOLEAN busy;				//cờ báo queue bận
+    void *queue;    			//con trỏ quản lí các phần tử dữ liệu được lưu (giống 1 mảng hay 1 hàng đợi đúng nghĩa)
 }QUEUE_NODE_T;
+//cấu trúc 1 node queue
 
 typedef  BOOLEAN (*QUEUE_COMPARE_FUNC)(void *data_ptr1, void *data_ptr2);
 /**--------------------------------------------------------------------------*

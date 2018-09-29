@@ -50,8 +50,8 @@
 #define MAX_QUEUE_DATA_UART (30)
 #define COMMAND_MAX_LEN (15)
 #define MSG_FIELD_SEPARATOR (',')
-#define MSG_FIELD_SOF ('[')
-#define MSG_FIELD_EOF (']')
+#define MSG_FIELD_SOF ('[')			//kí tự đầu
+#define MSG_FIELD_EOF (']')			//kí tự cuối
 #define MSG_FIELDS_MAX (5)
 
 #define MSG_FIELD_ID (1)

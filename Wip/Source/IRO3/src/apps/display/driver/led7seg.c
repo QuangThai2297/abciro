@@ -43,9 +43,9 @@
 ******************************************************************************/
 const uint8_t LED7_CODE_START[] = {0xFE,};
 
-const uint8_t LED7_CODE[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff,0x86};
-const gpio_port_pin_t LED7_PIN[] = {GPIO_PORT_A_PIN_3,GPIO_PORT_A_PIN_0,GPIO_PORT_B_PIN_3,GPIO_PORT_A_PIN_6,GPIO_PORT_A_PIN_4,GPIO_PORT_A_PIN_1,GPIO_PORT_B_PIN_5,GPIO_PORT_B_PIN_1};
-const gpio_port_pin_t LED7_DIGITS[] = {GPIO_PORT_B_PIN_7,GPIO_PORT_4_PIN_4,GPIO_PORT_4_PIN_3,GPIO_PORT_4_PIN_2,GPIO_PORT_E_PIN_2};
+const uint8_t LED7_CODE[] = {0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff,0x86};//tich cuc muc 0
+const gpio_port_pin_t LED7_PIN[] = {GPIO_PORT_A_PIN_3,GPIO_PORT_A_PIN_0,GPIO_PORT_B_PIN_3,GPIO_PORT_A_PIN_6,GPIO_PORT_A_PIN_4,GPIO_PORT_A_PIN_1,GPIO_PORT_B_PIN_5,GPIO_PORT_B_PIN_1};//segment pin
+const gpio_port_pin_t LED7_DIGITS[] = {GPIO_PORT_B_PIN_7,GPIO_PORT_4_PIN_4,GPIO_PORT_4_PIN_3,GPIO_PORT_4_PIN_2,GPIO_PORT_E_PIN_2}; //digit pin
 
 /******************************************************************************
 * Local types
@@ -85,12 +85,12 @@ bool s_led7IsOn = true;
 
 void encodeLed4(uint16_t number)
 {
-	for(int i = 0; i<4; i++)
+	for(int i = 0; i<4; i++)			//tách từng chữ số number lưu vào mảng
 	{
 		s_led4Digits[i] = LED7_CODE[number%10];
 		number /= 10;
 	}
-	if(s_led4Digits[3] == LED7_CODE[0])
+	if(s_led4Digits[3] == LED7_CODE[0]) //nếu là chữ số 0 ở đầu thì gán 0xff để k hiển thị
 	{
 		s_led4Digits[3] = LED7_CODE[LED_7SEG_OFF];
 		if(s_led4Digits[2] == LED7_CODE[0])
@@ -109,6 +109,7 @@ void encodeCurrentLed4()
 	if(s_led7IsOn)
 		encodeLed4(s_led4Number);
 }
+//enable led index, show number has code digit
 void showDigitAtIndex(uint8_t digit,uint8_t index)
 {
 	for(int i = 0; i<5; i++)
@@ -237,6 +238,8 @@ void Led7seg_turnOffLed()
 }
 
 // for start up
+
+//on each seg of all led7seg
 void Led7seg_setAllLedCode(uint8_t ledCode)
 {
 	for(int i = 0; i<4; i++)
@@ -246,6 +249,8 @@ void Led7seg_setAllLedCode(uint8_t ledCode)
 	s_led1Code = ledCode;
 }
 
+
+//on all seg of led7seg
 void Led7seg_OnAllSegInLed(uint8_t ledIndex)
 {
 	for(uint8_t i = 0; i<4; i++)

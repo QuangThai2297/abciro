@@ -67,7 +67,7 @@ LOCAL volatile uint16_t  s_rev_index = 0;
 LOCAL  uint16_t  s_rev_index_pre = 0;
 
 LOCAL volatile bool  s_rev_done = false;
-/* Sends SCI2 data and waits for transmit end flag */
+/* Sends SCI1 data and waits for transmit end flag */
 MD_STATUS R_SCI1_AsyncTransmit(uint8_t * const tx_buf, const uint16_t
 tx_num);
 /* End user code. Do not edit comment generated here */
@@ -82,7 +82,7 @@ tx_num);
 void R_Config_SCI1_Create_UserInit(void)
 {
     /* Start user code for user init. Do not edit comment generated here */
-	s_uart_data_queue =  QUEUE_InitQueue(MAX_QUEUE_DATA_UART,sizeof(uint8_t));
+	s_uart_data_queue =  QUEUE_InitQueue(MAX_QUEUE_DATA_UART,sizeof(uint8_t));		//tạo 1 queue chứa  MAX_QUEUE_DATA_UART kí tự
 
     /* End user code. Do not edit comment generated here */
 }
@@ -216,8 +216,9 @@ static void r_Config_SCI1_callback_receiveend(void)
 	/* Set SCI1 receive buffer address and restart reception */
 	R_Config_SCI1_Serial_Receive((uint8_t *)&g_rx_char, 1);
 	QUEUE_EnQueue(s_uart_data_queue,&g_rx_char);
+	//đẩy kí tự nhận được vào trong queue,nếu số kí tự > MAX_QUEUE_DATA_UART thì k đẩy vào đc(xem lại queue.c)
 //	s_rev_index_pre = s_rev_index;
-	s_rev_index = s_rev_index+1;
+	s_rev_index = s_rev_index+1;			//đếm số byte nhận được từ uart
     /* End user code. Do not edit comment generated here */
 }
 
@@ -242,7 +243,7 @@ tx_num)
 
  /* Clear transmit completion flag before transmission */
  SCI1_txdone = 0U;
-/* Set SCI2 transmit buffer address and start transmission */
+/* Set SCI1 transmit buffer address and start transmission */
  status = R_Config_SCI1_Serial_Send(tx_buf, tx_num);
  /* Wait for transmit end flag */
  while (0U == SCI1_txdone)
@@ -256,20 +257,26 @@ tx_num)
 * End of function R_SCI2_AsyncTransmit
 *****************************************************************
 **************/
+
+/*đọc tối đa maxlen byte dữ liệu từ queue vào data
+ * return : ret: số byte thực tế nhận được từ queue*/
 PUBLIC uint16_t  UART_ReadData(uint8_t * data,uint16_t maxlen)
-{
+{	// ở đây data[30] nên maxlen = MAX_QUEUE_DATA_UART :số byte max trong queue
 	uint16_t ret = 0;
 	if(data  == NULL)
 	{
 	 return ret;
 	}
 
-	while(!QUEUE_QueueIsEmpty(s_uart_data_queue))
+	while(!QUEUE_QueueIsEmpty(s_uart_data_queue))		//nếu queue chưa rỗng
 	{
 	    QUEUE_DeQueue(s_uart_data_queue,data+ret);
-		ret ++;
-		if(ret > maxlen) return ret;
+		ret ++;											//số byte trong queue ret<maxlen
+		if(ret > maxlen) return ret;					//đọc đủ maxlen nhưng trong queue vẫn còn dữ liệu
 	}
+
+	//nếu đọc <= maxlen byte, tức là đọc hết dữ liệu trong queue
+	//xóa bộ đếm
 	s_rev_index = 0;
 	s_rev_index_pre = 0;
 	s_rev_done = false;
@@ -279,11 +286,12 @@ PUBLIC uint16_t  UART_ReadData(uint8_t * data,uint16_t maxlen)
 
 
 // timer 1 ms check if
+//kiểm tra nhận xong
 PUBLIC void UART_CheckDataReadDonePacket (void )
 {
 	if((s_rev_index == s_rev_index_pre) && (g_rx_flag))
 	{
-		s_rev_done = true;
+		s_rev_done = true;  			//uart nhận xong khi mà s_rev_index k thay đổi nữa
 	}
 	s_rev_index_pre = s_rev_index;
 }

@@ -122,6 +122,9 @@ LOCAL const PARSE_PACKET_PROCESS_T packet_process_table[] =
 * Local functions
 ******************************************************************************/
 
+
+/*truyền bản tin qua uart
+ * gồm [msg_id, err_code, dat]*/
 LOCAL void UART_Reply(uint8_t * data,uint8_t* msg_id,ERR_E err_code)
 {
 	sprintf(print_str,"[%s,%d,%s]",msg_id,err_code,data);
@@ -129,7 +132,7 @@ LOCAL void UART_Reply(uint8_t * data,uint8_t* msg_id,ERR_E err_code)
 
 }
 
-
+//lấy version
 LOCAL ERR_E UART_HandleSoftVer (uint8* value,uint8* out )
 {
 
@@ -139,6 +142,7 @@ LOCAL ERR_E UART_HandleSoftVer (uint8* value,uint8* out )
 }
 
 
+//value: xác định enable debug hay không
 LOCAL ERR_E UART_HandleDbg (uint8* value,uint8* out )
 {
 
@@ -151,12 +155,13 @@ LOCAL ERR_E UART_HandleDbg (uint8* value,uint8* out )
 	}
 
 	strcpy((char*)param,(char*)value);
-	param_int = atoi((char*)param);
+	param_int = atoi((char*)param);			//chuyển chuỗi thành số
 	s_dbg_en = (param_int == 1)?1:0;
 	return OK;
 
 }
-
+//lấy bảng giá trị calib của kênh tương ứng gán  vào out
+//value: xác định kênh in hay out
 LOCAL ERR_E UART_HandleTdsParam (uint8* value,uint8* out )
 {
 
@@ -171,13 +176,16 @@ LOCAL ERR_E UART_HandleTdsParam (uint8* value,uint8* out )
     //in 0: out 1
 
 	strcpy((char*)param,(char*)value);
-	param_int = atoi((char*)param);
+	param_int = atoi((char*)param);  //chuyển chuỗi thành số
 	channel_tds =  (param_int == 0)?TDS_IN_VALUE:TDS_OUT_VALUE;
 	ADC_GetCalibTdsParam(channel_tds,out);
 	return OK;
 
 }
 
+
+//lấy bảng giá trị ADC của kênh tương ứng gán vào out,
+//tương tự hàm lấy bảng calib
 LOCAL ERR_E UART_HandleGetAdcTable (uint8* value,uint8* out )
 {
 	uint8_t  param[9] = {0};
@@ -196,6 +204,8 @@ LOCAL ERR_E UART_HandleGetAdcTable (uint8* value,uint8* out )
 	return OK;
 
 }
+
+//lấy bảng tds tương tự trên
 LOCAL ERR_E UART_HandleGetTdsTable (uint8* value,uint8* out )
 {
 	uint8_t  param[9] = {0};
@@ -226,6 +236,8 @@ LOCAL ERR_E UART_HandleGetTdsTable (uint8* value,uint8* out )
 *
 * @return descrition for the function return value
 */
+
+/**/
 LOCAL ERR_E UART_HandleCalibTds (uint8* value,uint8* out )
 {
 	uint8 data[20] = {0};
@@ -250,8 +262,8 @@ LOCAL ERR_E UART_HandleCalibTds (uint8* value,uint8* out )
 
 		while (*msg_token != '\0')
 		{
-
-
+				//tách các phần tử trong chuỗi như hàm UART_HandleProcess()
+				//chuỗi lúc này đã được UART_HandleProcess() bỏ đi dấu  '[' ',' và ']'
 			if ( *msg_token == ':' )
 			{
 
@@ -271,15 +283,20 @@ LOCAL ERR_E UART_HandleCalibTds (uint8* value,uint8* out )
 		channel_tds =  (channel == 0)?TDS_IN_VALUE:TDS_OUT_VALUE;
 		index = atoi((char*)msg_field[1]);
 		tds   =  atoi((char*)msg_field[2]);
+		//sau khi xác định được kênh, vị trí và giá trị cần calib thì tiến hành calib
 		return	ADC_CalibTdsValueFromUart(tds,channel_tds,index);
 //	return OK;
 
 }
 
+
+//khi nhận dữ liệu qua uart thì kiểm tra xem nó là mã lệnh nào trong packet_process_table[]
+//vd mã lệnh nhận được là [CALIB_TDS,x:y:z]
+//tách thành 2 chuỗi "CALIB_TDS" và "x:y:z" quản lí bởi 2 con trỏ
 LOCAL void UART_HandleProcess(uint8 * data,uint16_t len)
 {
 
-	uint8_t	*msg_field[MSG_FIELDS_MAX];
+	uint8_t	*msg_field[MSG_FIELDS_MAX];		//khai báo mảng chứa MSG_FIELDS_MAX con trỏ
 	ERR_E ret = NOT_SUPPORT;
 	// pointer used in NMEA message tokenizer
 	uint8_t	*msg_token;
@@ -287,11 +304,13 @@ LOCAL void UART_HandleProcess(uint8 * data,uint16_t len)
 	// generic indexers
 	int 	i, j;
 	if(*data != MSG_FIELD_SOF) goto end_handle;
-	memset( msg_field, 0x00, sizeof(msg_field));
+	//kiểm tra trong dữ liệu nhận từ uart có kí tự '[' nào không
+	//nếu không có thì k cần xử lí
+	memset( msg_field, 0x00, sizeof(msg_field));	//gans các con trỏ bằng NULL
 
 	i				= 0;
-	msg_token		= data+1;
-	msg_field[i]	= msg_token;
+	msg_token		= data+1;			//trỏ đến kí tự tiếp theo
+	msg_field[i]	= msg_token;		// VD trên:msg_field[0] trỏ đến đầu chuỗi bắt đầu bằng kí tự 'C'
 
 	while (*msg_token != '\0')
 	{
@@ -300,10 +319,12 @@ LOCAL void UART_HandleProcess(uint8 * data,uint16_t len)
 		{
 
 		// terminate string after field separator or end-of-message characters
-		*msg_token = '\0';
+		*msg_token = '\0';				//xóa dấu ',' và dấu ']'
 
 		// save position of the next token
 		msg_field[++i] = msg_token + 1;
+		//VD trên: msg_field[2] trỏ đến chuỗi bắt đầu bằng kí tự 'x'
+		//tương tự như vậy đến kí các con trỏ msg_field quản lí riêng từng chuỗi
 
 		}
 
@@ -313,17 +334,22 @@ LOCAL void UART_HandleProcess(uint8 * data,uint16_t len)
 
 	for( j = 0; j < ARR_SIZE(packet_process_table); j++)
 	{
-
+		//kiểm tra msg_field[0] tách được ở trên và so sánh với bảng mã lệnh xem nó là mã lệnh nào
 		if(	strcmp((char*) packet_process_table[j].packet_str,(char*) msg_field[MSG_FIELD_TYPE]) == 0)
 		{
+			//gọi hàm tương ứng với chuỗi msg_field[MSG_FIELD_DATA],
+			//VD trên: gọi UART_HandleCalibTds thông qua con trỏ hàm packet_func_ptr
+			//dữ liệu của hàm tương ứng trả về thông qua data_repply, truyền vào là con trỏ msg_field[0],
+			//tương ứng với uint8* out và uint8* value trong các hàm tương ứng
 			ret = packet_process_table[j].packet_func_ptr((uint8_t*)msg_field[MSG_FIELD_DATA],(uint8_t*)data_reply );
 			break;
 		}
 
 	}
-
+//gửi lại máy tính qua uart về mã lệnh vừa giải mã kèm thông tin data_reply
 	end_handle:
 	UART_Reply(data_reply,(uint8_t*)packet_process_table[j].packet_str,ret);
+				//---data----------msg_id------------------------------error--
 	return;
 
 
@@ -350,9 +376,9 @@ PUBLIC void UART_Init(void)
 {
 	//init UART here
 	R_Config_SCI1_Create();
-	/* Set SCI2 receive buffer address and enable receive interrupt */
+	/* Set SCI1 receive buffer address and enable receive interrupt */
 	R_Config_SCI1_Serial_Receive((uint8_t *)&g_rx_char, 1);
-	/* Enable SCI2 operation */
+	/* Enable SCI1 operation */
 	R_Config_SCI1_Start();
 
 	sprintf(print_str, "UART init done\r\n");
@@ -399,11 +425,14 @@ PUBLIC void UART_Process()
 {
 	uint8_t data[30] ={0};
 	uint16_t len = 0;
-	if(UART_IsDoneFrame())
+	if(UART_IsDoneFrame())			//nếu uart nhận xong, thì lấy dữ liệu
 	{
 		len = UART_ReadData(data,30);
 		UART_HandleProcess(data,len);
 	}
+	//trong trường hợp mà dữ liêu queue nhiều hơn 30 byte do uart vẫn tiếp tục nhận
+	//thì lần sau gọi hàm này tiếp tục đọc cho đến khi hết dữ liệu còn lại
+
 }
 
 
