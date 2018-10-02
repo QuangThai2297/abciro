@@ -339,7 +339,7 @@ LOCAL void UART_HandleProcess(uint8 * data,uint16_t len)
 		{
 			//gọi hàm tương ứng với chuỗi msg_field[MSG_FIELD_DATA],
 			//VD trên: gọi UART_HandleCalibTds thông qua con trỏ hàm packet_func_ptr
-			//dữ liệu của hàm tương ứng trả về thông qua data_repply, truyền vào là con trỏ msg_field[0],
+			//dữ liệu của hàm tương ứng trả về thông qua data_repply, truyền vào là con trỏ msg_field[1],
 			//tương ứng với uint8* out và uint8* value trong các hàm tương ứng
 			ret = packet_process_table[j].packet_func_ptr((uint8_t*)msg_field[MSG_FIELD_DATA],(uint8_t*)data_reply );
 			break;

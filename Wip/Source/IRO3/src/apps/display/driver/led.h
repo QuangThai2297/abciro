@@ -91,7 +91,7 @@ typedef enum
 /******************************************************************************
 * Global functions
 ******************************************************************************/
-
+//tat ca cac ham này có nhiệm vụ cho phép on off led nào trong LedKeyName_t tương ứng với các trạng thái của MachineStateLed_t, hay của key
 
 void Led_SetLedKeyState(LedKeyName_t ledName,LedKeyColor_t color, LedState_t state);
 void Led_turnOnLedKey();

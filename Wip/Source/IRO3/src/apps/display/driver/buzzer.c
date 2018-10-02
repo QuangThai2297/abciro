@@ -97,7 +97,7 @@ void Buzzer_process()
 void Buzzer_onInMs(uint16_t msTime)
 {
 	timeOffBuzzer = g_sysTime + msTime;
-	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH);
+	R_GPIO_PinWrite(BUZZER_PIN, GPIO_LEVEL_HIGH); //on buzzer
 	buzzerIsOn = true;
 }
 void Buzzer_turnOn(bool isOn)

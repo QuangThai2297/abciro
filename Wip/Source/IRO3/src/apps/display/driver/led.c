@@ -90,6 +90,7 @@ MachineStateLed_t s_currentMachineState;
  * @return descrition for the function return value
  */
 
+/**/
 void Led_SetLedKeyState(LedKeyName_t ledName,LedKeyColor_t color, LedState_t state)
 {
 	if(color == LED_KEY_COLLOR_GREEN)
@@ -101,6 +102,7 @@ void Led_SetLedKeyState(LedKeyName_t ledName,LedKeyColor_t color, LedState_t sta
 	}
 }
 
+/*on all led green, enable key */
 void Led_turnOnLedKey()
 {
 	for(uint8_t i = 0; i< PIN_KEY_NUM; i++)
@@ -108,6 +110,7 @@ void Led_turnOnLedKey()
 		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[i],GPIO_LEVEL_LOW);
 	}
 }
+/*off all led green, disable key*/
 void Led_turnOffLedKey()
 {
 	for(uint8_t i = 0; i< PIN_KEY_NUM; i++)
@@ -115,6 +118,7 @@ void Led_turnOffLedKey()
 		R_GPIO_PinWrite(LED_KEY_GREEN_PIN[i],GPIO_LEVEL_HIGH);
 	}
 }
+
 
 void Led_turnOffAllLedKey()
 {
@@ -135,10 +139,10 @@ void Led_switchMachineStateLed(MachineStateLed_t machineState)
 	for ( i = 0;  i < LED_MACHINE_STATE_NUM; ++ i) {
 		R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[i], GPIO_LEVEL_HIGH);
 	}
-	R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[machineState], GPIO_LEVEL_LOW);
+	R_GPIO_PinWrite(LED_MACHINE_STATE_PIN[machineState], GPIO_LEVEL_LOW);  //bat moi 1 led  tuong ung machineState
 }
 
-void Led_turnOffMachineStateled()
+void Led_turnOffMachineStateled() 		//off all led state
 {
 	uint8_t i;
 	for ( i = 0;  i < LED_MACHINE_STATE_NUM; ++ i) {
@@ -183,3 +187,6 @@ void Led_turnAllLedKey(LedKeyColor_t color)
 			R_GPIO_PinWrite(LED_KEY_RED_PIN[i], GPIO_LEVEL_HIGH);
 		}
 }
+
+
+

@@ -45,7 +45,7 @@ typedef struct
 	BOOLEAN busy;				//cờ báo queue bận
     void *queue;    			//con trỏ quản lí các phần tử dữ liệu được lưu (giống 1 mảng hay 1 hàng đợi đúng nghĩa)
 }QUEUE_NODE_T;
-//cấu trúc 1 node queue
+//cấu trúc 1  queue
 
 typedef  BOOLEAN (*QUEUE_COMPARE_FUNC)(void *data_ptr1, void *data_ptr2);
 /**--------------------------------------------------------------------------*

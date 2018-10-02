@@ -41,7 +41,7 @@ PUBLIC QUEUE_NODE_T* QUEUE_InitQueue(uint32 max_queue_count, uint32 node_size)
 
 	QUEUE_NODE_T *queue_ptr = (QUEUE_NODE_T *)malloc(sizeof(QUEUE_NODE_T));
 	/*tạo con trỏ 1 queue_node
-	 ví dụ: ở đây quản lí 1 node là TDS_IN hoặc TDS_OUT*/
+	 TDS_IN hoặc TDS_OUT*/
 
 	if(queue_ptr != NULL)
 	{
@@ -77,7 +77,7 @@ PUBLIC void QUEUE_DestoryQueue(QUEUE_NODE_T *queue_ptr)
 			free(queue_ptr->queue);
 			queue_ptr->queue = NULL;
 		}
-		free(queue_ptr);			//free cả 1 queue_node nếu node đó đã được tạo
+		free(queue_ptr);
 		queue_ptr = NULL;
 	}
 }
@@ -254,7 +254,7 @@ PUBLIC void QUEUE_RemoveNode(QUEUE_NODE_T *queue_ptr, uint32 index)
             if(index < queue_ptr->current_count)
             {
                 memcpy((uint8 *)queue_ptr->queue + (queue_ptr->node_size*index), (uint8 *)queue_ptr->queue + (queue_ptr->node_size*(index+1)), queue_ptr->node_size*(queue_ptr->current_count - index));
-            }
+            }	//dịch toàn bộ node phía sau node bị remove về vị trí node bị remove
 		}
 	}
 }
